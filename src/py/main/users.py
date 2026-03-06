@@ -1,20 +1,5 @@
 from __future__ import annotations
-
-# 1. Import Networks / Main Modules
-import requests
-import re
-import urllib.parse
-import base64
-import uuid
-
-# 2. Import Utilities / Classes / Functions / variables
-from pydantic import BaseModel, EmailStr, ValidationError, Field, field_validator
-from .usefuls import db,Base,Column,string,Int,Date,Auth,config
-from flask_bcrypt import Bcrypt
-from flask import Flask,abort,request,jsonify,redirect,url_for,render_template,make_response
-import datetime
-from typing import Callable, NamedTuple
-from functools import wraps
+from ..imports.glo import *
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
