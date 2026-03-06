@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" id="html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope&family=Akaya Kanadaka&display=swap">
+    <link rel="stylesheet" href="../static/Settings.css">
+    <script defer src="../static/js_scripts/Settings.js"></script>
+
+    <title> Re-Design v2 </title>
+</head>
+
+<body id="body">
+    <div class="main0 s-b">
+        <div class="header-parent">
+            <div class="header s-b">
+                <button class="h-child0 child"> Home </button>
+                <button class="h-child1 child"> Explore Events </button>
+                <button class="h-child2 child"> About us </button>
+                <button class="h-child3 child"> Settings </button>
+                <button class="h-child4 child"> Account </button>
+                <button class="h-child5 child"> Login </button>
+            </div>
+        </div>
+
+        <div class="settings-grid">
+            <div class="settings-sidebar">
+                <div class="sidebar-container container">
+                    <button class="account-settings-btn sidebar-btns active-btn">
+                        <div class="sidebar-icon acc-icon"></div>
+                        <h1 class="sidebar-text"> Account Settings </h1>
+                    </button>
+                    <button class="privacy-btn sidebar-btns">
+                        <div class="sidebar-icon priv-icon"></div>
+                        <h1 class="sidebar-text"> Privacy & Security</h1>
+                    </button>
+                </div>
+            </div>
+            <div class="settings-main-content">
+                <div class="account-content main-content active-content">
+                    <div class="acc-personal-info">
+                        <div class="personal-info-container container">
+                            <div class="icon-container">
+                                <div class="icon-background">
+                                    <div class="content-icon acc-icon"></div> 
+                                </div>  
+                                <h1 class="icon-text"> Personal Information </h1>                                    
+                            </div>
+                            <h1 class="info-input-label m-t"> Full Name </h1>
+                            <div class="input-entry-container">
+                                <input type="text" class="input-entry" placeholder="John">
+                                <input type="text" class="input-entry" placeholder="Doe">
+                            </div>
+
+                            <h1 class="info-input-label m-t"> Email </h1>
+                            <input type="text" class="input-entry plain-entry" placeholder="John.Doe@example.com">
+
+                            <h1 class="info-input-label m-t"> Phone Number </h1>
+                            <input type="text" class="input-entry plain-entry" placeholder="+ (44) 12 3456 7890">
+
+                            <div class="save-btn-container">
+                                <button class="save-btn"> Save Changes</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="acc-password-info">
+                        <div class="password-info-container container">
+                            <div class="icon-container">
+                                <div class="icon-background">
+                                    <div class="content-icon pass-icon"></div> 
+                                </div>  
+                                <h1 class="icon-text"> Change Password </h1>                                    
+                            </div>
+                            <h1 class="info-input-label m-t"> Curent Password </h1>
+                            <input type="text" class="input-entry plain-entry" placeholder="•••••••">
+
+                            <h1 class="info-input-label m-t"> New Password </h1>
+                            <input type="text" class="input-entry plain-entry" placeholder="">
+
+                            <h1 class="info-input-label m-t"> Confirm New Password </h1>
+                            <input type="text" class="input-entry plain-entry" placeholder="">
+
+                            <div class="save-btn-container">
+                                <button class="save-btn"> Update Password </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="privacy-content main-content ">
+                    <div class="privacy-security sub-content">
+                        <div class="privacy-container container">
+                            <div class="icon-container">
+                                <div class="icon-background">
+                                    <div class="content-icon visible-icon"></div> 
+                                </div>  
+                                <h1 class="icon-text"> Security </h1>                                    
+                            </div> 
+                            <div class="notification-card privacy-hover">
+                                <button class="noti-container container security">
+                                    <div class="notification-icon acc-icon"></div>
+                                    <div class="notification-card-details">
+                                        <h1 class="info-input-label"> Login history </h1>
+                                        <h1 class="info-input-label noti-input">View recent account activity </h1>     
+                                    </div>
+                                </button>
+                            </div>
+                        </div>                          
+                    </div>
+
+                    <div class="privacy-deleteaccount sub-content">
+                        <div class="privacy-container container">
+                            <div class="icon-container bin-container">
+                                <div class="icon-background bin">
+                                    <div class="content-icon bin-icon "></div> 
+                                </div>  
+                                <h1 class="icon-text"> Danger Zone </h1>                                    
+                            </div> 
+                           <h1 class="icon-text bin-text"> Once you delete your account, there is no going back. Please be certain. </h1> 
+                            <div class="delete-btn-container">
+                                <button class="delete-btn"> Delete Account </button>
+                            </div>
+                        </div>                          
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>  

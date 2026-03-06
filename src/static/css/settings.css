@@ -1,0 +1,567 @@
+/* =========================================
+   1. Global Variables & Theming
+   ========================================= */
+:root {
+  /* --- Fonts --- */
+  --font-primary: 'Akaya Kanadaka', cursive;
+  --font-secondary: 'Manrope', sans-serif;
+
+  /* --- Colors --- */
+  --color-text-main: black;
+  --color-text-sub: rgb(167, 167, 167);
+  --color-italics: rgb(15, 98, 254);
+  --color-bg-light: white;
+  --color-bg-dark: #2e506d;
+  
+  /* Buttons & Accents */
+  --color-accent-pink: rgb(192, 108, 132);
+  --color-accent-pink-solid: rgb(192, 108, 132);
+  --color-indicator-bg: rgb(207, 207, 207);
+  --color-indicator-active: rgb(121, 121, 121);
+
+  /* --- Gradients --- */
+  --grad-main: linear-gradient(to right, #355C7D, #6C5B7B, #C06C84);
+  --grad-header: linear-gradient(to right, #355C7D, #6C5B7B);
+  --grad-main-opacity: linear-gradient(to right, rgb(53, 92, 125,.9), rgb(192, 108, 132,.7));
+
+  /* --- Shadows --- */
+  --shadow-header: 0 0 0.5rem #2e506d;
+  --shadow-card: 0 0 0.6rem #2e506d;
+  --shadow-btn: 0rem 0rem 1rem rgb(192, 108, 132);
+
+  /* --- Layout & Spacing --- */
+  --main-height: max-content;
+  --header-height: 3rem;
+  --spacing-std: 0.13rem;
+  --align-center: center;
+
+  /* --- Font Config --- */
+  --font-hero-main: bolder 3.6rem var(--font-secondary);
+  --font-hero-sub: italic 1.344rem var(--font-secondary);
+  --font-obj: lighter 1.5rem var(--font-secondary);
+  --font-section-title : bolder 1.3rem var(--font-secondary);
+  
+  /* --- Header Config --- */
+  --header-display-toggle: none; /* Hides items on mobile */
+  --header-font: lighter 0rem var(--font-secondary);
+  --header-grid: repeat(5, 1fr);
+  --header-icon-size: 1.45rem;
+  --header-icon-scale: 3;
+
+  /* --- Settings Config --- */
+  --sidebar-font-main: lighter 1rem var(--font-secondary);
+
+  --setting-frame-font-main: lighter 1rem var(--font-secondary);
+  --setting-frame-font-sub: lighter 0.95rem var(--font-secondary);
+  --setting-frame-font-sub1: lighter 0.8rem var(--font-secondary);
+
+  --settings-grid-column: 1fr;
+  --settings-inner-container-width: 90%;
+
+  --settings-sidebar-position: block;
+  --settings-card-column: repeat(auto-fit,minmax(7rem,1fr))
+}
+
+/* =========================================
+   2. Resets & Base Styles
+   ========================================= */
+
+  /* Hide scrollbars globally */
+  #body, 
+  #html::-webkit-scrollbar,
+  .group::-webkit-scrollbar,
+  .indicator_scroll::-webkit-scrollbar { 
+    display: none; 
+  }
+
+  #body, #html {
+    display: grid;
+    grid-template-rows: auto;
+    gap: 2rem;
+    background: var(--grad-main);
+    margin: 0;
+    min-height: 100dvh;
+  }
+
+  input[type = "range"],input[type = "select"]{
+       border: none;
+       outline: none; 
+  }
+  h1 { padding: 0; margin: 0; }
+  button { border: none; background: none; cursor: pointer; }
+
+/* =========================================
+   3. Animations
+   ========================================= */
+
+  /* Header Animation */
+  @keyframes in {
+    0% {transform: scale(var(--header-icon-scale)); opacity: 0;}
+    100% {transform: scale(1); opacity: 1;}  
+  }
+ 
+  /* Utility Classes based on Animations */
+  .header_in { animation: in 1s 1 forwards; }
+
+/* =========================================
+   4. Utility Classes
+   ========================================= */
+
+  [class*="s-b"] { border-radius: 1rem; }
+  [class*="m-t"] { margin-top: 1rem; }
+  [class*="m-b"] { margin-bottom: 1rem; }
+
+  [class *= "separator"]{
+    height: 0.07rem;
+    border-radius: 0.1rem;
+    margin-top: 0.15rem;
+    margin-bottom: 0.15rem;
+    background-color: rgb(167, 167, 167, 0.85);
+  }
+/* =========================================
+   4. Layout: Main & Header & Footer
+   ========================================= */
+
+  /* Header */
+  [class*="main"] {
+    display: flex;
+    flex-flow: column nowrap;
+    height: var(--main-height);
+    align-items: center;    
+  }
+
+  [class*="main"]::-webkit-scrollbar { 
+    display: none;
+  } 
+  
+  .header-parent{
+    width: 100%;
+    height: auto;
+  }
+
+  .header {
+    margin-top: 1rem;
+    display: grid;
+    grid-template-columns: var(--header-grid);
+    background: var(--grad-header);
+    height: var(--header-height);
+    width: 85%;
+    justify-self: center;
+    box-shadow: var(--shadow-header);
+    align-items: center;
+  }
+
+  /* Header Navigation Items */
+  [class*="h-child"] {
+    text-decoration: none;
+    color: var(--color-text-main);
+    letter-spacing: var(--spacing-std);
+    border: none;
+    font: var(--header-font);
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  [class*="h-child"]:hover { 
+    color: var(--color-text-sub); 
+  }
+
+  /* Header Icons */
+  .h-child0 { background: url(../static/assets/home.png) center/var(--header-icon-size) no-repeat; }
+  .h-child1 { background: url(../static/assets/event.png) center/var(--header-icon-size) no-repeat; }
+  .h-child2 { background: url(../static/assets/info.png) center/var(--header-icon-size) no-repeat; }
+  .h-child3 { display: var(--header-display-toggle); background: none; }
+  .h-child4 { background: url(../static/assets/setting.png) center/var(--header-icon-size) no-repeat; }
+  .h-child5 { background: url(../static/assets/user.png) center/var(--header-icon-size) no-repeat; }
+
+/* =========================================
+   5. Layout: Section: Settings 
+   ========================================= */  
+.container{ 
+  width: 90%;
+  justify-self: center;
+  display: grid;
+  gap: 0.3rem;
+  grid-template-columns: 1fr;
+  height: max-content;
+  margin-top: 1rem;
+  margin-bottom: 1rem;  
+}
+
+.sidebar-btns{
+  display: grid;
+  grid-template-columns: 3.7rem 1fr;
+  height: 3.5rem;
+  border-radius: 1rem;
+  width: 100%;
+}
+
+/* Icon Styles*/
+.sidebar-icon,.content-icon,.notification-icon{
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 1);
+
+  mask-position: center;
+  mask-size: 1.3rem;
+  mask-repeat: no-repeat;  
+}
+
+.sidebar-text,.icon-text{
+  font: var(--sidebar-font-main);
+  text-align: left;
+  align-content: center;
+}
+
+.acc-icon{ mask-image: url(../static/assets/user.png);}
+.noti-icon{ mask-image: url(../static/assets/notifications.png);}
+.priv-icon{ mask-image: url(../static/assets/shield.png);}
+.pay-icon{ mask-image: url(../static/assets/credit-card-1.0.png);}
+.pref-icon{ mask-image: url(../static/assets/world.png);}
+.pass-icon{ mask-image: url(../static/assets/padlock.png);}
+.email-icon{ mask-image: url(../static/assets/email.png);}
+.mobile-icon{ mask-image: url(../static/assets/iphone.png);}
+.bell-icon{ mask-image: url(../static/assets/notifications.png);}
+.visible-icon{ mask-image: url(../static/assets/visible.png);}
+.bin-icon{ 
+  mask-image: url(../static/assets/delete.png); 
+  background-color: red;
+  mask-position: left;
+}
+
+/* Turn on specific frames/button*/
+.active-btn{
+  background: var(--grad-main-opacity)
+}
+
+/* Main Settings content*/
+.main-content{
+  display: none;
+  grid-template-columns: 1fr;
+  height: max-content;
+  gap: 2rem;
+  border-radius: 1rem;
+}
+
+.active-content{
+  display: grid;
+}
+
+/* Overall parent*/
+.settings-grid{
+  display: grid;
+  grid-template-columns: var(--settings-grid-column);
+  margin-top: 2.5rem;
+  margin-bottom: 2.5rem;
+  width: 95%;
+  border-radius: 1rem;
+  gap: 2rem;
+}
+
+/* Side bar*/
+.settings-sidebar{
+  position: var(--settings-sidebar-position);
+  top: 1rem;
+  display: grid;
+  height: max-content;
+  background-color: rgb(172,172,172,0.35);
+  box-shadow: 0rem 0rem 0.3rem rgb(0,0,0,0.2);
+  border-radius: 1rem;
+}
+
+.sidebar-container{
+  display: grid;
+  grid-template-columns: repeat(auto-fill,minmax(15rem,1fr));
+}
+
+/* Frame Icon Container*/
+.icon-container{
+  display: grid;
+  grid-template-columns: 2.7rem 1fr;
+  height: 2.7rem;
+  gap: 0.7rem;
+
+  .icon-background{
+    height: 100%;
+    width: 100%;
+    border-radius: 0.7rem;
+    background: var(--grad-main-opacity)
+  }
+
+}
+
+/* Personal info input label*/
+.info-input-label{
+  font: var(--setting-frame-font-sub);
+  height: 1.5rem;
+  align-content: center;
+  text-align: left;
+}
+
+input[type = "text"]{ 
+  outline: none;
+  border: 0.07rem solid rgba(255,255,255,0.3);
+}
+
+input[type = "text"]::placeholder,input[type = "password"]::placeholder{
+  color: rgb(0,0,0,.6);
+}
+
+.plain-entry,.input-entry-container,
+.save-btn-container,.delete-btn-container,
+.save-pref-btn-container{
+  height: 2.7rem;
+}
+
+.input-entry{
+  font: var(--setting-frame-font-main);
+  border-radius: 0.7rem;
+  background-color: rgba(255, 255, 255, 0.3);
+  text-indent: 1rem;
+}
+
+/* Main container width*/
+.personal-info-container,.password-info-container,.notifications-container,
+.noti-container,.privacy-container,.payment-container,.preferences-container{
+  width: var(--settings-inner-container-width);
+}
+
+/* Main Container Backgrounds*/
+.acc-personal-info,.acc-password-info,.notifications-content,.sub-content,
+.payment-content,.preferences-content{
+  background-color: rgb(172,172,172,0.35);
+  box-shadow: 0rem 0rem 0.3rem rgb(0,0,0,0.2);
+}
+
+/* Notification card styles*/
+.notification-card{
+  margin-top: 0.7rem;
+  height: max-content;
+  border-radius: 1rem;
+  border: 0.12rem solid rgba(0,0,0,0.5);
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Toggle button styles*/
+.toggle-btn{
+  display: flex;
+  align-items: center;
+  align-self: center;
+  height: 1.7rem;
+  background-color: rgba(255,255,255,0.3);
+  border-radius: 1.7rem;
+  padding: 0.25rem;
+
+  &:hover{
+    .toggle-indicator{
+      transform: translateX(89%);
+    }    
+  }
+}
+
+.toggle-indicator{
+  height: calc(1.7rem - 0.25rem * 2);
+  width: calc(1.7rem - 0.25rem * 2);
+  border-radius: 50%;
+  border: 0.1rem solid rgb(0,0,0,0.2);
+  background-color: rgb(0,0,0,0.5);
+  transition: transform 0.3s ease;
+}
+
+/* Btn Containers & Btns*/
+.save-btn-container,.delete-btn-container,.save-pref-btn-container{
+  margin-top: 0.5rem;
+}
+
+.save-btn,.delete-btn,.save-pref-btn{
+  font: var(--setting-frame-font-sub);
+  height: 100%;
+  padding: 0rem 1rem 0rem 1rem;
+  border-radius: 0.7rem;
+  background: var(--grad-main-opacity);
+}
+
+/* Account Setting Frame*/
+.account-content{
+  width: 100%;
+  border-radius: 1rem;
+
+  .acc-personal-info,.acc-password-info{
+    width: 100%;
+    border-radius: 1rem;
+  }
+
+  .input-entry-container{
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(2,1fr);
+  }
+
+  .save-btn{
+    transition: transform 0.3s ease;
+
+    &:hover{
+      transform: scale(1.03);
+    }
+  }
+  
+}
+
+/* Notification Setting Frame*/
+.notifications-content{
+  width: 100%;
+  border-radius: 1rem;
+
+}
+  
+.noti-container{
+  display: grid;
+  grid-template-columns: 2rem 1fr 3rem;
+  height: max-content;
+  
+}
+
+.event{
+  grid-template-columns: 1fr 3rem;
+}
+
+.notification-icon{
+  mask-position: left;
+}
+
+.noti-input{
+  height: 1.3rem;
+  align-content: center;
+  font: var(--setting-frame-font-sub1);
+}
+
+.notification-toggle-btn{
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.notification-separator{
+  margin-top: 1rem;
+}
+
+
+/* Privacy Settings frame*/
+.privacy-content{
+  width: 100%;
+}
+
+.sub-content{
+  border-radius: 1rem;
+}
+
+.privacy-hover{
+  transition: transform 0.3s ease;
+
+  &:hover{
+    transform: scale(1.005);
+    box-shadow: 0rem 0rem 0.3rem rgb(0,0,0,0.2);
+  }
+}
+
+.security{
+  grid-template-columns: 3rem 1fr;
+}
+
+.security-btn{
+  text-align: left;
+}
+
+.profile-card,.preference-card{
+  display: grid;
+  grid-template-columns: var(--settings-card-column);
+  gap: 0.5rem;
+  margin-top: 0.7rem;
+  height: max-content;
+}
+
+.profile-opt,.preference-opt{
+  padding: 0rem 1rem 0rem 1rem;
+  font: var(--setting-frame-font-sub);
+  height: 2.4rem;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 0.5rem;
+}
+
+.active-opt{
+  background: var(--grad-main-opacity); 
+}
+
+.privacy-deleteaccount{
+  background-color: rgba(255, 180, 180, 0.5);
+  border: 0.12rem solid rgb(255,0,0,0.5);
+
+  .bin-container{
+    gap: 0rem;
+  }
+
+  .bin,.bin-text{
+    font: var(--setting-frame-font-sub1);
+    background: none;
+  }
+
+  .delete-btn{
+    color: white;
+    padding: 0rem 1rem 0rem 1rem;
+    background: #D9534F;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+
+    &:hover{
+      transform: scale(1.03);
+      background-color: red;
+    }
+
+  }
+}
+
+/* Preferences Frame Container*/
+.preferences-content{
+  width: 100%;
+}
+/* =========================================
+   6. Media Queries
+   ========================================= */
+
+/* Tablet & Up */
+@media only screen and (min-width: 600px) {
+  .header {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    gap: 1.5dvw;
+  }
+  
+  :root {
+    --header-grid: repeat(6, 1fr);
+    --header-icon-size: 0rem; /* Hide icons, showing text instead */
+    --header-display-toggle: block; /* Show the hidden menu item */  
+    --header-font: lighter 0.8rem var(--font-secondary);
+    --header-icon-scale: 1;
+
+    
+    --settings-inner-container-width: 97.5%;   
+    --settings-card-column: repeat(auto-fit,minmax(7rem,max-content))
+  }
+}
+
+/* Desktop & Up */
+@media only screen and (min-width: 992px) {    
+  :root {
+    --settings-sidebar-position: sticky;
+    --settings-grid-column: 20rem 1fr;
+    --settings-card-column: repeat(auto-fit,minmax(7rem,max-content))
+  }
+}
+
+/* Small vertical screens */
+@media only screen and (max-height: 800px) {
+  :root {
+    /* --main-height: 800px; */
+  }
+}  

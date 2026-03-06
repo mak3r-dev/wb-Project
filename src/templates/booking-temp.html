@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en" id="html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope&family=Akaya Kanadaka&display=swap">
+    <link rel="stylesheet" href="../static/Booking.css">
+    <title> Re-Design v2 </title>
+</head>
+
+<body id="body">
+    <div class="main0 s-b">
+    {% extends "base.html" %}
+        
+    {% block scripts %}
+        <script src="https://js.stripe.com/v3/"></script>
+       <script  src="../static/js_scripts/Booking.js" defer></script>
+    {% endblock %}    
+        
+    {% block content %}
+        <div class="booking-parent">
+            <div class="booking-parent-container">
+                <div class="booking-event-details">
+                    <div class="booking-event-icon">
+
+                        <div class="booking-event-icon-container main-parent">
+                            <div></div>
+                            <h1 class="booking-event-name"> Bristol Ballon Fiesta </h1>
+                            <div class="booking-event-info-locdate">
+                                <div class="booking-event-loc-icon"></div>
+                                <h1 class="booking-event-text event-location"> Ashton Gate, Bristol </h1>
+                                <div class="booking-event-loc-icon1"></div>
+                                <h1 class="booking-event-text event-date"> July 15, 2025 - July 21, 2025 </h1>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="booking-event-info desc-ticket">       
+                        <div class="booking-event-info-description">
+                            Join us for Europe’s largest hot air balloon event 
+                            at the beautiful Ashton Court Estate! 
+                            Enjoy the stunning sight of over 100 balloons during 
+                            the Morning Mass Ascents and the spectacular Night Glows 
+                            set to music. Whether you're here for the balloons or a 
+                            family day out with rides and local food, the Bristol Balloon Fiesta 
+                            is an unforgettable experience.Book your car parking or VIP hospitality tickets
+                            below to secure your spot at the heart of the action.
+                        </div>   
+                        <div class="booking-event-info-tickets">
+                            <h1 class="booking-event-tickets-text"> $10 Per Day For 7 Days</h1>
+                        </div>            
+                    </div>
+                </div>
+
+                <div class="booking-parent-container1">
+                    <div class="booking-user-input-container">
+                        <div class="booking-user-header">
+                            <h1 class="booking-header-label"> 1 </h1>
+                            <h1 class="booking-header-title"> Select Days & Tickets </h1>
+                        </div>
+                        <div class="booking-multi-day-entries"></div>
+                    </div>
+                </div>
+
+                <template id="template-ticket">
+                    <div class="booking-user-ticket-info">
+                        <div class="booking-user-ticket-container">
+                            <h1 class="booking-user-ticket-day day-indicator"> Day 1 (Tuesday - July 15, 2025)</h1>
+                            <div class="booking-user-ticket-priceinfo day-number" data-day="None">
+                                <h1 class="user-ticket-price ticket-price">  </h1>
+                                <button class="booking-ticket-decreaser decrease-ticket-count"> — </button>
+                                <h1 class="user-ticket-price-counter"> 0 </h1>
+                                <button class="booking-ticket-increaser increase-ticket-count"> + </button>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+                <div class="booking-parent-container1">
+                    <div class="booking-user-input-container">
+                        <div class="booking-user-header">
+                            <h1 class="booking-header-label"> 2 </h1>
+                            <h1 class="booking-header-title"> Contact Information </h1>
+                        </div>
+                        <div class="booking-user-input-label"> Full Name </div>
+                        <div class="booking-user-input-components">
+                            <div class="booking-user-input-entry-container">
+                                <div class="booking-user-input-icon"></div>
+                                <input type="text" name="first-name" class="booking-user-input-entry FirstName" placeholder="John" autocomplete="off">
+                            </div>
+                            <div class="booking-user-input-entry-container">
+                                <div class="booking-user-input-icon"></div>
+                                <input type="text" name="last-name" class="booking-user-input-entry LastName" placeholder="Doe" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="booking-user-input-label"> Email & Phone </div>
+                        <div class="booking-user-input-components">
+                            <div class="booking-user-input-entry-container">
+                                <div class="booking-user-input-icon1"></div>
+                                <input type="text" name="first-name" class="booking-user-input-entry Email" placeholder="John.Doe@example.com" autocomplete="off">
+                            </div>
+                            <div class="booking-user-input-entry-container">
+                                <div class="booking-user-input-icon2"></div>
+                                <input type="text" name="last-name" class="booking-user-input-entry PhoneNumber" placeholder="(+44) 12 3456 7890" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="booking-parent-container1">
+                    <div class="booking-user-input-container add-on-container">
+                        <div class="booking-user-header">
+                            <h1 class="booking-header-label"> 3 </h1>
+                            <h1 class="booking-header-title"> Add-ons </h1>
+                        </div>
+
+                        <template id="template-addon-label">
+                            <div class="booking-user-input-label"> Amenities </div>                              
+                        </template>      
+                        
+                        <template id="template-addon-card-list">
+                            <div class="booking-user-input-entry-container-list"></div>
+                        </template>
+
+                        <template id="template-addon-card">
+                            <button class="booking-user-input-list" data-state='on'>
+                                <div class="booking-user-input-cont-icon"></div>
+                                <div class="booking-user-input-info-container">
+                                    <h1 class="booking-user-entry-list-label"> Breakfast Buffet </h1>
+                                    <h1 class="booking-user-entry-list-description"> 
+                                        Continental breakfast with local specialties
+                                    </h1>
+                                    <h1 class="booking-user-entry-list-label1"> 
+                                        <span class="booking-user-entry-list-price"> $25 </span> / <span class="booking-user-entry-list-price-desc"> Person </span>
+                                    </h1>
+                                </div>
+                            </button>
+                        </template>  
+                                                  
+                    </div>
+                </div>
+            </div>
+
+            <div class="booking-summary">
+                <h1 class="booking-summary-title"> Booking Summary </h1>
+                <div class="booking-summary-frame"> 
+                    <!-- Select tickets to continue -->
+                    <div class="booking-summary-details-container day-summary no-summary">
+                        <div class="no-day-summary no-ticket"></div>
+                        <template id="day-summary-template">
+                            <div class="booking-summary-frame-text-container">
+                                <h1 class="booking-summary-frame-text day-date-holder"> Tuesday, July 15 </h1>
+                                <h1 class="booking-summary-frame-text1 day-price-holder"> 1 x $10</h1>
+                            </div>
+                        </template>
+                    </div> 
+                </div>
+                <div class="booking-summary-divider"></div>
+                <div class="booking-summary-frame"> 
+                    <!-- Please input your contact details -->
+                    <div class="booking-summary-details-container no-summary user-input-summary-container">
+                        <div class="no-details-summary no-day-summary"></div>
+                        <div class="booking-summary-details-entries name-summary-container">
+                            <div class="booking-summary-icon"></div>
+                            <div class="booking-summary-text summary-name-text"> John Doe </div>
+                        </div>
+                        <div class="booking-summary-details-entries email-summary-container">
+                            <div class="booking-summary-icon1"></div>
+                            <div class="booking-summary-text summary-email-text"> John.Doe@example.com </div>
+                        </div>
+                        <div class="booking-summary-details-entries phone-summary-container">
+                            <div class="booking-summary-icon2"></div>
+                            <div class="booking-summary-text summary-phone-text"> + 44 00 0000 0000 </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="booking-summary-divider add-on-divider"></div>
+                <div class="booking-summary-frame"> 
+                    <!-- Select add-ons to continue -->
+                    <div class="booking-summary-details-container add-on-summary no-summary">
+                        <div class="no-day-summary add-summary"></div>
+                        <template id="add-on-summary-template">
+                            <div class="booking-summary-frame-text-container">
+                                <h1 class="booking-summary-frame-text-addon add-on-name"> Unrestricted site access </h1>
+                                <h1 class="booking-summary-frame-text1-addon add-on-price"> $100 </h1>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+                <div class="booking-summary-divider sub-total-divider"></div>
+                <div class="booking-summary-sub-total" data-state="off">
+                    <div class="sub-total">
+                        <h1 class="sub-total-text"> Subtotal </h1>
+                        <h1 class="sub-total-price-text subtotal-Price"> £0.00 </h1>
+                    </div>
+                    <div class="sub-total discount-sub-total">
+                        <h1 class="sub-total-text discount-range"> Discount(1 - 60 days) </h1>
+                        <h1 class="sub-total-price-text discount-percent"> -20% </h1>
+                    </div>
+                </div>
+                <div class="booking-summary-divider final-divider"></div>
+                <div class="booking-summary-total">
+                    <div class="booking-summary-total-container">
+                        <h1 class="booking-summary-total-text"> Total </h1>
+                        <h1 class="booking-summary-total-text1 summary-price-indicator"> £0.00 </h1>
+                    </div>
+                    <button class="booking-summary-total-button"> Complete Booking </button>
+                    <h1 class="student-discount-disclaimer"> Students with ID verification can earn a 10% discount. </h1>
+                </div>
+            </div>
+        </div>
+
+        <!--Bookiing Confirmatiion Elements-->
+        <div class="booking-confirmation">
+            <div class="booking-confirmation-container">
+                <div class="booking-confirmation-icon">
+                    <div class="confirm-icon-bg">
+                        <div class="confirm-icon"></div>
+                    </div>
+                </div>
+                <h1 class="confirmation-text"> Confirm Your Booking </h1>
+                <h1 class="confirmation-text-1"> Please review your booking details. </h1>                
+                <div class="payment-container"></div>
+                <div class="booking-container">
+                    <div class="section-confirm-days confirm-section">
+                        <h1 class="section-confirm-title"> Selected Days </h1>
+                        <div class="confirm-days-card-cont">
+                            <template id="confirm-days-template">
+                                <div class="confirm-days-card">
+                                    <h1 class="confirm-day-date"> Wed, 07 Jan 2026 </h1>
+                                    <h1 class="confirm-day-ticket"> 1 ticket(s) </h1>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                    <div class="section-confirm-contact confirm-section">
+                        <h1 class="section-confirm-title"> Contact Information </h1>
+                        <h1 class="confirm-contact-name confirm-contact">  </h1>
+                        <h1 class="confirm-contact-email confirm-contact"> </h1>
+                        <h1 class="confirm-contact-phone confirm-contact">  </h1>
+                    </div>
+                    <div class="section-confirm-add-ons confirm-section">
+                        <h1 class="section-confirm-title"> Add-Ons </h1>
+                        <div class="confirm-add-on-card-cont">
+                            <!-- TO ADD CONFIRM ADD-ONS -->
+                        </div>
+                    </div>
+                    <div class="section-confirm-total confirm-section">
+                        <h1 class="confirm-total-text"> Total Payment </h1>
+                        <h1 class="confirm-total-price"> £0.00 </h1>
+                    </div>             
+                </div>   
+                <div class="section-confirm-btns confirm-section">
+                    <button class="confirm-btn-cancel"> Cancel </button>
+                    <button class="confirm-btn-proceed"> Confirm Booking </button>
+                </div>                                
+            </div>
+
+            <!-- Booking Confirmed Elements-->
+            <div class="booking-confirmed-container">
+                <div class="booking-confirmed-icon">
+                    <div class="confirmed-icon-bg">
+                        <div class="confirmed-icon"></div>
+                    </div>
+                </div>
+                <h1 class="confirmation-text header-text"> Booking Confirmed! </h1>
+                <h1 class="confirmation-text-1 sub-header-text"> Your tickets have been successfully booked! </h1>
+                <div class="confirm-section confirm-booking-reference"> 
+                    <div class="reference-bg"> Booking Reference: 550e8400-e29b-41d4-a716-446655440000 </div>
+                </div>
+                <div class="confirmed-booking-cont">
+                    <div class="confirm-section confirmed-bg">
+                        <div class="confirmed-event-details">
+                            <h1 class="section-confirm-title event-confirmed-title"> Bristol Ballon Fiesta </h1>
+                            <div class="confirmed-event-sub-details">
+                                <div class="confirmed-loc-icon"></div>
+                                <h1 class="confirmed-loc-text confirmed-weak-font"> Ashton Gate, Bristol </h1>
+                                <div class="confirmed-calender-icon"></div>
+                                <h1 class="confirmed-calender-text confirmed-weak-font"> Mon, 15 Jan 2026 - Sat, 21 Jan 2026 </h1>
+                            </div>
+                        </div>
+                    </div>    
+                    <div class="confirmed-booking-info">
+                        <div class="confirmed-section-header">
+                            <div class="section-header-icon section-user-icon"></div>
+                            <h1 class="section-header-title"> Customer Information </h1>
+                        </div>
+                        <div class="section-customer-info confirm-section">
+                            <div class="section-info-card">
+                                <h1 class="section-info-card-title"> Full Name</h1>
+                                <h1 class="section-info-card-body coned-Name"> John Doe </h1>
+                            </div>
+                            <div class="section-info-card">
+                                <h1 class="section-info-card-title"> Email </h1>
+                                <h1 class="section-info-card-body coned-Email"> John.Doe@example.com </h1>
+                            </div>
+                            <div class="section-info-card">
+                                <h1 class="section-info-card-title"> Phone </h1>
+                                <h1 class="section-info-card-body coned-Phone"> +44 1234567890 </h1>
+                            </div>                            
+                        </div>
+                        <div class="confirmed-section-header">
+                            <div class="section-header-icon section-ticket-icon"></div>
+                            <h1 class="section-header-title"> Ticket Details </h1>
+                        </div>   
+                        <div class="section-ticket-info confirm-section confimed-tickets-cont">
+                            <template id="confirmed-card-template">
+                                <div class="section-ticket-card">
+                                    <h1 class="section-ticket-day"> Tuesday  </h1>
+                                    <h1 class="section-ticket-total ticket-weak-font"> 1 ticket(s) </h1>
+                                    <h1 class="section-ticket-date ticket-weak-font"> Mon, 15 Jan 2026 </h1>
+                                    <h1 class="section-ticket-price ticket-weak-font"> £0.00 </h1>
+                                </div>
+                            </template>                          
+                        </div>    
+                        <div class="confirmed-section-header">
+                            <div class="section-header-icon section-add-on-icon"></div>
+                            <h1 class="section-header-title"> Add-ons </h1>
+                        </div>
+                        <div class="section-add-on-info confirm-section confimed-add-on-cont">
+                            <div class="confirmed-section-add-on-card-cont">
+                                <!-- TO ADD CONFIRMED ADD-ONS -->
+                            </div>
+                        </div>                        
+                        <div class="section-divider confirm-section"></div>   
+                        <div class="confirmed-section-total confirm-section"> 
+                            <h1 class="total-tickets ticket-weak-font"> Total Tickets</h1>
+                            <h1 class="total-ticket-count ticket-weak-font confirmed-ticket-count"> 2 tickets(s)</h1>
+                            <div class="sub-total-info confirmed-subtotal-info">
+                                <h1 class="sub-total-text discount-range"> Discount(1 - 60 days) </h1>
+                                <h1 class="sub-total-price-text discount-percent"> -20% </h1>
+                            </div>
+                            <h1 class="total-amount-paid ticket-semi-weak-font"> Total Amount Paid </h1>
+                            <h1 class="total-price ticket-semi-weak-font confirmed-total-price"> £0.00 </h1>
+                        </div>
+                        <div class="section-email-confirmation confirm-section">
+                            <div class="section-confirm-email-bg"></div>
+                            <h1 class="section-confirm-email-title"> Confirmation Email Sent</h1>
+                            <h1 class="section-confirm-email-body"> Your e-tickets have been sent to 
+                                <span class="confirmation-email">John.Doe@example.com</span> .
+                                Please check your inbox and spam folder. Present these tickets at the event entrance. 
+                                Students with ID are liable for a 10% discount!</h1>
+                        </div>   
+                    </div>                                    
+                </div>
+                <div class="confirmed-redirects">
+                    <button class="redirect-events redirect-btn">
+                        <div class="redirect-icon-cont">
+                           <div class="redirect-event-icon redirect-icon"></div>     
+                            <h1 class="redirect-txt"> Return to Event Page </h1>
+                        </div>
+                    </button>  
+                    <button class="redirect-reciept redirect-btn">
+                        <div class="redirect-icon-cont">
+                           <div class="redirect-print-icon redirect-icon"></div>     
+                            <h1 class="redirect-txt"> Print Receipt </h1>
+                        </div>
+                    </button>  
+                    <button class="redirect-download redirect-btn">
+                        <div class="redirect-icon-cont">
+                           <div class="redirect-download-icon redirect-icon"></div>  
+                           <h1 class="redirect-txt"> Download Receipt </h1>
+                        </div>          
+                    </button>
+                </div>
+                <h1 class="HELP-LINK"> Need Help? Visit our 
+                    <a href="" class="help-link">Help Page</a>.
+                </h1>
+            </div>
+
+            <!-- Warning / Messages-->
+            <div class="message-container">
+                <div class="already-booked">
+                    <div class="warn-ic"></div>
+                    <h1 class="msg-txt"> You have already booked for this event!</h1>
+                    <div class="msg-redirect-btn-cont">
+                        <button class="cancel-booking-btn msg-redirect-btn"> Cancel Booking</button>
+                        <button class="return-to-events-btn msg-redirect-btn"> Return to events </button>
+                    </div>
+                </div>
+
+                <div class="waiting-list">
+                    <div class="warn-ic"></div>
+                    <h1 class="msg-txt"> The availability for this event is full, You will be entered into a waiting list! </h1>
+                    <div class="msg-redirect-btn-cont">
+                        <button class="waiting-return-events msg-redirect-btn"> Return to events </button>
+                        <button class="waitin-continue-to-booking msg-redirect-btn"> Continue </button>
+                    </div>                    
+                </div>
+            </div>
+
+        </div>
+        <div class="bg-blur loading-container">
+            <div class="loading-components">
+                <div class="loading-Image"></div>
+                <h1 class="loading-Text"> </h1>
+            </div>
+        </div>
+    {% endblock %}
+    
+    </div> 
+</body>
+</html>       

@@ -1,0 +1,722 @@
+/* =========================================
+   1. Global Variables & Theming
+   ========================================= */
+:root {
+  /* --- Gradients --- */
+  --grad-main-opacity3: linear-gradient(to right, rgb(53, 92, 125,.5), rgb(192, 108, 132,.5));
+
+  /* --- Account (Users Playground) Config --- */
+  --account-font-icon: bolder 2rem var(--font-secondary);
+  --account-font-main: lighter 1.3rem var(--font-secondary);
+  --account-font-sub: lighter 1rem var(--font-secondary);
+  --account-font-sub1: lighter 0.79rem var(--font-secondary);
+  --account-font-sub2: lighter 0.7rem var(--font-secondary);
+
+  --account-user-inner-history-columns: repeat(2,1fr);
+  --account-user-profile-inner-columns: 1fr;
+
+  --acount-user-card-columns: 1fr;
+  --acount-user-card-gap: 1rem;
+
+  --account-profile-main-card-container: 1fr;
+  --account-profile-main-card-container-width: 94.5%;
+  --account-profile-icon-container-width: 100%;
+
+  --acount-cancel-btn-width: max-content;
+}
+
+/* =========================================
+   2. Layout: Section: Account (Users Playground)
+   ========================================= */  
+
+.user-profile,.profile-booking-info,.profile-event-info{
+  margin-top: 1rem;
+  background-color: rgb(167, 167, 167,0.35);
+  box-shadow: rgb(0,0,0,0.3);
+  border-radius: 1.2rem;
+  
+}
+
+.profile-booking-info{
+  overflow: visible;
+  padding: 1rem;
+}
+
+.user-profile-container{
+  width: 95%;
+  height: max-content;
+  border-radius: 1.3rem;
+  align-self: center;
+}
+
+.user-profile-inner{
+  display: grid;
+  grid-template-columns: var(--account-user-profile-inner-columns);
+  /* 7rem 1fr*/
+  width: 97%;
+  justify-self: center;
+  border-radius: 1.2rem;
+  gap: 1.5rem;
+}
+
+.user-profile-inner-icon-container{
+  margin-top: 1.5rem;
+  justify-items: center;
+
+  .user-profile-inner-icon{
+    text-align: center;
+    align-content: center;
+    height: 7rem;
+    width: 7rem;
+    background: var(--grad-main);
+    background-size: 120%;
+    font: var(--account-font-icon);
+    letter-spacing: 0.3rem;
+    border-radius: 50%;
+    color: white;
+  }
+
+}
+
+.user-profile-inner-info{
+  border-radius: 1.3rem;
+}
+
+.user-profile-userfulinfo{
+  margin-top: 1.5rem;
+  height: 2rem;
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  .user-infoname,.user-joindate{align-content: center; }
+
+  .user-infoname{
+    text-align: left;
+    letter-spacing: 0.3rem;
+    font: lighter 1.1rem var(--font-secondary);;
+  }
+
+  .user-joindate{
+    text-align: right;
+    font: var(--account-font-sub2);
+
+    .padding-info{
+      padding: 0.3rem 0.7rem 0.3rem 0.7rem;
+      border: 0.1rem solid rgb(255,255,255,0.6);
+      background-color: rgb(172,172,172,0.6);
+      border-radius: 0.5rem;
+      letter-spacing: 0.07rem;
+    }
+  }
+}
+
+.user-profile-email,.user-profile-phone{
+  margin-top: 0.3rem;
+  text-indent: 0.08rem;
+  height: 1rem;
+  font: var(--account-font-sub1);
+  letter-spacing: 0.1rem;
+}
+
+.user-profile-phone{ margin-top: 0.5rem;}
+
+.user-profile-inner-history{
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(clamp(12rem,13rem,15rem),1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+  border-radius: 1.2rem;
+
+  .user-history-card1,.user-history-card2,.user-history-card3,.user-history-card4,.user-history-card5{
+    height: 6.5rem;
+    background-color: rgb(172,172,172,0.7);
+    border-radius: 0.7rem;
+    box-shadow: 0rem 0rem 1rem rgb(0,0,0,0.2);
+  }
+
+  .user-history-card1{
+    border: none;
+    background-color: rgb(255,255,255,0.1);
+  }
+
+  .user-history-card2{
+    border: none;
+    background: var(--grad-main-opacity3)
+  }
+
+  .user-history-card3{
+    border: none;
+    background: linear-gradient(to right, rgb(203, 45, 62, 0.3), rgb(239, 71, 58, 0.7));
+  }
+
+  .user-history-card4{
+    border: none;
+    background: linear-gradient(to right, #757F9A, #D7DDE8);
+  }
+
+  .user-history-card5{
+    border: none;
+    background: linear-gradient(to right, #FF5F6D, #FFC371);
+  }
+
+  [class *= "user-history-card-icon"]{
+    display: grid;
+    grid-template-columns: 2rem 1fr;
+    height: 3rem;
+  }
+
+  .user-history-container{
+    width: 95%;
+    justify-self: center;
+  }
+
+  [class *= "user-history-icon"]{
+    background: rgba(255, 255, 255, 1);
+
+    mask-image: url(../static/assets/ticket.png);
+    mask-position: left;
+    mask-size: 1.1rem;
+    mask-repeat: no-repeat;     
+  }
+
+  .user-history-icon1{
+    mask-image: url(../static/assets/calendar.png);
+  }
+
+  .user-history-icon2{
+    mask-image: url(../static/assets/none.png);
+  }
+
+  .user-history-icon3{
+    mask-image: url(../static/assets/past.png);
+  }
+
+  .user-history-icon4{
+    mask-image: url(../static/assets/star.png);
+  }
+
+  [class *= "user-history-card-text"]{
+    align-content: center;
+    text-align: left;
+    letter-spacing: 0.08rem;
+    font: var(--account-font-sub1);
+  }
+
+  .user-history-card-text1{
+    text-align: center;
+    height: 2rem;
+    font: lighter 1.6rem var(--font-secondary);
+  }
+}
+
+.user-cards{
+  display: grid;
+  grid-template-columns: var(--acount-user-card-columns);
+  gap: var(--acount-user-card-gap);
+}
+
+.user-info-cards:hover{
+  transform: scale(1.05);
+  box-shadow: 0rem 0rem 1rem rgb(0,0,0,0.3);
+}
+
+.user-info-cards{
+  background-color: rgb(167, 167, 167,0.35);
+  border-radius: 1.2rem;
+  border: 0.12rem solid rgb(255,255,255,0.2);
+  transition: transform 0.3s ease;
+
+  &:hover{
+    transform: scale(1.005);
+    box-shadow: 0rem 0rem 1rem rgb(0,0,0,0.3);    
+  }
+  
+  .user-info-card-container{
+    display: grid;
+    grid-template-rows: repeat(2,1fr);
+    justify-self: center;
+    width: 95%;
+    height: 100%;
+  }
+
+
+  .user-card-info-icon-container{
+    box-shadow: 0rem 0rem 1rem rgb(0,0,0,0.3);
+    margin-top: 1rem;
+    align-self: center;
+    height: 3rem;
+    width: 3rem;
+    background: var(--grad-main-opacity3);
+    border-radius: 0.7rem;
+  }
+
+  [class *= "user-card-info-header-icon"]{
+    height: 100%;
+    background: rgba(255, 255, 255, 1);
+
+    mask-image: url(../static/assets/credit-card.png);
+    mask-position: center;
+    mask-size: 1.5rem;
+    mask-repeat: no-repeat;       
+  }
+
+  .user-card-info-header-icon1{
+    mask-image: url(../static/assets/user.png);
+  }
+
+  .user-card-info-header-icon2{
+    mask-image: url(../static/assets/ticket.png);
+  }
+
+  .user-card-info-header-icon3{
+    mask-image: url(../static/assets/notifications.png);
+  }
+
+  .user-card-info-header-icon4{
+    mask-image: url(../static/assets/waiting-list.png);
+  }
+
+  .user-card-info-container{
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .user-card-info-text{
+    font: lighter 1rem var(--font-secondary);
+    margin-bottom: 0.3rem;
+    text-align: left;
+  }
+
+  .user-card-info-cta{
+    text-align: left;
+    color: rgb(0,0,0,0.5);
+    font: var(--account-font-sub1);
+  }
+}
+
+
+.profile-booking-container{
+  justify-self: center;
+  height: max-content;
+  overflow: auto;
+  width: 97%;
+  
+}
+
+.profile-booking-header{
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+
+  .profile-booking-title{
+    height: 2rem;
+    font: var(--account-font-sub);
+    align-content: center;
+  }
+
+  .profile-booking-options{
+    display: grid;
+    grid-template-columns: repeat(4,max-content);
+    gap: 0.5rem;
+    margin-left: auto;
+  }
+
+  [class *= "profile-booking-options-button"]{
+    display: var(--account-profile-booking-options-button-display);
+    border-radius: 0.5rem;
+    font: var(--account-font-sub1);
+  }
+
+  .clicked{
+    background: var(--grad-main-opacity3);
+  }
+
+  .free{
+    background: rgb(255,255,255, 0.3);
+  }
+}
+
+/* Event Showcase Card */
+.event-showcase-list{
+  display: grid;
+  gap: 1rem;
+  overflow: visible;
+  margin-top: 1rem;
+}
+
+.event-card-info-divider{
+  justify-self: center;
+  width: 98%;
+  background-color: rgb(167, 167, 167, 0.35);
+  height: 0.07rem;
+}
+
+
+[class *= "event-showcase-card"]{
+  grid-template-columns: 0.2fr 1rem 1fr;
+  border-radius: 1.5rem;
+  background-color: rgb(167, 167, 167, 0.25);
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}   
+
+.event-card-info{
+  align-self: center;
+  justify-self: center;
+}
+
+.event-card-ft{
+  grid-template-columns: 0.45fr 1fr;
+  position: relative;
+  height: 0%;
+}
+
+.event-card-ft-text{
+  display: none;
+  gap: 0.2rem;
+  justify-self: center;
+  border-radius: 1.5rem;
+}
+
+.event-card-ft-text-icon{
+  background: var(--grad-main);
+  background-size: 115%;
+
+  mask-image: url(../static/assets/star.png);
+  mask-position: center;
+  mask-size: 0.8rem;
+  mask-repeat: no-repeat;
+}
+
+.event-card-featured-text{
+  font: lighter 0.65rem var(--font-secondary);
+  text-align: center;
+  align-self: center;
+}
+
+/*  Switch Between List or Grid - Start and Choose ft cards*/
+.ft{
+  .event-card-ft-text{
+    display: grid;
+  }
+}
+
+.grid{
+  .event-card-intro-cont{ display: block; }
+  .event-card-intro-cont1{ display: None; }
+
+  .event-card-ft{ display: grid;}
+
+  .event-showcase-list{
+    grid-template-columns: repeat(auto-fill,minmax(clamp(16rem,19rem,22.3rem),1fr));
+  }
+
+  .event-card-image{ 
+    background: url(../static/assets/BallonFestival.svg) center/cover no-repeat; 
+    height: 40%;
+  }
+
+  [class *= "event-showcase-card"]{
+    display: block; 
+    height: 27rem; 
+  }   
+
+
+  .event-card-info{
+    height: 57.5%;
+    width: 95%;
+  }
+
+  .event-card-info-availability{display: None;}
+
+  .event-card-info-availability1{display: Block;}
+
+  .event-card-info-divider{
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .event-card-ft{
+    bottom: 9.7rem;
+    left: 0.5dvw;
+  }
+
+  .event-card-ft-text{
+    grid-template-columns: 0.7fr 1fr;
+    padding: 0.2rem 0.45rem 0.2rem 0.45rem; 
+    background-color: rgb(255,255,255,0.2);
+    color: rgb(46, 80, 109, 0.9);
+  }
+
+  .event-card-info-title{
+    display: grid;
+    grid-template-columns: 1fr 2rem 1.3rem;
+    margin-top: 1rem;
+    height: 1.3rem;
+
+    .event-card-title{
+      font: var(--account-font-sub);
+      text-align: left;
+      letter-spacing: 0.04rem;
+    }    
+  } 
+
+  .event-card-info-categ{
+    display: grid;
+    grid-template-columns: repeat(2,max-content);
+    gap: 0.3rem;
+    margin-top: 0.5rem;
+    
+    
+    .event-card-info-categ-text{
+      padding: 0.3rem 0.5rem 0.3rem 0.5rem;
+      text-align: center;
+      justify-content: center;
+      font: lighter 0.65rem var(--font-secondary);
+      background-color: rgb(255,255,255,0.2);
+      color: rgb(46, 80, 109, 0.9);
+      border-radius: 1.3rem;
+    }
+  }
+
+  [class *= "event-card-info-locdate-icon"]{
+    mask-position: center;
+  }
+
+  .event-card-info-price{
+    grid-template-columns: 1fr max-content;
+  }
+}
+
+.list{
+  .event-card-intro-cont{ display: None; }
+  .event-card-intro-cont1{ display: Block; }
+
+
+  .event-showcase-list{
+    grid-template-columns: 1fr
+  }
+
+  .event-card-image{ 
+    height: None;
+    background: url(../static/assets/BallonFestival.svg) center/cover no-repeat;
+  }
+
+  [class *= "event-showcase-card"]{
+    display: grid; 
+    height: 13.5rem; 
+  }   
+
+  [class *= "event-showcase-card"]:hover{transform:  translateY(0rem);}
+
+  .event-card-info{
+    height: 90%;
+    width: 96%;
+  }
+
+  .event-card-info-divider{
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .event-card-ft-text{
+    grid-template-columns: 1.2rem 1fr;
+    padding: 0.2rem 0.9rem 0.2rem 0.45rem; 
+    background-color: rgb(255,255,255,0.2);
+    color: rgb(46, 80, 109, 0.9);
+  }
+
+  .event-card-intro{
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 1rem;
+    height: 1.3rem;
+    width: 99%;
+  }
+
+  .event-card-info-availability{
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+  }
+
+  .event-card-info-availability1{display: none;}
+
+  .event-card-titlecateg{
+    display: grid;
+    grid-template-columns: repeat(3, max-content);
+    gap: 0.5rem;
+
+    .event-card-title{
+      text-align: center;
+      align-content: center;
+      font: var(--account-font-sub);
+    }
+
+    .event-card-categ{
+      padding: 0.1rem 0.5rem 0.1rem 0.5rem;
+      text-align: center;
+      align-content: center;
+      font: lighter 0.6rem var(--font-secondary);
+      background-color: rgb(255,255,255,0.2);
+      color: rgb(46, 80, 109, 0.9);
+      border-radius: 1.3rem;
+    }
+
+  }
+
+  [class *= "event-card-info-locdate-icon"]{
+    mask-position: left;
+  }
+
+  .event-card-rating-cont{
+    display: grid;
+    grid-template-columns: 1.3rem 1.7rem;
+    margin-left: auto;
+  }
+
+  .event-card-info-price{
+    grid-template-columns: 1fr 0.15fr;
+  }
+
+}
+
+/*  Switch Between List or Grid - End*/
+
+.event-card-info-organizers{
+  margin-top: 0.5rem;
+  font: var(--account-font-sub1);
+  height: 1.3rem;
+  color: rgb(167, 167, 167);
+}
+
+.event-card-rating-icon{
+  background: rgba(56, 42, 46, 0.7);
+
+  mask-image: url(../static/assets/star.png);
+  mask-position: center;
+  mask-size: 1.3rem;
+  mask-repeat: no-repeat;
+}
+
+.event-card-rating{
+  text-align: center;
+  align-self: center;
+  font: var(--account-font-sub1)
+}
+
+[class *= "event-card-info-locdatetime"]{
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  height: 1.3rem;
+  margin-top: 0.7rem;
+
+  [class *= "event-card-info-locdate-icon"]{
+    background: rgba(56, 42, 46, 0.7);
+
+    mask-image: url(../static/assets/calendar.png);
+    mask-size: 1.2rem;
+    mask-repeat: no-repeat;
+
+  }
+
+  [class *= "event-card-locdate-text"]{
+    align-content: center;
+    text-align: left;
+    font: var(--account-font-sub2);
+  }
+}    
+
+.event-card-info-locdatetime1{ 
+  margin-top: 0.2rem;
+
+  .event-card-info-locdate-icon1{
+    background: rgba(56, 42, 46, 0.7);
+
+    mask-image: url(../static/assets/location.svg);   
+    mask-repeat: no-repeat;        
+  }
+}
+
+.event-card-info-locdatetime2{ 
+  margin-top: 0.2rem;
+
+  .event-card-info-locdate-icon2{
+    background: rgba(56, 42, 46, 0.7);
+
+    mask-image: url(../static/assets/People.png);
+    mask-repeat: no-repeat;        
+  }
+}
+
+.event-card-info-price{
+  display: grid;
+  gap: 1rem;
+  height: 2.3rem;
+}
+
+[class *= "event-card-value-text"]{
+  text-indent: 0.25rem;
+  font: lighter 0.6rem var(--font-secondary);
+  letter-spacing: 0.08rem;
+}
+
+.event-card-value-text1{
+  font: var(--account-font-sub1);
+}
+
+
+.event-card-info-detailbtn{
+  justify-self: flex-end;
+  justify-self: center;
+  height: 100%;
+  width: var(--acount-cancel-btn-width);
+  border-radius: 0.5rem;
+  border: 0.13rem solid rgb(255,0,0,0.1);
+  background: rgb(255,0,0,0.3);
+  font: lighter 0.7rem var(--font-secondary);
+  letter-spacing: 0.03rem;
+  transition: transform 0.3s ease;
+  padding: 0rem 2rem 0rem 2rem;
+
+  &:hover{
+    transform: scale(1.03);
+  }
+}
+
+.no-event{
+  height: 10rem;
+  font: lighter 1rem var(--font-secondary);
+  text-align: center;
+  align-content: center;
+  background-color: rgb(255,255,255,0.1);
+  border-radius: 1rem;
+  width: 100%;
+}
+
+/* =========================================
+   3. Media Queries
+   ========================================= */
+
+  /* Tablet & Up */
+  @media only screen and (min-width: 600px) {
+    :root {
+      --account-user-inner-history-columns: repeat(3,1fr);
+
+      --acount-user-card-columns: repeat(2,1fr);
+      --account-profile-main-card-container: max-content 1rem 1fr;
+      --account-profile-icon-container-width: 12rem;
+
+      --acount-cancel-btn-width: 95%
+      
+    }
+  }
+
+  /* Desktop & Up */
+  @media only screen and (min-width: 992px) {    
+    :root {
+      --account-user-inner-history-columns: repeat(5,1fr);
+      --account-user-profile-inner-columns: 7rem 1fr;
+
+      --acount-user-card-columns: repeat(2,1fr);
+      --account-profile-main-card-container-width: 98.9%
+    }
+  }

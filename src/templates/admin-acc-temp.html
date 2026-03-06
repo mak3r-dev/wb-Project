@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en" id="html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope&family=Akaya Kanadaka&display=swap">
+    <link rel="stylesheet" href="../static/Account_Admin.css">
+
+    <title> Re-Design v2 </title>
+</head>
+
+<body id="body">
+    <div class="main0 s-b">
+    {% extends "base.html" %}
+        
+    {% block scripts %}
+       <script  src="../static/js_scripts/Account_Admin.js" defer></script>
+       <script  src="../static/js_scripts/Admin_Reports.js" defer></script>
+       <script src="https://cdn.jsdelivr.net/npm/apexcharts" defer></script>
+    {% endblock %}    
+        
+    {% block content %}
+        <div class="main-housing">
+            <!-- Selections -->
+            <div class="sel-main">
+                <button class="sel-btn dashboard" data-contentmap="dashboard-content">
+                    <div class="sel-btn-icon dashboard-icon"></div>
+                    <h1 class="sel-btn-txt"> Dashboard </h1>
+                </button>
+                <button class="sel-btn events" data-contentmap="events-content">
+                    <div class="sel-btn-icon events-icon"></div>
+                    <h1 class="sel-btn-txt"> Events </h1>
+                </button>
+                <button class="sel-btn users" data-contentmap="users-content">
+                    <div class="sel-btn-icon users-icon"></div>
+                    <h1 class="sel-btn-txt"> Users </h1>
+                </button>
+                <button class="sel-btn bookings" data-contentmap="bookings-content">
+                    <div class="sel-btn-icon bookings-icon"></div>
+                    <h1 class="sel-btn-txt"> Bookings </h1>
+                </button>
+                <button class="sel-btn reports" data-contentmap="reports-content">
+                    <div class="sel-btn-icon reports-icon"></div>
+                    <h1 class="sel-btn-txt"> Reports </h1>
+                </button>
+            </div>
+
+            <!-- Contents -->
+
+            <!--dashboard-->
+            <div class="dashboard-content parent-ctn">
+
+                <!-- Title -->
+                <div class="content-title-no-btn">
+                    <h1 class="title-txt-header"> Overview </h1>
+                    <h1 class="title-txt-body"> Welcome back, Admin </h1>
+                </div>
+
+                <!-- Info Cards-->
+                <div class="info-card-ctn">
+
+                    <!-- Revenue-->
+                    <div class="admin-info-card">
+                        <div class="card-icon-bg revenue-bg">
+                            <div class="card-icon total-revenue"></div>
+                        </div>
+
+                        <h1 class="card-title"> Total Revenue</h1>
+                        <h1 class="card-info revenue-El"> $ 1,957,616 </h1>
+                    </div>
+
+                    <!-- Bookings-->
+                    <div class="admin-info-card">
+                        <div class="card-icon-bg bookings-bg">
+                            <div class="card-icon total-bookings"></div>
+                        </div>
+
+                        <h1 class="card-title"> Total Bookings</h1>
+                        <h1 class="card-info booking-El"> 2 </h1>
+                    </div>
+
+                    <!-- Upcoming Events-->
+                    <div class="admin-info-card">
+                        <div class="card-icon-bg events-bg">
+                            <div class="card-icon upcoming-events"></div>
+                        </div>
+
+                        <h1 class="card-title"> Upcoming Events</h1>
+                        <h1 class="card-info event-El"> 2 </h1>
+                    </div>
+
+                    <!-- Users-->
+                    <div class="admin-info-card">
+                        <div class="card-icon-bg users-bg">
+                            <div class="card-icon total-users"></div>
+                        </div>
+
+                        <h1 class="card-title"> Active Users</h1>
+                        <h1 class="card-info user-El"> 3 </h1>
+                    </div>
+                </div>
+
+                <!--Recent Events-->
+                <div class="events-ctn">
+                    <h1 class="events-title"> Recent Events </h1>
+
+                    <!--event-cards-->
+                    <div class="event-card-ctn"></div>
+                    
+                    <template id="recent-card-template">
+                        <div class="event-card">
+                            <div class="card-header">
+                                <h1 class="card-titl"> Bristol Ballon Fiesta 2026 </h1>
+                                <h1 class="card-categ"> upcoming </h1>
+                                <h1 class="capacity-txt"> Capacity </h1>
+                            </div>
+
+                            <div class="card-body">
+                                <h1 class="card-date-loc"> July 15, 2025 • Ashton Gate, Bristol</h1>
+                                <h1 class="card-capacity"> 4000/5000 </h1>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <!--events-->
+            <div class="events-content parent-ctn">
+
+                <!-- Title -->
+                <div class="content-title-btn">
+                    <div class="content-title-no-btn">
+                        <h1 class="title-txt-header"> Event Management </h1>
+                        <h1 class="title-txt-body"> Manage all events </h1>
+                    </div>
+                    <button class="add-btn">
+                        <div class="add-btn-icon event-btn"></div>
+                        <h1 class="add-btn-txt"> Add Event </h1>
+                    </button>
+                </div>
+
+                <!--Search Bar-->
+                <div class="search-bar">
+                    <div class="search-icon"></div>
+                    <input type="text" class="search-input search-events" placeholder="Search events...">  
+                </div>
+
+                <!--Events List-->
+                <table class="table-list-ctn" cellspacing="0rem">
+                    <tr class="tabl-header">
+                        <td><h1 class="tabl-section pad-left">Event</h1></td>
+                        <td class="tabl-section">Date</td>
+                        <td class="tabl-section">Location</td>
+                        <td class="tabl-section">Price</td>
+                        <td class="tabl-section">Tickets</td>
+                        <td class="tabl-section">Revenue</td>
+                        <td class="tabl-section">Status</td>
+                        <td><h1 class="tabl-section pad-right">Actions</h1></td>
+                    </tr>   
+                    <tbody class="event-list-ctn"></tbody>  
+                </table>
+
+                <template id="no-result-for-tables">                        
+                    <tr class="no-result-row" style="height: 3.7rem;"><td colspan="8">
+                        <h1 class="no-result-txt"></h1>
+                    </td></tr>
+                </template>
+                <template id="event-card-template">
+                    <tr><td colspan="8"><div class="table-dividr"></div></td></tr>
+                    <tr class="evnt-card" data-event="Centre Exhibitions Tour">
+                        <td class="card-title-cat">
+                            <h1 class="evnt-titl tabl-sec-ftn pad-left">Bristol Ballon Fiesta</h1>
+                            <h1 class="evnt-cat tabl-f-section-info pad-left">Entertainment</h1>
+                        </td>
+                        <td class="card-date tabl-sec-ftn">July 15, 2025</td>
+                        <td class="card-loc tabl-sec-ftn">Ashton Gate, Bristol</td>
+                        <td class="card-price tabl-sec-ftn">$100</td>
+                        <td class="card-tickets tabl-sec-ftn">4000/5000</td>
+                        <td class="card-revenue tabl-sec-ftn">$200,000</td>
+                        <td ><h1 class="card-status tabl-sec-ftn"></h1></td>
+                        <td><div class="card-action pad-right">
+                            <button class="edit-action tabl-section-action-mask"></button>
+                            <button class="delete-action tabl-section-action-mask"></button>
+                        </div></td>
+                    </tr>  
+                </template>
+            </div>
+
+            <!--Users-->
+            <div class="users-content parent-ctn">
+
+                <!-- Title -->
+                <div class="content-title-no-btn">
+                    <h1 class="title-txt-header"> User Management </h1>
+                    <h1 class="title-txt-body"> Manage users and permissions </h1>
+                </div>  
+
+                <!--Search Bar-->
+                <div class="search-bar">
+                    <div class="search-icon"></div>
+                    <input type="text" class="search-input search-user" placeholder="Search users...">  
+                </div>   
+
+                <!--Users List-->
+                <table class="table-list-ctn" cellspacing="0rem">
+                    <tr class="tabl-header">
+                        <td><h1 class="tabl-section pad-left">User</h1></td>
+                        <td class="tabl-section">Role</td>
+                        <td class="tabl-section">Bookings</td>
+                        <td class="tabl-section">Joined</td>
+                        <td class="tabl-section">Status</td>
+                        <td><h1 class="tabl-section pad-right">Actions</h1></td>
+                    </tr>  
+                    <tbody class="user-list-ctn"></tbody>
+                </table>
+
+                <template id="user-card-template">
+                    <tr><td colspan="8"><div class="table-dividr"></div></td></tr>
+                    <tr class="user-card">
+                        <td class="user-name-email">
+                            <h1 class="user-name tabl-sec-ftn pad-left">standard account</h1>
+                            <h1 class="user-email tabl-f-section-info pad-left">standard</h1>
+                        </td>       
+                        <td><h1 class="user-role tabl-sec-ftn"></h1></td>
+                        <td class="user-bookings tabl-sec-ftn">1</td>
+                        <td class="user-joined tabl-sec-ftn">Feb 2026</td>
+                        <td ><h1 class="user-status tabl-sec-ftn user-status-active"></h1></td>
+                        <td><div class="user-action pad-right user-status-active">
+                            <button class="edit-action tabl-section-action-mask"></button>
+                            <button class="password-action tabl-section-action-mask"></button>
+                            <button class="suspend-action tabl-section-action-mask"></button>
+                        </div></td>
+                    </tr>                     
+                </template>
+            </div>
+
+            <!--Bookings-->
+            <div class="bookings-content parent-ctn">
+
+                <!-- Title -->
+                <div class="content-title-no-btn">
+                    <h1 class="title-txt-header"> Booking Management </h1>
+                    <h1 class="title-txt-body"> View and manage all bookings </h1>
+                </div> 
+
+                <!--Search Bar-->
+                <div class="search-bar">
+                    <div class="search-icon"></div>
+                    <input type="text" class="search-input search-booking" placeholder="Search user, event, ticket, date or status...">  
+                </div>    
+
+                <!--Bookings List-->
+                <table class="table-list-ctn" cellspacing="0rem">
+                    <tr class="tabl-header">
+                        <td><h1 class="tabl-section pad-left">Booking Reference</h1></td>
+                        <td class="tabl-section">User</td>
+                        <td class="tabl-section">Event</td>
+                        <td class="tabl-section">Tickets</td>
+                        <td class="tabl-section">Total</td>
+                        <td class="tabl-section">Date</td>
+                        <td><h1 class="tabl-section">Status</h1></td>
+                        <td><h1 class="tabl-section pad-right">Actions</h1></td>
+                    </tr>       
+                    <tbody class="booking-list-ctn"></tbody>                  
+                </table>
+
+                <template id="booking-card-template">
+                    <tr><td colspan="8"><div class="table-dividr"></div></td></tr> 
+                    <tr class="booking-card">
+                        <td class="booking-ref tabl-sec-ftn pad-left">8be4df61-93ca-11d2-aa0d-00e098032b8c</td>
+                        <td class="booking-user tabl-sec-ftn">standard</td>
+                        <td class="booking-event tabl-sec-ftn">Bristol Ballon Fiesta</td>
+                        <td class="booking-tickets tabl-sec-ftn">1</td>
+                        <td class="booking-total tabl-sec-ftn">$178</td>
+                        <td class="booking-date tabl-sec-ftn">Dec 20, 2025</td>
+                        <td ><h1 class="booking-status tabl-sec-ftn booking-status-cancelled"></h1></td>
+                        <td><div class="booking-action pad-right booking-status-cancelled">
+                            <button class="cancel-action tabl-section-action-mask"></button>
+                        </div></td>
+                    </tr>     
+                </template>
+            </div>    
+            
+            <!--Reports-->
+            <div class="reports-content parent-ctn">
+
+                <!-- Title -->
+                <div class="content-title-no-btn">
+                    <h1 class="title-txt-header"> Reports & Analytics </h1>
+                    <h1 class="title-txt-body"> Generate comprehensive reports </h1>
+                </div> 
+
+                <div class="report-top-bar">
+                    <h1 class="bar-titl">View Reports</h1>
+                    <div class="bar-contn">
+                        <h1 class="contn-card-titl">Report Type: </h1>
+
+                        <!-- Report Bar Card -> Choose Report Type-->
+                        <div class="contn-card"> 
+                            <select name="report-chooser" class="choose-report-type">
+                                <option value="revenue-report">Revenue Report</option>
+                                <option value="booking-report">Booking Report</option>
+                                <option value="event-report">Event Performance</option>
+                                <option value="venue-report">Venue Analytics</option>
+                                <option value="yearly-report">Yearly Summary</option>
+                            </select>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Revenue Report content-->
+                <div class="revenue-report" data-reportType="revenue-report">
+
+                    <!-- Revenue Report Cards-->
+                    <div class="rev-report-card-ctn">
+
+                        <!-- Total Revenue Card-->
+                        <div class="rev-report-card">
+                            <div class="rev-report-titl-w-icon">
+                                <h1 class="rev-report-card-titl"> Total Revenue </h1>
+                                <div class="rev-report-card-icon totl-rev-icon"></div>
+                            </div>
+
+                            <h1 class="rev-report-card-contn totl-revenue"> $1,957,616 </h1>
+                        </div>
+
+                        <!-- Average Revenue Card-->
+                        <div class="rev-report-card">
+                            <h1 class="rev-report-card-titl"> Avg. Revenue / Event </h1>
+                            <h1 class="rev-report-card-contn avg-revenue"> $652,538.667 </h1>
+                        </div>
+                    </div>
+
+                    <div class="graph-charts-ctn">
+                        <h1 class="graph-charts-titl">Monthly Revenue Trend</h1>
+                        <div class="graph-chart-info monthly-trend-li-chart"></div>
+                    </div>
+                </div>
+
+                <!-- Booking Report content-->
+                <div class="booking-report" data-reportType="booking-report">
+                    <div class="graph-charts-ctn">
+                        <h1 class="graph-charts-titl">Weekly Booking Volume</h1>
+                        <div class="graph-chart-info booking-volume-br-chart"></div>
+                    </div>
+                </div>
+
+                <!-- Event Performance content-->
+                <div class="event-perf-report" data-reportType="event-report">
+                    <div class="graph-charts-ctn">
+                        <div class="graph-charts-titl-w-m-txt">
+                            <h1 class="graph-charts-titl">Event Ticket Sales</h1>
+                            <h1 class="graph-charts-titl-one">Avg Ticket Sold: 
+                                <span class="avg-tick-sold"> 4271 </span>
+                            </h1>
+                        </div>
+                        <div class="graph-chart-info event-perf-br-chart"></div>
+                    </div>
+
+                    <!--Event perf info content-->
+                    <div class="evnt-perf-card-ctn">
+                        <template id="evnt-perf-card-template">
+                            <div class="evnt-perf-card">
+                                <h1 class="evnt-perf-card-titl-occupancy">
+                                    <span class="evnt-titl">Summer music Festival 2025</span>
+                                    <span class="evnt-occupancy">65%</span>
+                                </h1>
+                                <h1 class="evnt-perf-card-date-occupancytxt">
+                                    July 15, 2025
+                                    <span class="evnt-occupancytxt">Occupancy</span>
+                                </h1>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Venue Analytics content-->
+                <div class="venue-analytics-report" data-reportType="venue-report">
+                    <div class="graph-charts-ctn">
+                        <h1 class="graph-charts-titl">Events Distribution by Venue</h1>
+                        <div class="graph-chart-info venue-analytic-pi-chart"></div>
+                    </div>
+
+                    <!--Venue Analytics info content-->
+                    <div class="venue-analytic-card-ctn">
+                        <h1 class="contn-card-titl">Venue Capacity Analysis</h1>
+
+                        <!-- Venue Analytic card-->
+                        <template id="venue-card-template">
+                            <div class="venue-analytic-card">
+                                <div class="venue-anal-card-icon"></div>
+                                <h1 class="venue-anal-card-ctn">Central Park, New York - 
+                                    <h2 class="evnt-hosted"> 1 Event Hosted </h2>
+                                </h1>
+                                <h1 class="vn-anal-card-evnt-filled"> 50% Filled </h1>
+                            </div>                            
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Yearly Summary content-->
+                <div class="yearly-summary-report" data-reportType="yearly-report">
+                    <div class="yearly-summary-rp-graph-ctn">
+                        <div class="graph-charts-ctn">
+                            <h1 class="graph-charts-titl">Yearly Revenue Growth</h1>
+                            <div class="graph-chart-info yearly-rev-growth-li-chart"></div>
+                        </div>    
+
+                        <div class="graph-charts-ctn">
+                            <h1 class="graph-charts-titl">Events per Year</h1>
+                            <div class="graph-chart-info events-per-year-br-chart"></div>
+                        </div>
+                    </div>
+
+                    <div class="overall-yearly-summary">
+                        <h1 class="ov-yr-sum">
+                            <span class="yearly-sum-titl">Yearly Summary 2025</span>
+                            <span class="proj-evnt">15</span>
+                        </h1>
+                        <h1 class="ov-yr-sum-txt">
+                            <span class="yearly-message">You are on track to beat last year's records.</span>
+                            <span class="proj-evnttxt">Projected Events</span>
+                        </h1>                        
+                    </div>                    
+                </div>
+            </div>
+        </div>
+
+        <!-- Event Editing-->
+        <div class="absolute-div">
+
+            <!--Add / Edit Events-->
+            <div class="edit-add-events section-main-ctn">
+                <!-- Section Header-->
+                <h1 class="section-header">Add New Event</h1>
+                <div class="section-dividr"></div>
+
+                <!--Section Body-->
+                <div class="edit-add-events-body section-main-ctn-body">
+                    <div class="input-body-grp-3-inputs custom-lyout">
+                        <div class="input-body-ctn">
+                            <h1 class="input-headr">Event Title</h1>
+                            <input type="text" class="input-body evnt-title-to-update">  
+                        </div>  
+                        <div class="input-body-ctn">
+                            <h1 class="input-headr">Category</h1>
+                            <input type="text" class="input-body evnt-cat-to-update">  
+                        </div>                          
+                        <div class="input-body-ctn">
+                            <h1 class="input-headr ft-header">Ft?</h1>
+                            <button class="ft-checkbox evnt-ft-to-update" data-state="off">
+                                <div class="check-indicator check-indicator-off"></div>
+                            </button>
+                        </div>                                
+                    </div>
+
+                    <div class="input-body-grp-2-inputs">
+                        <div class="input-body-ctn">
+                            <h1 class="input-headr">Start</h1>
+                            <input type="text" class="input-body evnt-start-to-update">  
+                        </div>  
+                        <div class="input-body-ctn">
+                            <h1 class="input-headr">End</h1>
+                            <input type="text" class="input-body evnt-end-to-update">  
+                        </div>        
+                    </div>
+
+                    <h1 class="input-headr">Description</h1>
+                    <input type="text" class="input-body evnt-desc-to-update"> 
+                    
+                    <div class="input-body-grp-3-inputs">
+                        <div class="input-body-ctn">
+                            <h1 class="input-headr">Price</h1>
+                            <input type="text" class="input-body evnt-price-to-update">  
+                        </div>  
+                        <div class="input-body-ctn">
+                            <h1 class="input-headr">Availability</h1>
+                            <input type="text" class="input-body evnt-availability-to-update">  
+                        </div>  
+                        <div class="input-body-ctn">
+                            <h1 class="input-headr">Status</h1>
+                            <input type="text" class="input-body evnt-status-to-update">  
+                        </div>          
+                    </div>
+
+                    <div class="input-body-grp-2-inputs">
+                        <div class="input-body-ctn">
+                            <h1 class="input-headr">Organizers</h1>
+                            <input type="text" class="input-body evnt-org-to-update">  
+                        </div>  
+                        <div class="input-body-ctn">
+                            <h1 class="input-headr">Rating</h1>
+                            <input type="text" class="input-body evnt-rating-to-update">  
+                        </div>        
+                    </div>
+
+                    <h1 class="input-headr">Venue Name</h1>
+                    <input type="text" class="input-body venue-name-to-update">
+
+                    <div class="input-body-grp-2-inputs">
+                        <div class="input-body-ctn">
+                            <h1 class="input-headr">Venue Capacity</h1>
+                            <input type="text" class="input-body venue-capacity-to-update">  
+                        </div>  
+                        <div class="input-body-ctn">
+                            <h1 class="input-headr">Venue Address</h1>
+                            <input type="text" class="input-body venue-address-to-update">  
+                        </div>        
+                    </div>
+
+                    <div class="input-body-grp-2-inputs final-btns">
+                        <button class="cancel-btn edit-add-events-cancel-btn">Cancel</button>
+                        <button class="confirm-btn edit-add-events-confirm-btn">Create Event</button>
+                    </div>
+                </div>
+            </div>
+
+            <!--Confirmation-->
+            <div class="final-confirmation">
+                <div class="confirmation-icon"></div>
+                <h1 class="action-txt"> Confirm Event Deletion? </h1>
+                <h1 class="moral-txt">Are you sure you want to delete this event?</h1>
+                <h1 class="consequence-txt"> This action is permanent.</h1>
+                <div class="action-btns">
+                    <button class="cancel-confirmation">Cancel</button>
+                    <button class="confirm-confirmation"></button>
+                </div>
+            </div>
+
+            <!--Change user info-->
+            <div class="change-user-info section-main-ctn">
+                <!-- Section Header-->
+                <h1 class="section-header">Update details for ...</h1>
+                <div class="section-dividr"></div>
+
+                <!--Section Body-->
+                <div class="change-user-info-body section-main-ctn-body">
+                    <div class="input-body-grp-2-inputs">
+                        <div class="input-body-ctn">
+                            <h1 class="input-headr">First Name</h1>
+                            <input type="text" class="input-body frst-name-to-update">  
+                        </div>  
+                        <div class="input-body-ctn">
+                            <h1 class="input-headr">Last Name</h1>
+                            <input type="text" class="input-body last-name-to-update">  
+                        </div>        
+                    </div>
+                    <div class="input-body-grp-2-inputs">
+                        <div class="input-body-ctn">
+                            <h1 class="input-headr">Email</h1>
+                            <input type="text" class="input-body email-to-update">  
+                        </div>  
+                        <div class="input-body-ctn">
+                            <h1 class="input-headr">Phone Number</h1>
+                            <input type="text" class="input-body phone-to-update">  
+                        </div>        
+                    </div>
+                    <div class="input-body-grp-2-inputs final-btns">
+                        <button class="cancel-btn user-info-confirm-btn">Cancel</button>
+                        <button class="confirm-btn user-info-cancel-btn">Continue</button>
+                    </div>
+                </div>
+            </div>
+
+            <!--Change Password-->
+            <div class="change-password-info section-main-ctn">
+                <!-- Section Header-->
+                <h1 class="section-header">Change Password for ...</h1>
+                <div class="section-dividr"></div>
+
+                <!--Section Body-->
+                <div class="change-password-info-body section-main-ctn-body">
+                    <div class="input-body-grp-2-inputs">
+                        <div class="input-body-ctn">
+                            <h1 class="input-headr">New Password</h1>
+                            <input type="text" class="input-body password-to-update">  
+                        </div>  
+                        <div class="input-body-ctn">
+                            <h1 class="input-headr">Confirm New Password</h1>
+                            <input type="text" class="input-body new-password-to-update">  
+                        </div>        
+                    </div>
+                    <div class="input-body-grp-2-inputs final-btns">
+                        <button class="cancel-btn user-pass-cancel-btn">Cancel</button>
+                        <button class="confirm-btn user-pass-confirm-btn">Continue</button>
+                    </div>
+                </div>
+            </div>   
+            
+            <!--Report Bar Content-->
+            <div class="report-bar-dropdown">
+
+            </div>
+        </div>
+    {% endblock %}
+    </div>
+</body>
+</html>             

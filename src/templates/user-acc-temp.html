@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" id="html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope&family=Akaya Kanadaka&display=swap">
+    <link rel="stylesheet" href="../static/Account_Standard.css">
+
+    <title> Re-Design v2 </title>
+</head>
+
+<body id="body">
+    <div class="main0 s-b">
+    {% extends "base.html" %}
+        
+    {% block scripts %}
+        <script src="https://js.stripe.com/v3/"></script>
+       <script  src="../static/js_scripts/Account_Standard.js" defer></script>
+    {% endblock %}    
+        
+    {% block content %}
+        <div class="user-profile-container">
+            <div class="user-profile">
+                <div class="user-profile-inner">
+                    <div class="user-profile-inner-icon-container">
+                        <div class="user-profile-inner-icon"> HT </div>
+                    </div>  
+                    <div class="user-profile-inner-info">
+                        <div class="user-profile-userfulinfo">
+                            <h1 class="user-infoname"> Hello Test </h1>
+                            <h1 class="user-joindate"> 
+                                <span class="padding-info">Member Since January 2025</span>      
+                            </h1>
+                        </div>
+                        <h1 class="user-profile-email"> Hello.Test@gmail.com</h1>
+                        <h1 class="user-profile-phone"> +(44) 12 3456 7890</h1>
+                        <div class="user-profile-inner-history">
+                            <div class="user-history-card1">
+                                <div class="user-history-container">
+                                    <div class="user-history-card-icon">
+                                        <div class="user-history-icon"></div>
+                                        <h1 class="user-history-card-text"> Total Bookings </h1>
+                                    </div>
+                                    <h1 class="user-history-card-text1 total-bookings"> 6 </h1>
+                                </div>          
+                            </div>
+                            <div class="user-history-card2">
+                                <div class="user-history-container">
+                                    <div class="user-history-card-icon">
+                                        <div class="user-history-icon1"></div>
+                                        <h1 class="user-history-card-text"> Upcoming Events </h1>
+                                    </div>
+                                    <h1 class="user-history-card-text1 upcoming-events"> 3 </h1>
+                                </div>   
+                            </div>
+                            <div class="user-history-card4">
+                                <div class="user-history-container">
+                                    <div class="user-history-card-icon">
+                                        <div class="user-history-icon3"></div>
+                                        <h1 class="user-history-card-text"> Past Events </h1>
+                                    </div>
+                                    <h1 class="user-history-card-text1 past-events"> 2 </h1>
+                                </div> 
+                            </div>
+                            <div class="user-history-card5">
+                                <div class="user-history-container">
+                                    <div class="user-history-card-icon">
+                                        <div class="user-history-icon4"></div>
+                                        <h1 class="user-history-card-text"> Featured Events </h1>
+                                    </div>
+                                    <h1 class="user-history-card-text1 featured-events"> 4 </h1>
+                                </div> 
+                            </div>
+                            <div class="user-history-card3">
+                                <div class="user-history-container">
+                                    <div class="user-history-card-icon">
+                                        <div class="user-history-icon2"></div>
+                                        <h1 class="user-history-card-text"> Cancelled Events </h1>
+                                    </div>
+                                    <h1 class="user-history-card-text1 cancelled-events"> 1 </h1>
+                                </div> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="profile-booking-info">
+                <div class="profile-booking-header">
+                    <h1 class="profile-booking-title"> My Bookings </h1>
+                    <div class="profile-booking-options">
+                        <button class="profile-booking-options-button-upcoming clicked"> Upcoming (3)</button>
+                        <button class="profile-booking-options-button-past free"> Past (2)</button>
+                        <button class="profile-booking-options-button-cancelled free"> Cancelled (1) </button>
+                        <button class="profile-booking-options-button-featured free"> Featured (4) </button>
+                    </div>
+                </div>
+
+                <div class="event-showcase-list list"></div>
+
+                <template id="no-result-template">
+                    <div class="no-event"> No Events Available... </div>
+                </template>
+                <template id="card-template">
+                    <div class="event-showcase-card ">
+                        <div class="event-card-image"></div>
+                        <div></div>
+                        <div class="event-card-info">
+                            <div class="event-card-intro-cont">
+                                <div class="event-card-info-title">
+                                    <h1 class="event-card-title">  </h1>
+                                    <div class="event-card-rating-icon"></div>
+                                    <h1 class="event-card-rating"></h1>
+                                </div>
+                                <h1 class="event-card-info-organizers"> </h1>
+
+                                <div class="event-card-info-categ">
+                                    <h1 class="event-card-info-categ-text"> Arts </h1>
+                                    <div class="event-card-ft-text">
+                                        <div class="event-card-ft-text-icon"></div> 
+                                        <h1 class="event-card-featured-text"> Featured </h1>          
+                                    </div>   
+                                </div>
+                            </div>
+                            <div class="event-card-intro-cont1">
+                                <div class="event-card-intro">
+                                    <div class="event-card-titlecateg"> 
+                                        <h1 class="event-card-title">  </h1>
+                                        <h1 class="event-card-categ">  </h1>
+                                        <div class="event-card-ft-text">
+                                            <div class="event-card-ft-text-icon"></div> 
+                                            <h1 class="event-card-featured-text"> Featured </h1>          
+                                        </div>                                        
+                                    </div>                                    
+                                    <div class="event-card-rating-cont">                                            
+                                        <div class="event-card-rating-icon"></div>
+                                        <h1 class="event-card-rating">  </h1>                                    
+                                    </div>
+                                </div>
+                                <h1 class="event-card-info-organizers">  </h1>                                
+                            </div>
+                            <div class="event-card-info-locdatetime">
+                                <div class="event-card-info-locdate-icon"></div>
+                                <h1 class="event-card-locdate-text1 _1">  </h1>
+                            </div>
+                            <div class="event-card-info-availability">
+                                <div class="event-card-info-locdatetime1">
+                                    <div class="event-card-info-locdate-icon1"></div>
+                                    <h1 class="event-card-locdate-text2 _2">  </h1>
+                                </div>  
+                                <div class="event-card-info-locdatetime2">
+                                    <div class="event-card-info-locdate-icon2"></div>
+                                    <h1 class="event-card-locdate-text3 _3">  </h1>
+                                </div>
+                            </div>
+                            <div class="event-card-info-availability1">
+                                <div class="event-card-info-locdatetime1">
+                                    <div class="event-card-info-locdate-icon1"></div>
+                                    <h1 class="event-card-locdate-text2 _2">  </h1>
+                                </div>
+                                <div class="event-card-info-locdatetime2">
+                                    <div class="event-card-info-locdate-icon2"></div>
+                                    <h1 class="event-card-locdate-text3 _3">  </h1>
+                                </div>
+                            </div>
+                            <div class="event-card-info-divider"></div>
+                            <div class="event-card-info-price">
+                                <div class="event-card-info-value">
+                                    <h1 class="event-card-value-text"> Starting From </h1>
+                                    <h1 class="event-card-value-text1 price"> </h1>
+                                </div>
+                                <div class="event-card-info-detail">
+                                    <button class="event-card-info-detailbtn cancel-booking"> Cancel Booking </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>             
+            </div>
+        </div>
+        
+    {% endblock %}
+    </div>
+</body>
+</html>             

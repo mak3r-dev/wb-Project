@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" id="html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope&family=Akaya Kanadaka&display=swap">
+    <link rel="stylesheet" href="../static/base.css">
+    <script  src="../static/js_scripts/base.js" defer></script>
+
+    
+    
+    <title> Re-Design v2 </title>
+</head>
+
+<body id="body">
+  
+    <div class="main main-header">
+        <div class="header">
+            <button class="navHome header-btn"> Home </button>
+            <button class="navEvent header-btn"> Events </button>
+            <button class="navAbout header-btn"> About us </button>
+            <button class="navAccount header-btn"></button>
+            <button class="navLogin header-btn">
+              <h1 class="log-txt"></h1>
+              <div class="log-icon"></div>
+            </button>
+        </div>
+    </div>
+    
+    {% block scripts %}{% endblock %}
+
+    <div class="main content-main">
+      {% block content %} {% endblock %}
+    </div>
+    
+    <div class="main footer-main">
+          <div class="footer-header">
+
+            <div class="footer-column">
+              <div class="footer-column-header"> 
+                <div class="footer-column-title">Assured Bookings</div>
+              </div>
+            </div>
+
+            <div class="footer-separator-header"></div>
+            <div class="footer-column">
+              <div class="footer-column-header"> 
+                <div class="footer-column-title">Quick Links</div>
+                <button class="footer-column-dropdown"></button>
+              </div>
+              <div class="footer-links-frame">
+                <a href="" class="footer-links remove"> Home </a>
+                <a href="" class="footer-links remove"> Help Page </a>
+                <a href="" class="footer-links remove"> Support </a>                
+              </div>
+
+            </div>
+
+            <div class="footer-separator-header"></div>
+            <div class="footer-column">
+              <div class="footer-column-header"> 
+                <div class="footer-column-title">Socials </div>
+                <button class="footer-column-dropdown"></button>
+              </div>
+              <div class="footer-links-frame">
+                <a href="" class="footer-links remove"> Instagram </a>
+                <a href="" class="footer-links remove"> Facebook </a>
+                <a href="" class="footer-links remove"> Twitter / X </a>
+                <a href="" class="footer-links remove"> Linkedin </a>
+                <a href="" class="footer-links remove"> Youtube </a>
+              </div>
+            </div>
+
+            <div class="footer-separator-header"></div>
+            <div class="footer-column">
+              <div class="footer-column-header"> 
+                <div class="footer-column-title"> Company </div>
+                <button class="footer-column-dropdown"></button>
+              </div>
+              <div class="footer-links-frame">
+                <a href="" class="footer-links remove"> About us </a>
+                <a href="" class="footer-links remove"> Contact us </a>
+                <a href="" class="footer-links remove"> Events </a>
+                <a href="" class="footer-links remove"> SiteMap </a>
+                <a href="" class="footer-links remove"> Support Centre </a>
+              </div>
+            </div>
+
+            <div class="footer-separator-header"></div>
+            <div class="footer-column">
+              <div class="footer-column-header"> 
+                <div class="footer-column-title"> Legal </div>
+                <button class="footer-column-dropdown"></button>
+              </div>
+              <div class="footer-links-frame">
+                <a href="" class="footer-links remove"> Privacy Policy</a>
+                <a href="" class="footer-links remove"> Cookie Policy </a>
+                <a href="" class="footer-links remove"> Term of Use </a>
+              </div>
+            </div>
+
+            <div class="footer-separator-header"></div>
+            <div class="footer-column">
+              <div class="footer-column-header"> 
+                <div class="footer-column-title"> Account </div>
+                <button class="footer-column-dropdown"></button>
+              </div>
+              <div class="footer-links-frame">
+                <a href="" class="footer-links remove"> Login </a>
+                <a href="" class="footer-links remove"> Settings </a>
+                <a href="" class="footer-links remove"> User </a>
+              </div>
+            </div>
+            <div class="footer-separator-header"></div>
+          </div>
+
+          <div class="footer-end-section">
+            <div class="footer-socials">
+              <div class="footer-social-text">Assured Bookings : Community Bookings Made Easy</div>
+              <div class="footer-social-divider"></div>
+              <div class="footer-socials-country"> UK </div>
+            </div>
+            <div class="separator footer-section-separator"></div>
+            <div class="footer-policies">
+              Copyright © Assured Bookings.All rights reserved
+              <div class="footer-divider"> | </div>
+              <a href="" class="footer-privacy remove" >Privacy Policy</a> 
+              <div class="footer-divider"> | </div>
+              <a href="" class="footer-use remove" >Terms of Use</a> 
+              <div class="footer-divider"> | </div>
+              <a href="" class="footer-map remove" >Site Map</a>
+            </div>
+          </div>
+    </div>
+</body>
+</html>    

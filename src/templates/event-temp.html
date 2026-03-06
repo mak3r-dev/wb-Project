@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" id="html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope&family=Akaya Kanadaka&display=swap">
+    <link rel="stylesheet" href="../static/Event.css">
+    <title> Re-Design v2 </title>
+</head>
+
+<body id="body">
+    <div class="main0 s-b">
+
+    {% extends "base.html" %}
+
+    {% block scripts %}
+       <script  src="../static/js_scripts/Event.js" defer></script>
+    {% endblock %}    
+
+    {% block content %}
+        <div class="event-housing">
+            <div class="event-filter">
+                <div class="event-filter-container">
+                    <div class="event-filter-intro">
+                        <h1 class="event-filter-title"> Filter & Search</h1>
+                        <button class="event-filter-close-btn"></button>
+                    </div>
+                    <div class="event-filter-search">
+                        <div class="event-filter-image"></div> 
+                        <input type="text" class="event-filter-searchbar" placeholder="Search events or location...">
+                    </div>
+                    <div class="event-filter-categories">
+                        <h1 class="event-filter-title"> Categories</h1>
+                        <div class="event-filter-categ-options">
+                            <button class="event-categ" value="Musical" data-state="off"> Musical </button>
+                            <button class="event-categ" value="Sports" data-state="off"> Sports </button>
+                            <button class="event-categ" value="Exhibitions" data-state="off"> Exhibitions </button>
+                            <button class="event-categ" value="Theatre" data-state="off"> Theatre </button>
+                            <button class="event-categ" value="Library Exhibitions" data-state="off"> Library Exhibitions </button>
+                            <button class="event-categ" value="Workshops" data-state="off"> Workshops</button>
+                            <button class="event-categ" value="Courses" data-state="off"> Courses </button>
+                            <button class="event-categ" value="Wedding" data-state="off"> Wedding </button>
+                            <button class="event-categ" value="Conference" data-state="off"> Conference </button>
+                            <button class="event-categ" value="Birthdays" data-state="off"> Birthdays </button>
+                            <button class="event-categ" value="Religious Events" data-state="off"> Religious Events </button>
+                            <button class="event-categ" value="Funfair" data-state="off"> Funfair </button>         
+                            <button class="event-categ" value="Entertainments" data-state="off"> Entertainments </button>    
+                            <button class="event-categ" value="Community" data-state="off"> Community </button>                      
+                        </div>
+                    </div>
+
+                    <div class="event-filter-range-intro">
+                        <h1 class="event-filter-title"> Price Range </h1>
+                        <h1 class="event-filter-title-one"></h1>
+                    </div>
+
+                    <div class="event-filter-slider">
+                        <input type="range" min="0" max="600" value="0" class="event-filter-slider1" step="20">
+                    </div>
+
+                    <div class="event-filter-date">
+                        <h1 class="event-filter-title"> Date Range </h1>
+                        <div class="event-filter-date-picker">
+                            <div class="event-filter-picker-indicator">
+                                <h1 class="filter-date-text"></h1>
+                                <button class="filter-date-icon"></button>
+                            </div>
+                            <div class="event-filter-calender" data-display = "20rem">
+                                <div class="event-filter-calender-indicator">
+                                    <button class="event-filter-calender-prev"></button>
+                                    <div class="event-filter-calender-month"> October 1990 </div>
+                                    <button class="event-filter-calender-next"></button>
+                                </div>
+                                <div class="event-filter-calender-list"> 
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="event-filter-featured">
+                        <input type="checkbox" class="event-filter-ft-check">
+                        <h1 class="event-filter-title added-styles"> Featured Events Only? </h1>
+                    </div>
+
+                    <div class="separator"></div>
+                    <div class="event-filter-total">
+                        <div class="event-filter-tile">Total Events</div>
+                        <div class="event-filter-tile1"></div>
+                    </div> 
+                </div>        
+            </div>
+
+            <div class="event-showcase list">
+                <div class="event-showcase-infobar "> 
+                    <div class="item1">Showing 12 events</div>
+                    
+                    <div class="event-info-item item2"> 
+                        <div class="item2-opts">
+                            <button class="item2-opt1"></button>
+                            <button class="item2-opt2"></button>
+                        </div>
+                    </div>
+
+                    <button class="event-info-item item3">
+                        <div class="item3-icon"></div>
+                        <h1 class="item3-text"> Hide Filters </h1>
+                    </button>
+                </div>
+                
+                <div class="event-showcase-list "></div>
+                <div class="no-result-list"></div>
+
+                <template id="no-result-template">
+                    <div class="no-results">
+                        <div class="no-result-icon-container">
+                            <div class="no-result-icon"></div>
+                        </div>
+                        <h1 class="no-events-found">No events Found</h1>
+                        <h1 class="try-adjusting-filters">Try adjusting your filters or search query</h1>
+                    </div>
+                </template>
+
+                <template id="card-template">
+                    <div class="event-showcase-card ">
+                        <div class="event-card-image"></div>
+                        <div></div>
+                        <div class="event-card-info">
+                            <div class="event-card-intro-cont">
+                                <div class="event-card-info-title">
+                                    <h1 class="event-card-title">  </h1>
+                                    <div class="card-rating-icon"></div>
+                                    <h1 class="card-rating"></h1>
+                                </div>
+                                <h1 class="event-organizers"> </h1>
+
+                                <div class="event-card-info-categ">
+                                    <h1 class="event-card-info-categ-text"> Arts </h1>
+                                    <div class="event-card-ft-text">
+                                        <div class="event-card-ft-text-icon"></div> 
+                                        <h1 class="event-card-featured-text"> Featured </h1>          
+                                    </div>   
+                                </div>
+                            </div>
+                            <div class="event-card-intro-cont1">
+                                <div class="event-card-intro">
+                                    <div class="event-card-titlecateg"> 
+                                        <h1 class="event-card-title">  </h1>
+                                        <h1 class="event-card-categ">  </h1>
+                                        <div class="event-card-ft-text">
+                                            <div class="event-card-ft-text-icon"></div> 
+                                            <h1 class="event-card-featured-text"> Featured </h1>          
+                                        </div>                                        
+                                    </div>
+                                    <div class="event-card-rating-cont"> 
+                                        <div class="card-rating-icon"></div>
+                                        <h1 class="card-rating">  </h1>                                    
+                                    </div>
+                                </div>
+                                <h1 class="event-organizers">  </h1>                                
+                            </div>
+                            <div class="locdatetime">
+                                <div class="locdateicon"></div>
+                                <h1 class="locdate-text _1">  </h1>
+                            </div>
+                            <div class="event-card-info-availability">
+                                <div class="locdatetime">
+                                    <div class="locdateicon1"></div>
+                                    <h1 class="locdate-text _2">  </h1>
+                                </div>  
+                                <div class="locdatetime">
+                                    <div class="locdateicon2"></div>
+                                    <h1 class="locdate-text _3">  </h1>
+                                </div>
+                            </div>
+                            <div class="event-card-info-availability1">
+                                <div class="locdatetime">
+                                    <div class="locdateicon1"></div>
+                                    <h1 class="locdate-text _2">  </h1>
+                                </div>
+                                <div class="locdatetime">
+                                    <div class="locdateicon2"></div>
+                                    <h1 class="locdate-text _3">  </h1>
+                                </div>
+                            </div>
+                            <div class="event-card-info-divider"></div>
+                            <div class="event-price">
+                                <div class="price-item-container">
+                                    <h1 class="starting-from"> Starting From </h1>
+                                    <h1 class="price"> </h1>
+                                </div>
+                                <div class="booking-prompt-container">
+                                    <button class="start-booking"> Start Booking </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+                
+
+            </div
+            >
+        </div>
+    {% endblock %}
+    </div>   
+</body>
+</html>    

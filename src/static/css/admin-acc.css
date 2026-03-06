@@ -1,0 +1,993 @@
+/* =========================================
+   1. Global Variables & Theming
+   ========================================= */
+:root {
+  /* Main housing*/
+  --account-mainhousing-grid-col: 1fr;
+
+  /* Users*/
+  --user-status-color : rgb(0,0,0);
+  --user-status-bg-color : rgb(0,0,0); 
+  --user-status-content : "";
+
+  /* Booking*/
+  --booking-status-color : rgb(0,0,0);
+  --booking-status-bg-color : rgb(0,0,0); 
+  --booking-status-content : "";
+
+  /* Yearly Summary Report ctn*/
+  --report-ctn-grid : 1fr
+}
+
+/* =========================================
+   2. Layout: Section: Selection
+   ========================================= */  
+
+.main-housing{
+  margin-top: 1.5rem;
+  display: grid;
+  grid-template-columns: var(--account-mainhousing-grid-col);
+  gap: 1.3rem;
+  width: 97%;
+  align-self: center;
+}
+
+/* Selection Tab */
+.sel-main{
+  display: grid;
+  padding: 0.7rem;
+  background: rgb(255, 255, 255, 0.3);
+  gap: 0.5rem;
+  border-radius: 1rem;
+  height: max-content;
+}
+
+.sel-btn{
+  padding: 0.5rem;
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  gap: 0.3rem;
+  border-radius: 0.5rem;
+
+  .sel-btn-icon{
+    height: 100%;
+    background: rgba(255, 255, 255, 0.7);
+
+    mask-position: center;
+    mask-size: 1.1rem;
+    mask-repeat: no-repeat;   
+  }
+
+  .dashboard-icon{mask-image: url(../static/assets/dashboard.png); mask-size: 0.9rem;}
+  .events-icon{mask-image: url(../static/assets/event.png);}
+  .users-icon{mask-image: url(../static/assets/user.png);}
+  .bookings-icon{mask-image: url(../static/assets/ticket.png);}
+  .reports-icon{mask-image: url(../static/assets/graph.png);}
+  .settings-icon{mask-image: url(../static/assets/setting.png);}
+
+  .sel-btn-txt{
+    height: 100%;
+    text-align: left;
+    font: lighter 0.85rem var(--font-secondary);
+  }
+}
+
+/* Selected buttons*/
+.selected{
+  background: linear-gradient(to right, #355C7D, #6C5B7B, #C06C84);
+}
+
+/* =========================================
+   3. Layout: Section: Body / Contents
+   ========================================= */ 
+
+/* Global Content*/
+.input-valid{border: 0.123rem solid rgb(136,231,136);}
+.input-error{border: 0.08rem solid rgb(255, 83, 83);}
+
+.no-result{
+  display: grid;
+  height: 5rem;
+  width: 100%;
+  place-content: center;
+  border-radius: 1rem;
+  font: lighter 0.8rem var(--font-secondary); 
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.no-result-txt{
+  font: lighter 0.8rem var(--font-secondary); 
+  text-align: center;
+}
+
+input[type = "text"]{
+  outline: none;
+  border: none;
+  caret-color: rgb(0,0,0,.6);
+}
+
+input[type = "text"]::placeholder{
+  color: rgb(0,0,0,.6);
+}
+
+.parent-ctn{
+  display: none;
+  flex-flow: column nowrap;
+  height: max-content; 
+  gap: 1rem;
+}
+.visible-ctn{display: flex;}
+
+.content-title-no-btn{
+  display: grid;
+
+  .title-txt-header{
+    font: lighter 1rem var(--font-secondary); 
+    margin-bottom: 0.3rem;
+  }
+  .title-txt-body{font: lighter 0.85rem var(--font-secondary);}
+}
+
+.content-title-btn{
+  display: grid;
+  grid-template-columns: 1fr max-content;
+
+  .add-btn{
+    display: grid;
+    grid-template-columns: 1rem 1fr;
+    border-radius: 0.9rem;
+    padding: 0.5rem 0.7rem 0.5rem 0.7rem;
+    background: rgb(46, 80, 109, 0.8);
+    gap: 0.5rem;
+  }
+
+  .add-btn-icon{
+    height: 100%;
+    width: 1.1rem;
+    background: rgba(255, 255, 255, 0.7);
+
+    mask-position: center;
+    mask-size: 1.1rem;
+    mask-repeat: no-repeat;      
+  }
+  .event-btn{mask-image: url(../static/assets/Add.svg);}
+
+  .add-btn-txt{font: lighter 0.9rem var(--font-secondary); align-content: center; text-align: left;}
+
+}
+
+.search-bar{
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  border-radius: 1rem;
+  border: 0.01rem solid gray;
+  padding: 0.2rem;  
+  border: 0.07rem solid rgba(255,255,255,0.2);
+  background-color: rgba(255, 255, 255, 0.3);
+  
+  .search-icon{
+    height: 2rem;
+    background-color: rgba(255, 255, 255, 0.3);
+
+    mask-image: url(../static/assets/search.png);;
+    mask-position: center;
+    mask-size: 1rem;
+    mask-repeat: no-repeat;   
+  }
+
+  .search-input{
+    background: none;
+    font: lighter 0.8rem var(--font-secondary); 
+    color: rgb(0,0,0,.6);
+  }
+}
+
+/* Table Styles*/
+.table-list-ctn{
+  border-radius: 1rem;
+  overflow: hidden;
+  background-color: rgb(255, 255, 255, 0.3);
+}
+
+.tabl-header{
+  height: 2rem;
+  background: rgba(226, 226, 226, 0.3);
+}
+
+.table-dividr{
+  height: 0.05rem;
+  background-color: rgba(87, 87, 87, 0.5);
+}
+
+.tabl-section{
+  font: lighter 0.8rem var(--font-secondary);
+  color: rgb(0,0,0,0.5);
+  padding: 0.5rem 0rem 0.5rem 0rem;
+}
+
+.tabl-sec-ftn{font: lighter 0.77rem var(--font-secondary); padding-right: 1rem;}
+.tabl-section-action-mask{
+  height: 100%;
+  width: 1.1rem;
+  mask-position: center;
+  mask-size: 1.1rem;
+  mask-repeat: no-repeat;       
+}
+.tabl-f-section-info{font: lighter 0.66rem var(--font-secondary); color: rgb(0,0,0,0.3);}
+
+.pad-left{padding-left: 1rem;}
+.pad-right{padding-right: 1rem;}
+
+/* Final Confirmation*/
+.final-confirmation{
+  display: none;
+  width: 20rem;
+  background: rgb(46, 80, 109, 0.9);
+  border-radius: 1rem;
+  padding: 1rem;
+  position: fixed;
+  pointer-events: auto;
+  
+  .confirmation-icon{
+    width: 3rem;
+    height: 3rem;
+
+    mask-position: center;
+    mask-size: 3rem;
+    mask-repeat: no-repeat;      
+    justify-self: center; 
+  }
+
+  .action-txt{
+    margin-top: 1rem;
+    font: lighter 1.2rem var(--font-secondary);
+    letter-spacing: 0.03rem;
+    text-align: center;
+  }
+
+  .moral-txt{margin-top: 0.5rem;}
+  .moral-txt,.consequence-txt{text-align: center; font: lighter 0.8rem var(--font-secondary); color: rgb(0,0,0,.5);}
+
+  .action-btns{
+    margin-top: 1rem;
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 1rem;
+  }
+
+  .cancel-confirmation,.confirm-confirmation{
+    height: 2.5rem;
+    border-radius: 2rem;
+    font: lighter 0.8rem var(--font-secondary);
+    text-align: center;
+    align-content: center;
+    letter-spacing: 0.03rem;
+  }
+}
+
+/* Confirmation types*/
+.deletion{
+  .confirmation-icon{
+    background-color: rgb(255, 81, 81);
+    mask-image: url(../static/assets/disposal.png);
+  }
+
+  .cancel-confirmation{ color: rgb(255, 81, 81); border: 0.03rem solid rgb(255, 81, 81);}
+  .confirm-confirmation{
+    background-color: rgb(255, 81, 81); color: white;
+    &::before{
+      content: "Delete";
+    }
+  }
+}
+
+.information{
+  .confirmation-icon{
+    background-color: rgb(81, 151, 255);
+    mask-image: url(../static/assets/info.png);
+  }
+
+  .cancel-confirmation{ color: rgb(81, 151, 255); border: 0.03rem solid rgb(81, 151, 255);}
+  .confirm-confirmation{
+    background-color: rgb(81, 151, 255); color: white;
+    &::before{
+      content: "Continue";
+    }
+  }
+}
+
+/* User info -> Updating Info*/
+.section-main-ctn{
+  display: grid;
+  width: 30rem;
+  background-color: rgb(46, 80, 109, 0.8);
+  box-shadow: 0rem 0rem 1rem rgb(0,0,0,.2);
+  backdrop-filter: blur(0.08rem);
+  border-radius: 1rem;  
+  position: fixed;
+}
+
+.section-main-ctn-body{
+  padding: 1.3rem;
+  pointer-events: auto;
+}
+
+.section-header{
+  padding: 1.3rem;
+  font: lighter 0.9rem var(--font-secondary);
+}
+
+.section-dividr{
+  height: 0.05rem;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.input-body-grp-2-inputs,.input-body-grp-3-inputs{
+  display: grid;
+  gap: 1rem;
+}
+
+.input-body-grp-2-inputs{grid-template-columns: repeat(2,1fr);}
+.input-body-grp-3-inputs{grid-template-columns: repeat(3,1fr);}
+
+.input-headr{
+  font: lighter 0.8rem var(--font-secondary);
+  color: rgb(41, 41, 41);
+  margin-bottom: 0.5rem;
+}
+
+.input-body{
+  border-radius: 0.5rem;
+  border: 0.01rem solid gray;
+  width: 100%;
+  height: 2rem;
+  margin-bottom: 0.5rem;
+  font: lighter 0.8rem var(--font-secondary);
+  text-indent: 0.5rem;
+  color: rgb(0,0,0,.6);
+  border: 0.07rem solid rgba(255,255,255,0.2);
+  background-color: rgba(255, 255, 255, 0.3);
+} 
+
+/* Final Input Confirmations btns*/
+.final-btns{margin-top: 1rem;}
+.cancel-btn,.confirm-btn{
+  justify-content: center;
+  font: lighter 0.8rem var(--font-secondary);
+  text-align: center;
+  width: 103%;
+  border-radius: 0.8rem;
+  height: 3rem;
+  letter-spacing: 0.03rem;
+}
+
+.cancel-btn{border: 0.01rem solid gray;}
+.confirm-btn{
+  background: linear-gradient(to right, #355C7D, #6C5B7B, #C06C84);
+  filter: brightness(1.1);
+}
+
+/* Dashboard Content*/
+.info-card-ctn{
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 1rem;
+}
+
+.admin-info-card{
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 1rem;
+  
+  /* Card Icon*/
+  .card-icon-bg{
+    width: 3rem;
+    height: 3rem;
+    border-radius: 1rem;  
+  }
+
+  .card-icon{
+    height: 3rem;
+    width: 3rem;
+    mask-position: center;
+    mask-size: 1.1rem;
+    mask-repeat: no-repeat;   
+  }
+
+  .total-revenue{
+    background-color: green;
+    mask-image: url(../static/assets/dollar-sign.png);
+  }
+  .revenue-bg{background-color: rgba(36, 187, 36, 0.5);}
+
+  .total-bookings{
+    background-color: blue;
+    mask-image: url(../static/assets/ticket.png);
+  }
+  .bookings-bg{background-color: rgba(57, 82, 167, 0.5);}
+
+  .upcoming-events{
+    background-color: purple;
+    mask-image: url(../static/assets/calendar.png);
+  }
+  .events-bg{background-color: rgba(172, 81, 184, 0.5);}
+
+  .total-users{
+    background-color: orange;
+    mask-image: url(../static/assets/user.png);
+  }
+  .users-bg{background-color: rgba(199, 133, 58, 0.5);}
+
+  /* Card title*/
+  .card-title{font: lighter 0.75rem var(--font-secondary); margin-top:0.3rem;}
+
+  /* Card Info*/
+  .card-info{font: lighter 1rem var(--font-secondary); margin-top: 0.4rem;}
+}
+
+.events-ctn{
+  border-radius: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.events-title{font: lighter 0.9rem var(--font-secondary); margin-bottom: 0.4rem;}
+.event-card-ctn{
+  display: grid;
+  gap: 1rem;
+}
+
+/* Event Card*/
+.event-card{
+  border-radius: 1rem;
+  border: 0.1rem solid rgb(0,0,0,0.3);
+  padding: 0.9rem;
+}
+
+.card-header{
+  display: grid;
+  grid-template-columns: max-content max-content 1fr;
+  gap: 0.5rem;
+
+  .card-titl{font: lighter 0.9rem var(--font-secondary); align-content: center;}
+  .card-categ{
+    font: lighter 0.7rem var(--font-secondary); 
+    color: rgb(0, 0, 255, 0.5);
+    padding: 0rem 0.5rem 0.1rem 0.5rem;
+    background-color: rgba(57, 82, 167, 0.3);
+    border-radius: 0.5rem;
+    height: 100%;
+    align-self: center;
+    align-content: center;
+  }
+  .completed-categ{
+    background-color: rgba(48, 204, 43, 0.3);
+    color: rgba(23, 105, 44, 0.5);
+  }
+
+  .capacity-txt{
+    font: lighter 0.8rem var(--font-secondary); 
+    color: rgb(0,0,0,0.5);
+    text-align: right;
+  }
+}
+
+.card-body{
+  margin-top: 0.5rem;
+  display: grid;
+  grid-template-columns: 1fr max-content;
+
+  .card-date-loc{
+    font: lighter 0.7rem var(--font-secondary);
+    color: rgb(0,0,0,0.5);
+  }
+
+  .card-capacity{font: lighter 0.7rem var(--font-secondary);}
+}
+
+/* Events Content*/
+.evnt-card{
+  height: 3.7rem;
+
+  /* Status Section*/
+  .card-status{
+    border-radius: 1rem;
+    padding: 0rem 0.5rem 0.23rem 0.5rem;   
+    width: max-content;
+    font: lighter 0.7rem var(--font-secondary);
+  }
+
+  .status-upcoming{
+    background-color: rgba(57, 82, 167, 0.5);
+    &::before{content: "upcoming";}
+  }
+
+  .status-completed{
+    background-color: rgba(88, 167, 57, 0.5);
+    &::before{content: "completed";}
+  }
+
+  /* Action-Section*/
+  .card-action{
+    display: grid;
+    grid-template-columns: repeat(2,max-content);
+    height: 3rem;
+    gap: 0.7rem;
+  }
+  .edit-action{
+    background-color: rgb(61, 61, 255);
+    mask-size: 1rem;
+    mask-image: url(../static/assets/edit.png);
+  }
+  .delete-action{
+    background-color: rgb(255, 0, 0);
+    mask-image: url(../static/assets/delete.png);
+  }
+
+}
+
+/* Absolute Div*/
+.absolute-div{
+  display: grid;
+  place-items: center;
+  position: absolute;
+  bottom: 0.01rem;
+
+  height: 100%;
+  width: 100%;
+  pointer-events : none;
+}
+
+/* Add / Edit Events*/
+.edit-add-events{display: none;}
+
+.ft-checkbox{
+  display: flex;
+  align-items: center;
+  align-self: center;
+  height: 2.2rem;
+  width: 110%;
+  background-color: rgba(255,255,255,0.3);
+  border-radius: 0.4rem;
+  padding: 0.25rem;
+  border: 0.12rem solid rgb(255,255,255,0.5);
+}
+
+.check-indicator{
+  height: calc(2.2rem - 0.3rem * 2);
+  width: calc(2.2rem - 0.25rem * 2);
+  border-radius: 0.4rem;
+  transition: transform 0.1s ease;
+}
+
+.check-indicator-on{
+  background-color: rgba(192, 108, 132, 0.8);
+  transform: translateX(55%);
+}
+
+.check-indicator-off{
+  background-color: rgb(46, 80, 109, 0.8);
+  transform: translateX(0%);
+}
+
+/* Custom layout for groups*/
+.custom-lyout{grid-template-columns: 1fr 0.5fr 3rem;}
+
+/* Users Content*/
+.user-card{
+  height: 3.7rem;
+
+  /* Role / Status Section*/
+  .role-admin{
+    color:purple; 
+    background-color: rgba(172, 81, 184, 0.5);
+    &::before{
+      content: "admin";
+    }
+  }
+  .role-user{
+    background-color: rgba(65, 65, 65, 0.5);
+    &::before{
+      content: "user";
+    }
+  }
+
+  .user-role,.user-status{
+    border-radius: 1rem;
+    padding: 0rem 0.5rem 0.15rem 0.5rem;   
+    width: max-content;
+    font: lighter 0.7rem var(--font-secondary);
+  }
+
+  .user-status{
+    color:var(--user-status-color); 
+    background-color: var(--user-status-bg-color); 
+
+    &::before{
+      content: var(--user-status-content);
+    }
+  }
+
+  .user-status-active{
+    --user-status-color : green;
+    --user-status-bg-color: rgb(0,255,0,0.5);
+    --user-status-content : "active";
+
+    .suspend-action{
+      background-color: rgb(255, 0, 0);
+      mask-image: url(../static/assets/suspend.png);   
+    }
+  }
+  
+  .user-status-suspended{
+    --user-status-color : red;
+    --user-status-bg-color: rgba(253, 74, 74, 0.507);
+    --user-status-content : "suspended";
+
+    .suspend-action{
+      background-color: rgb(0, 255, 0);
+      mask-image: url(../static/assets/check.png);    
+    }
+  }
+
+  /* Action-Section*/
+  .user-action{
+    display: grid;
+    grid-template-columns: repeat(3,max-content);
+    height: 3rem;
+    gap: 0.7rem;
+  }
+  .edit-action{
+    background-color: rgb(61, 61, 255);
+    mask-size: 1rem;
+    mask-image: url(../static/assets/edit.png);
+  }
+  .password-action{
+    background-color: rgb(255, 0, 0);
+    mask-image: url(../static/assets/padlock.png);
+  }
+}
+
+.change-user-info{display: none;}
+.change-password-info{display: none;}
+
+/* Bookings Content*/
+.booking-card{
+  height: 3.7rem;
+  
+  /* Booking Status*/
+  .booking-status{
+    color:var(--booking-status-color); 
+    background-color: var(--booking-status-bg-color); 
+    border-radius: 1rem;
+    padding: 0rem 0.5rem 0.15rem 0.5rem;   
+    width: max-content;
+    font: lighter 0.7rem var(--font-secondary);
+
+    &::before{
+      content: var(--booking-status-content);
+    }
+  }
+
+  /* confirmed booking*/
+  .booking-status-confirmed{
+    --booking-status-color : green;
+    --booking-status-bg-color: rgb(0,255,0,0.5);
+    --booking-status-content : "confirmed";    
+
+    .cancel-action{display: block;}
+  }
+
+  /* cancelled booking*/
+  .booking-status-cancelled{
+    --booking-status-color : red;
+    --booking-status-bg-color: rgba(253, 74, 74, 0.507);
+    --booking-status-content : "cancelled";  
+    
+    .cancel-action{display: none;}
+  }
+
+  /* unpaid booking*/
+  .booking-status-unpaid{
+    --booking-status-color : red;
+    --booking-status-bg-color: rgba(253, 74, 74, 0.507);
+    --booking-status-content : "unpaid"; 
+    
+    .cancel-action{display: block;}
+  }
+
+  /* Action-Section*/
+  .booking-action{
+    display: grid;
+    height: 3rem;
+    gap: 0.7rem;
+  }
+
+  .cancel-action{
+    background-color: rgb(255, 0, 0);
+    mask-image: url(../static/assets/suspend.png);
+  }
+}
+
+/* Reports Content*/
+.graph-charts-ctn{
+  display: grid;
+  gap: 1rem 0rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  background-color: rgb(255, 255, 255, 0.3);
+}
+
+/* Line Chart Title -> No Icon*/
+.graph-charts-titl{font: lighter 0.9rem var(--font-secondary);}
+
+/* Line Chart Title -> Icon*/
+.graph-charts-titl-w-m-txt{
+  display: grid;
+  grid-template-columns: repeat(2,1fr); 
+}
+
+.graph-charts-titl-one{
+  text-align: right;
+  margin-left: auto;
+  font: lighter 0.85rem var(--font-secondary);
+  color: rgb(0,0,0,0.3);
+}
+
+/* Content Titles*/
+.contn-card-titl{
+  font: lighter 0.85rem var(--font-secondary);
+  text-align: left;
+  align-content: center;
+}
+
+.report-top-bar{
+  display: grid;
+  gap: 1rem 0rem;
+  border-radius : 1rem;
+  padding: 1rem;
+  background-color: rgb(255, 255, 255, 0.3);
+
+  .bar-titl{
+    font: lighter 0.85rem var(--font-secondary);
+  }
+
+  .bar-contn{
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0.3rem;
+  }
+}
+
+option{
+  padding: 0rem 0.5rem 0rem 0.5rem;
+  height: 2rem;
+
+  &::checkmark{display: none;}
+  &:checked{
+    background-color: rgb(0,0,0,0.3);
+  }
+  &:hover{background-color: rgb(212, 212, 212);}
+}
+
+select {
+  align-items: center;
+  padding-left: 0.5rem;
+
+  &, &::picker(select){
+    appearance: base-select;
+    font: lighter 0.85rem var(--font-secondary);
+    border-radius: 0.6rem;
+    border: none;
+    height: 2.3rem;
+    background-color: rgb(255,255,255);
+  }
+
+  &::picker(select){ 
+    position: relative;
+    margin-block-start: 0.3rem;
+    height: max-content;
+  }
+
+  &::picker-icon {display: none;}
+
+  &:focus{outline: none;}
+}
+
+.contn-card{
+  display: grid;
+  gap: 0.7rem 0rem;
+  width: 20rem;
+}
+
+/* Revenue Report*/
+.revenue-report{
+  display: none;
+  gap: 1.5rem 0rem;
+
+  .rev-report-card-ctn{
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 1rem;
+  }
+  
+  /* Revenue Report Cards*/
+  .rev-report-card{
+    display: grid;
+    padding: 1rem;
+    border-radius: 1rem;
+    background-color: rgb(255, 255, 255, 0.3);
+    gap: 0.5rem 0rem;
+  }
+
+  /* Revenue report card types with icon title*/
+  .rev-report-titl-w-icon{
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+  }
+
+  .rev-report-card-icon{
+    background: rgba(255, 255, 255, 0.7);
+    margin-left: auto;   
+    width: 1.31rem;
+
+    mask-position: center;
+    mask-size: 1.1rem;
+    mask-repeat: no-repeat;   
+  }
+
+  .totl-rev-icon{mask-image: url(../static/assets/dollar-sign.png);}
+
+  /* Revenue report card types without icon title*/
+  .rev-report-card-titl{
+    font: lighter 0.8rem var(--font-secondary);
+    text-align: left;
+  }
+  
+  /* Revenue Report card content*/
+  .rev-report-card-contn{
+    font: lighter 1rem var(--font-secondary);
+    text-align: left;
+  }
+}
+
+/* Booking Report*/
+.booking-report{
+  display: none;
+  border-radius: 1rem;
+}
+
+/* Event Performance*/
+.event-perf-report{
+  display: none;
+  gap: 1.1rem 0rem;
+  border-radius: 1rem;
+}
+
+.avg-tick-sold{font: lighter 0.85rem var(--font-secondary); color: black;}
+
+.evnt-perf-card-ctn{
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(clamp(15rem,16rem,18rem),1fr));
+  gap: 0.3rem;
+
+  .evnt-perf-card{
+    padding: 1rem; 
+    background: rgba(255, 255, 255, 0.3); 
+    border-radius: 1rem;
+  }
+
+  .evnt-perf-card-titl-occupancy, .evnt-perf-card-date-occupancytxt{
+    display: grid;
+    grid-template-columns: max-content 1fr;
+  }
+
+  .evnt-titl{font: lighter 0.75rem var(--font-secondary);}
+  .evnt-occupancy{font: lighter 0.75rem var(--font-secondary); text-align: right;}
+
+  .evnt-perf-card-date-occupancytxt{font: lighter 0.6rem var(--font-secondary);}
+  .evnt-occupancytxt{text-align: right;}
+}
+
+/* Venue Analytics*/
+.venue-analytics-report{
+  display: none;
+  border-radius: 1rem;
+  gap: 1.1rem 0rem;
+
+  .venue-analytic-card-ctn{
+    display: grid;
+    gap: 1rem 0rem;
+    background: rgba(255, 255, 255, 0.3); 
+    border-radius: 1rem;
+    padding: 1rem;
+    margin-top: 1rem;
+  }
+
+  .venue-analytic-card{
+    display: grid;
+    grid-template-columns: 1.1rem  max-content 1fr max-content;
+    gap: 0.5rem;
+
+    border-radius: 0.5rem;
+    padding: 0.7rem;
+    background: rgba(255, 255, 255, 0.1); 
+  }
+
+  /* Venue analytics card icon*/
+  .venue-anal-card-icon{
+    background: rgba(255, 255, 255, 0.7);
+
+    mask-image: url(../static/assets/location.svg);
+    mask-position: center;
+    mask-size: 1.1rem;
+    mask-repeat: no-repeat;     
+  }
+
+  /* Venue analytics card content*/
+  .venue-anal-card-ctn,.vn-anal-card-titl{
+    text-align: left;
+    align-content: center;
+    font: lighter 0.85rem var(--font-secondary);
+  }
+
+  /* Venue analytics card -> % Capacity filled /  Event Hosted*/
+  .vn-anal-card-evnt-filled,.evnt-hosted{
+    font: lighter 0.85rem var(--font-secondary);
+    color: rgba(0,0,0,0.5);
+    align-content: center;
+  }
+
+  .evnt-hosted{font: lighter 0.75rem var(--font-secondary);}
+}
+
+/* Yeearly Summary*/
+.yearly-summary-report{
+  display: none;
+  border-radius: 1rem;
+  gap: 1.1rem 0rem;
+  width: 100%;
+  .yearly-summary-rp-graph-ctn{
+    display: grid;
+    grid-template-columns: var(--report-ctn-grid);
+    gap: 1rem;
+  }
+
+  /* Overlla Yearly Summary*/
+  .overall-yearly-summary{
+    padding: 1rem; 
+    background: rgb(46, 80, 109, 0.7);
+    border-radius: 1rem;
+  }
+
+  .ov-yr-sum,.ov-yr-sum-txt{
+    display: grid;
+    grid-template-columns: 1fr 0.3fr;
+  }
+
+  .yearly-sum-titl{font: lighter 1.05rem var(--font-secondary);}
+  .proj-evnt{font: lighter 1.2rem var(--font-secondary); text-align: right;}
+
+  .ov-yr-sum-txt{font: lighter 0.79rem var(--font-secondary);}
+  .proj-evnttxt{text-align: right;}
+}
+
+.visible-rp-contn{display: grid;}
+
+/* =========================================
+   3. Media Queries
+   ========================================= */
+
+/* Tablet & Up */
+@media only screen and (min-width: 600px) {
+  :root {}
+}
+
+/* Desktop & Up */
+@media only screen and (min-width: 992px) {    
+  :root {
+    --account-mainhousing-grid-col : 15rem 1fr;
+    --report-ctn-grid: repeat(2,1fr);
+  }
+}
