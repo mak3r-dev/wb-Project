@@ -7,7 +7,6 @@ from ..main.events import event_manager,event_class,venue_class
 from ..main.bookings  import booking_manager,bookings,entries
 
 stripe.api_key = config.stripe_api_key
-endpoint_secret = 'whsec_8c25ed87bacd5b7a66c822eabf94a11ae27fce303dc449c61c393e2c370c1489'
 
 db.create_pool()
 db.create_all()
@@ -188,7 +187,7 @@ def webhook():
 
     # 1. Verify Signature
     try:
-        event = stripe.Webhook.construct_event(payload, sig, endpoint_secret)
+        event = stripe.Webhook.construct_event(payload, sig, config.stripe_endpoint_secret)
         if event.get('type') == 'payment_intent.succeeded':
             ref = event.get('data').get('object').get('metadata').get('ref')
 
