@@ -18,14 +18,14 @@ def index(): return redirect(url_for("Home"))
 # Home URL
 @app.route("/Home") 
 def Home():
-    return render_template("Home.html")
+    return render_template("home-temp.html")
 
 # Events URL
 @app.route("/Event",methods=['GET','POST'])  
 def Event():
     # GET Requests
     if request.method == 'GET':     
-        return render_template("Event.html")    
+        return render_template("event-temp.html")    
 
     # POST Requests -> to ONLY return all events
     return jsonify(event_manager.get_all_events())
@@ -33,7 +33,7 @@ def Event():
 # Settings URL
 @app.route("/Settings") 
 def Settings():
-    return render_template("Settings.html")
+    return render_template("settings-temp.html")
 
 # Account URL
 @app.route("/Account",methods=['GET','POST']) 
@@ -48,7 +48,7 @@ def Account():
 
     # GET
     if request.method == 'GET':
-        return render_template("Account_Standard.html") if perm == 'Standard' else render_template("Account_Admin.html")
+        return render_template("user-acc-temp.html") if perm == 'Standard' else render_template("admin-acc-temp.html")
 
     # POST
     if request.method != 'POST': return jsonify({})
@@ -111,7 +111,7 @@ def Account():
 def User():
     # GET Requests
     if request.method == 'GET':     
-        return render_template("Users.html")
+        return render_template("login-temp.html")
     
     # POST Requests
     data = request.json
@@ -127,7 +127,7 @@ def User():
 def Booking():
     # GET Requests
     if request.method == 'GET':  
-        return render_template("Booking.html") 
+        return render_template("booking-temp.html") 
 
     # POST Requests
     eventName = request.json
