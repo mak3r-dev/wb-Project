@@ -1,3 +1,5 @@
 src/.env
 src/py/libraries
 src/py/imports
+
+.mypy_cache/, __pycache__/
