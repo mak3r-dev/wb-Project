@@ -199,13 +199,13 @@ input[type = "checkbox"]:checked{
 [class *= "login-user-input-icon"]{
   background-color: rgb(255,255,255,0.7);
 
-  mask-image: url(../statics/assets/email.png);
+  mask-image: url(../assets/email.png);
   mask-repeat: no-repeat;
   mask-position: center;
   mask-size: 1rem
 }
 
-.login-user-input-icon1{ mask-image: url(../statics/assets/padlock.png) }
+.login-user-input-icon1{ mask-image: url(../assets/padlock.png) }
 
 /* User Input TextBox */
 [class *= "login-user-input-entry"]{
@@ -215,8 +215,8 @@ input[type = "checkbox"]:checked{
   background: none;
 }
 
-.password {mask-image: url(../statics/assets/visible.png);}
-.text{ mask-image: url(../statics/assets/invisible.png);}
+.password {mask-image: url(../assets/visible.png);}
+.text{ mask-image: url(../assets/invisible.png);}
 /* Login input prompts, i.e remember me or forgot password*/
 [class *= "login-input-prompts-cont"]{
   display: grid;
@@ -282,7 +282,7 @@ input[type = "checkbox"]:checked{
   [class *= "login-signup-input-icon"]{
     background-color: rgb(255,255,255,0.7);
 
-    mask-image: url(../statics/assets/user.png);
+    mask-image: url(../assets/user.png);
     mask-repeat: no-repeat;
     mask-position: center;
     mask-size: 1rem
@@ -383,13 +383,13 @@ input[type = "checkbox"]:checked{
 
 .success{
   background: green;
-  mask-image: url(../statics/assets/check_circle.svg);
+  mask-image: url(../assets/check_circle.svg);
   mask-size: 1.5rem;
 }
 
 .warn{
   background-color: rgb(245, 158, 11, 0.7);
-  mask-image: url(../statics/assets/warn.png);
+  mask-image: url(../assets/warn.png);
   mask-size: 1.2rem;
 }
 
@@ -400,7 +400,7 @@ input[type = "checkbox"]:checked{
 
 .message-close-button{
   background: rgb(255,255,255,0.7);
-  mask-image: url(../statics/assets/Add.svg);
+  mask-image: url(../assets/Add.svg);
   rotate: 45deg;
   mask-size: 1.5rem;
 }

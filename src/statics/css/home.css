@@ -240,12 +240,12 @@
 
 .indicator-btn-left{
   display: var(--indicator-btn-display);
-  background: url(../statics/assets/left-arrow.svg) center/1.3rem no-repeat;   
+  background: url(../assets/left-arrow.svg) center/1.3rem no-repeat;   
 }
 
 .indicator-btn-right{
   display: var(--indicator-btn-display);
-  background: url(../statics/assets/right-arrow.svg) center/1.3rem no-repeat; 
+  background: url(../assets/right-arrow.svg) center/1.3rem no-repeat; 
 }
 
 .mobile-indicator-text{
@@ -339,12 +339,12 @@
   background-size: 10dvw;
 }
 
-.pay-icon{ mask-image: url(../statics/assets/credit-card-1.0.png);}
-.booking{ mask-image: url(../statics/assets/appointment.png);}
-.customer-service{ mask-image: url(../statics/assets/customer-support.png);}
-.transaction{ mask-image: url(../statics/assets/transaction.png);}
-.privacy{ mask-image: url(../statics/assets/privacy.png);}
-.refund{ mask-image: url(../statics/assets/money-back.png);}
+.pay-icon{ mask-image: url(../assets/credit-card-1.0.png);}
+.booking{ mask-image: url(../assets/appointment.png);}
+.customer-service{ mask-image: url(../assets/customer-support.png);}
+.transaction{ mask-image: url(../assets/transaction.png);}
+.privacy{ mask-image: url(../assets/privacy.png);}
+.refund{ mask-image: url(../assets/money-back.png);}
 
 .btn-icon1{
   width: 100%;
@@ -398,12 +398,12 @@
   overflow: auto;
 }
 
-.refund-icon{background: url(../statics/assets/refund.svg) center/cover no-repeat;}
-.privacy-image{background: url(../statics/assets/privacy-image.svg) center/cover no-repeat;}
-.flexible-payment-icon{background: url(../statics/assets/flexible-payment.svg) center/cover no-repeat;}
-.service-customer-icon{background: url(../statics/assets/customer-support.svg) center/cover no-repeat;}
-.easy-booking-icon{background: url(../statics/assets/easy-booking.svg) center/cover no-repeat;}
-.secure-payment-icon{background: url(../statics/assets/Secure_Payment.jpg) center/cover no-repeat;}
+.refund-icon{background: url(../assets/refund.svg) center/cover no-repeat;}
+.privacy-image{background: url(../assets/privacy-image.svg) center/cover no-repeat;}
+.flexible-payment-icon{background: url(../assets/flexible-payment.svg) center/cover no-repeat;}
+.service-customer-icon{background: url(../assets/customer-support.svg) center/cover no-repeat;}
+.easy-booking-icon{background: url(../assets/easy-booking.svg) center/cover no-repeat;}
+.secure-payment-icon{background: url(../assets/Secure_Payment.jpg) center/cover no-repeat;}
 .service-icon{
   display: var(--service-icon-display);
   margin-top: 1rem;
@@ -439,8 +439,8 @@
   mask-repeat: no-repeat;  
 }
 
-.mobile-carousel-left{mask-image: url(../statics/assets/left-arrow.svg);}
-.mobile-carousel-right{mask-image: url(../statics/assets/right-arrow.svg);}
+.mobile-carousel-left{mask-image: url(../assets/left-arrow.svg);}
+.mobile-carousel-right{mask-image: url(../assets/right-arrow.svg);}
 
 .service-rating{
   display: var(--service-rating-display);
@@ -464,7 +464,7 @@
   width: 2.5rem;
   background: rgb(46, 80, 109, 0.8);
 
-  mask-image: url(../statics/assets/star.png);
+  mask-image: url(../assets/star.png);
   mask-position: center;
   mask-size: 2.5rem;
   mask-repeat: no-repeat;   
@@ -536,7 +536,7 @@
     }
 
     .question-prompt{ 
-      background: url(../statics/assets/left-arrow.svg) center/1.3rem no-repeat;
+      background: url(../assets/left-arrow.svg) center/1.3rem no-repeat;
       border-radius: 0.3rem;
     }  
     

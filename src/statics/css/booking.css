@@ -69,7 +69,7 @@ input[type = "text"],input[type = "password"]{
 }
 
 .booking-event-icon{
-  background: url(../statics/assets/BallonFestival.svg) center/cover no-repeat;
+  background: url(../assets/BallonFestival.svg) center/cover no-repeat;
   border-radius: 1.3rem 1.3rem 0rem 0rem;
 }
 
@@ -93,14 +93,14 @@ input[type = "text"],input[type = "password"]{
   [class *= "booking-event-loc-icon"]{
     background: rgb(0, 0, 0, 0.5);
 
-    mask-image: url(../statics/assets/location.svg);
+    mask-image: url(../assets/location.svg);
     mask-position: center;
     mask-size: 1.3rem;
     mask-repeat: no-repeat; 
   }
 
   .booking-event-loc-icon1{
-    mask-image: url(../statics/assets/calendar.png);  
+    mask-image: url(../assets/calendar.png);  
   }
 
   .booking-event-text{
@@ -268,18 +268,18 @@ input[type = "text"],input[type = "password"]{
 .booking-user-input-icon,.booking-user-input-icon1,.booking-user-input-icon2{
   background-color: rgba(255,255,255);
 
-  mask-image: url(../statics/assets/user.png);
+  mask-image: url(../assets/user.png);
   mask-repeat: no-repeat;
   mask-position: center;
   mask-size: 1rem
 }
 
 .booking-user-input-icon1{
-  mask-image: url(../statics/assets/email.png);
+  mask-image: url(../assets/email.png);
 }
 
 .booking-user-input-icon2{
-  mask-image: url(../statics/assets/call.png);
+  mask-image: url(../assets/call.png);
 }
 
 .booking-user-input-entry{
@@ -334,7 +334,7 @@ input[type = "text"],input[type = "password"]{
   height: 3rem;
   background-color: rgb(255, 255, 255,0.8);
 
-  mask-image: url(../statics/assets/hot-cup.png);
+  mask-image: url(../assets/hot-cup.png);
   mask-repeat: no-repeat;
   mask-position: center;
   mask-size: 1.3rem;  
@@ -442,14 +442,14 @@ input[type = "text"],input[type = "password"]{
   height: 2rem;
   background-color: rgb(255,255,255,0.7);
 
-  mask-image: url(../statics/assets/user.png);
+  mask-image: url(../assets/user.png);
   mask-repeat: no-repeat;
   mask-position: left;
   mask-size: 0.85rem
 }
 
-.booking-summary-icon1{ mask-image: url(../statics/assets/email.png);}
-.booking-summary-icon2{ mask-image: url(../statics/assets/call.png);}
+.booking-summary-icon1{ mask-image: url(../assets/email.png);}
+.booking-summary-icon2{ mask-image: url(../assets/call.png);}
 
 .booking-summary-text{ 
   text-align: left; 
@@ -623,7 +623,7 @@ input[type = "text"],input[type = "password"]{
 
   background-color: rgba(233, 142, 6, 0.692);
 
-  mask-image: url(../statics/assets/warn.png);
+  mask-image: url(../assets/warn.png);
   mask-position: center;
   mask-size: 3rem;
   mask-repeat: no-repeat;
@@ -717,7 +717,7 @@ input[type = "text"],input[type = "password"]{
   width: 5rem;
   background-color: rgb(255,255,255,0.35);
 
-  mask-image: url(../statics/assets/check.png);
+  mask-image: url(../assets/check.png);
   mask-position: center;
   mask-size: 3rem;
   mask-repeat: no-repeat;
@@ -885,8 +885,8 @@ input[type = "text"],input[type = "password"]{
   mask-repeat: no-repeat;
 }
 
-.confirmed-loc-icon{mask-image: url(../statics/assets/location.svg);}
-.confirmed-calender-icon{mask-image: url(../statics/assets/calendar.png);}
+.confirmed-loc-icon{mask-image: url(../assets/location.svg);}
+.confirmed-calender-icon{mask-image: url(../assets/calendar.png);}
 .confirmed-weak-font{
   font: lighter 0.8rem var(--font-secondary);
   padding: 0rem 1rem 0rem 0.4rem;
@@ -919,17 +919,17 @@ input[type = "text"],input[type = "password"]{
 
 .section-user-icon{
   mask-size: 1rem;
-  mask-image: url(../statics/assets/user.png);
+  mask-image: url(../assets/user.png);
 }
 
 .section-add-on-icon{
   mask-size: 1.1rem;
-  mask-image: url(../statics/assets/addon.png);
+  mask-image: url(../assets/addon.png);
 }
 
 .section-ticket-icon{
   mask-size: 1.2rem;
-  mask-image: url(../statics/assets/ticket.png);
+  mask-image: url(../assets/ticket.png);
 }
 
 .section-header-title{
@@ -1050,7 +1050,7 @@ input[type = "text"],input[type = "password"]{
   mask-position: center;
   mask-repeat: no-repeat; 
   mask-size: 1rem;
-  mask-image: url(../statics/assets/email.png);
+  mask-image: url(../assets/email.png);
 
 }
 
@@ -1102,9 +1102,9 @@ input[type = "text"],input[type = "password"]{
   mask-size: 1.5rem;
 }
 
-.redirect-event-icon{mask-image: url(../statics/assets/event.png);}
-.redirect-print-icon{mask-image: url(../statics/assets/printer.png);}
-.redirect-download-icon{mask-image: url(../statics/assets/downloads.png);}
+.redirect-event-icon{mask-image: url(../assets/event.png);}
+.redirect-print-icon{mask-image: url(../assets/printer.png);}
+.redirect-download-icon{mask-image: url(../assets/downloads.png);}
 
 .redirect-txt{
   font: lighter 1rem var(--font-secondary);
@@ -1156,7 +1156,7 @@ input[type = "text"],input[type = "password"]{
   width: 2.5rem;
   background-color: rgba(59, 59, 59, 0.35);
 
-  mask-image: url(../statics/assets/loading1.png);
+  mask-image: url(../assets/loading1.png);
   mask-position: center;
   mask-repeat: no-repeat; 
   mask-size: 100%;

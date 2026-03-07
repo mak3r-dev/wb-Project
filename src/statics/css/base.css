@@ -29,7 +29,7 @@
   --header-log-icon-display: none;
 
   --header-logged-in-bg : rgba(255, 91, 91, 0.5);
-  --header-logged-in-mask-img : url(../static/assets/log-out.png);
+  --header-logged-in-mask-img : url(../assets/log-out.png);
 
   /* --- Footer Config */
   --footer-main-font: bolder 0.9rem var(--font-secondary);
@@ -149,12 +149,12 @@ a {text-decoration: none; color: black;}
 }
 
 .logged-out{
-  .navHome{ background: url(../static/assets/home.png) center/var(--header-icon-size) no-repeat; }
-  .navEvent{ background: url(../static/assets/event.png) center/var(--header-icon-size) no-repeat; }
-  .navAbout{ background: url(../static/assets/info.png) center/var(--header-icon-size) no-repeat; }
+  .navHome{ background: url(../assets/home.png) center/var(--header-icon-size) no-repeat; }
+  .navEvent{ background: url(../assets/event.png) center/var(--header-icon-size) no-repeat; }
+  .navAbout{ background: url(../assets/info.png) center/var(--header-icon-size) no-repeat; }
   .navLogin{ 
     display: grid;
-    background: url(../static/assets/user.png) center/var(--header-icon-size) no-repeat; 
+    background: url(../assets/user.png) center/var(--header-icon-size) no-repeat; 
 
     place-items: center;
     
@@ -170,7 +170,7 @@ a {text-decoration: none; color: black;}
   }
 
   .navAccount{ 
-    background: url(../static/assets/setting.png) center/var(--header-icon-size) no-repeat; 
+    background: url(../assets/setting.png) center/var(--header-icon-size) no-repeat; 
     display: none; 
   }
 }
@@ -178,9 +178,9 @@ a {text-decoration: none; color: black;}
 .logged-in{
   --header-grid : repeat(5,1fr);
 
-  .navHome{ background: url(../static/assets/home.png) center/var(--header-icon-size) no-repeat; }
-  .navEvent{ background: url(../static/assets/event.png) center/var(--header-icon-size) no-repeat; }
-  .navAbout{ background: url(../static/assets/info.png) center/var(--header-icon-size) no-repeat; }
+  .navHome{ background: url(../assets/home.png) center/var(--header-icon-size) no-repeat; }
+  .navEvent{ background: url(../assets/event.png) center/var(--header-icon-size) no-repeat; }
+  .navAbout{ background: url(../assets/info.png) center/var(--header-icon-size) no-repeat; }
   .navLogin{ 
     display: grid;
     grid-template-columns: 1fr max-content;
@@ -204,7 +204,7 @@ a {text-decoration: none; color: black;}
       width: 1rem;
       background: rgba(0, 0, 0, 0.5);
 
-      mask-image: url(../static/assets/log-out.png);
+      mask-image: url(../assets/log-out.png);
       mask-position: center;
       mask-size: 1rem;
       mask-repeat: no-repeat;          
@@ -212,7 +212,7 @@ a {text-decoration: none; color: black;}
   }
 
   .navAccount{ 
-    background: url(../static/assets/user.png) center/var(--header-icon-size) no-repeat; 
+    background: url(../assets/user.png) center/var(--header-icon-size) no-repeat; 
     display: block; 
     &::before{
       content: 'Account';
@@ -281,7 +281,7 @@ a {text-decoration: none; color: black;}
 .footer-column-dropdown{
   display: var(--footer-column-dropdown-display);
   height: 100%;
-  background: url(../static/assets/left-arrow.svg) center/1.3rem no-repeat;
+  background: url(../assets/left-arrow.svg) center/1.3rem no-repeat;
   border-radius: 0.3rem;
 }
 
