@@ -2,4 +2,4 @@ src/.env
 src/py/libraries
 src/py/imports
 
-.mypy_cache/, __pycache__/
+src/py/main/__pycache__/
