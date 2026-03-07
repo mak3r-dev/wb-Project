@@ -1,5 +1,5 @@
 from __future__ import annotations
-from ..imports.glo import *
+from imports.glo import *
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)

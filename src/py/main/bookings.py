@@ -1,5 +1,5 @@
 # Modules
-from ..imports.glo import *
+from imports.glo import *
 
 # Specific imports
 from .users import UsersManager,Users,user_input_eval,phone_eval

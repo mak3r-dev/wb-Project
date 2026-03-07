@@ -1,5 +1,5 @@
 # Modules
-from ..imports.glo import *
+from imports.glo import *
 
 # Add - ons -> Static
 class AddOns(Base):

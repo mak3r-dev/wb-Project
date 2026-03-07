@@ -1,17 +1,17 @@
-# Global Imports
-from ..imports.glo import stripe,db,config,Flask,render_template,url_for,redirect,request,jsonify,abort,send_file
+# # Global Imports
+from imports.glo import stripe,db,config,Flask,render_template,url_for,redirect,request,jsonify,abort,send_file
 
 # Custom Imports
-from ..main.users import user_manager,user_class
-from ..main.events import event_manager,event_class,venue_class
-from ..main.bookings  import booking_manager,bookings,entries
+from main.users import user_manager,user_class
+from main.events import event_manager,event_class,venue_class
+from main.bookings  import booking_manager,bookings,entries
 
 stripe.api_key = config.stripe_api_key
 
 db.create_pool()
 db.create_all()
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder = config.templates_folder, static_folder = config.statics_folder)
 @app.route("/") 
 def index(): return redirect(url_for("Home"))
 
@@ -123,7 +123,7 @@ def User():
 
 # Booking URL
 @app.route("/Booking",methods=['GET','POST']) 
-@user_class.login_required
+@user_manager.login_required
 def Booking():
     # GET Requests
     if request.method == 'GET':  
@@ -144,7 +144,7 @@ def Booking():
 
 
 @app.route("/Booking/Checkout",methods=['GET','POST']) 
-@user_class.login_required
+@user_manager.login_required
 def checkout():
     # 1. Get the Booking Info
     data = request.json
