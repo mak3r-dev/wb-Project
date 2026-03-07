@@ -162,19 +162,9 @@
             final : document.querySelector('.final-divider')
         },
         msg : {
-            parent : document.querySelector('.message-container'),
-            availability : document.querySelector('.waiting-list'),
-            booked : document.querySelector('.already-booked'),
-
-            availabilityBtns : {
-              returnEvents : document.querySelector('.waiting-return-events'),
-              continue : document.querySelector('.waitin-continue-to-booking')  
-            },
-
-            bookedBtns : {
-                returntoEvents : document.querySelector(".return-to-events-btn"),
-                cancelBooking : document.querySelector(".cancel-booking-btn")
-            },
+            parent : document.querySelector('.final-confirmation'),
+            confirmBtn : document.querySelector('.confirm-confirmation'),
+            cancelBtn : document.querySelector('.cancel-confirmation'),
         }
     };  
     
@@ -193,6 +183,7 @@
         activeTicketIds: new Set(), // UI State
         activeAddonIds: new Set(), // UI State
         totalPrice: 0,
+        totalTicketCount : 0,
         stripe: {
             instance: null,
             elements: null,
@@ -461,7 +452,7 @@
         const { subTotal: conSubTotal } = DOM.confirmation.confirmed;
         
         // Toggle display only if needed
-        const displayStyle = showSubtotal ? 'flex' : 'none'; // Divider needs 'block'
+        const displayStyle = showSubtotal ? 'flex' : 'none';
           
         if (subTotal.style.display != displayStyle) {
             DOM.dividers.final.classList.toggle('no-gap',false)
@@ -476,16 +467,19 @@
     const updateTicket = (id, change) => {
         const record = State.tickets[id];
         const refs = REF_MAP.get(id);
-
+        const availability = State.eventDetails.eventAvailability
+        
         if (change == -1 && record.attendees == 0) return;
+        refs.uiCount.style.color = "black"
 
         record.attendees += change;
+        State.totalTicketCount += change;        
         record.totalPrice = record.attendees * record.dayPrice;
         State.totalPrice += (change * record.dayPrice);
-
+        
         refs.uiCount.textContent = record.attendees;
         refs.sumText.textContent = `${record.attendees} x ${FMT.currency.format(record.dayPrice)}`;
-        
+
         const isActive = record.attendees > 0;
         
         if (isActive) {
@@ -497,12 +491,22 @@
             refs.uiPrice.textContent = priceStr;
             refs.conedPrice.textContent = priceStr;
             
-            toggleElements(refs.toggles, true); // Sets display: grid/block based on CSS, simplified here to remove 'none'
+            toggleElements(refs.toggles, true); 
         } else {
             State.activeTicketIds.delete(id);
             refs.uiPrice.textContent = "";
             toggleElements(refs.toggles, false);
         }
+
+        console.log(change)
+        if (change > 0 && State.totalTicketCount >= availability){
+            refs.uiCount.style.color = "red"
+            console.log("no")
+
+            record.attendees -= 1
+            State.totalTicketCount -= 1;
+            return;
+        }   
 
         // Layout variable update
         const heightVar = State.activeTicketIds.size > 3 ? '2.5rem' : 'max-content';
@@ -510,7 +514,7 @@
         DOM.summary.placeholders.noTicket.style.color = 'black';
         DOM.containers.summaryDays.classList.toggle(CONFIG.CLASSES.NO_SUMMARY, State.activeTicketIds.size == 0);
         
-        updateGlobalTotal();
+        updateGlobalTotal();     
     };    
 
     const toggleAddon = (id, price) => {
@@ -661,18 +665,19 @@
         if (!validateField(email) || !validateField(phone)) return alert('Invalid Email or Phone Number');     
 
         toggleLoadingScreen(true);
-        State.loading.timeout = setTimeout(getPaymentIntent, Math.random() * 800 + 1000);
+        State.loading.timeout = setTimeout(() => {changeConfirmationView('confirmation')}, Math.random() * 800 + 1000);
     };
 
     const handleConfirmProceed = () => {
         const btn = DOM.confirmation.proceedBtn;
         
-        if (btn.dataset.state == 'payment') {
-            changeConfirmationView('confirmation');
+        if (btn.dataset.state == 'confirmed') {
+            toggleLoadingScreen(true, 'Setting Up Payment');
+            State.loading.timeout = setTimeout(getPaymentIntent, Math.random() * 800 + 1000);
             return;
         }
 
-        if (btn.dataset.state == 'confirmed') {
+        if (btn.dataset.state == 'payment') {
             toggleLoadingScreen(true, 'Processing Payment');
             console.log(State.response.total)
             if (State.response.total != 0) {
@@ -686,15 +691,15 @@
     const handleCancel = () => {
         const { bgBlur, parent, proceedBtn } = DOM.confirmation;
         
-        if (proceedBtn.dataset.state == 'payment') {
+        if (proceedBtn.dataset.state == 'confirmed') {
             bgBlur.style.display = 'none';
             parent.style.display = 'none';
-        } else if (proceedBtn.dataset.state == 'confirmed') {
+        } else if (proceedBtn.dataset.state == 'payment') {
             if (State.totalPrice == 0) {
                 parent.style.display = 'none';
                 bgBlur.style.display = 'none';
             } else {
-                changeConfirmationView('payment');
+                changeConfirmationView('confirmation');
             }
         }
         
@@ -763,18 +768,18 @@
         if (type == 'payment') {
             confirmPayment.style.display = 'block';
             confirmParent.style.display = 'none';
-            cancelBtn.textContent = 'Cancel';
-            proceedBtn.textContent = 'Continue';
+            cancelBtn.textContent = 'Back';
+            proceedBtn.textContent = 'Confirm Your Booking';
             texts.main.textContent = 'Payment';
             texts.sub.textContent = 'Please input your card details.';
             proceedBtn.dataset.state = 'payment';
         } else if (type == 'confirmation') {
             confirmPayment.style.display = 'none';
             confirmParent.style.display = 'block';
-            proceedBtn.textContent = 'Confirm Booking';
+            proceedBtn.textContent = 'Continue';
             texts.main.textContent = 'Confirm Your Booking';
             texts.sub.textContent = 'Please review your booking details.';
-            cancelBtn.textContent = State.totalPrice == 0 ? 'Cancel' : 'Back';
+            cancelBtn.textContent = 'Cancel';
             proceedBtn.dataset.state = 'confirmed';
         }
         
@@ -810,6 +815,56 @@
 
         viewFinalConfirmation();
     };    
+
+    const handleEStatus = (btn) => {
+        const {parent, confirmBtn, cancelBtn} = DOM.msg
+        const { bgBlur, loadingComp} = DOM.confirmation;
+
+        const action = btn.dataset.action
+        const off = () => {
+            parent.style.display = 'none'
+            bgBlur.style.display = 'none'
+            loadingComp.style.display = 'none'  
+        }
+
+        if (action == 'confirm-availability') off()
+        if (action == 'confirm-booked'){
+            off()
+            window.location.replace('../Event')      
+        }  
+
+        if (action == 'cancel-availability'){
+            off()
+            window.location.replace('../Event') 
+        }
+
+        if (action == 'cancel-booked'){
+            off()
+            window.location.replace('../Account')
+        }  
+        return
+    }
+
+    const checkEventStatus = (data) => {
+        const {parent, confirmBtn, cancelBtn} = DOM.msg
+        const { bgBlur, loadingComp} = DOM.confirmation;
+
+        const check = !data.available || data.booked
+        if (check) {
+            loadingComp.style.display = 'none'
+            bgBlur.style.display = !data.available || data.booked ? 'block' : 'none'
+
+            parent.style.display = 'grid'
+
+            parent.classList.add(!data.available ? 'availability' : 'booked');
+            confirmBtn.dataset.action = !data.available ? 'confirm-availability' : 'confirm-booked';
+            cancelBtn.dataset.action = !data.available ? 'cancel-availability' : 'cancel-booked';
+
+            return false;
+        }
+
+        return true
+    }
 
     // =======================================
     // 7. INITIALIZATION
@@ -851,19 +906,12 @@
         DOM.confirmation.cancelBtn.addEventListener('click', handleCancel);
         DOM.confirmation.proceedBtn.addEventListener('click', handleConfirmProceed);
         DOM.confirmation.buttons.return.addEventListener('click', () => window.location.replace('../Event'));
-
-        DOM.msg.availabilityBtns.continue.addEventListener('click',() => {
-            const {parent, availability} = DOM.msg
-
-            DOM.confirmation.bgBlur.style.display = 'none'
-            parent.style.display = 'none';
-            availability.style.display = 'none';
-        });
-        DOM.msg.availabilityBtns.returnEvents.addEventListener('click',() => {window.location.replace('../Event')});
-        DOM.msg.bookedBtns.returntoEvents.addEventListener('click',() => {window.location.replace('../Event')});
-        DOM.msg.bookedBtns.cancelBooking.addEventListener('click',() => {window.location.replace('../Account/0')});
-
         DOM.confirmation.buttons.download.addEventListener('click',() => {window.open('/download-ticket', '_blank')})
+
+        const {confirmBtn, cancelBtn} = DOM.msg
+        confirmBtn.addEventListener('click',() => {handleEStatus(confirmBtn)})
+        cancelBtn.addEventListener('click',() => {handleEStatus(cancelBtn)})
+        
     };  
     
     // Init
@@ -895,25 +943,13 @@
                 }
             }
 
+            const eventStatus = checkEventStatus(data);
+            if (!eventStatus) return;
+
             renderEventInfo(State.eventDetails);
             renderTickets(State.eventDetails);
             renderAddons(data.eventAddons);
             setupEventListeners();
-
-            // Get requirements
-            const {parent, availability, booked} = DOM.msg
-            DOM.confirmation.bgBlur.style.display = !data.available || data.booked ? 'block' : 'none';
-            if (data.available == false){
-                parent.style.display = 'block'
-                availability.style.display = 'block'
-                return
-            }
-
-            if (data.booked == true){
-                parent.style.display = 'block'
-                booked.style.display = 'block'
-                return
-            }
 
         } catch (error) {
             console.error("Initialization Failed:", error);

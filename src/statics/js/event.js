@@ -191,9 +191,9 @@
         const { 
             eventName, eventRating, eventOrganizers, eventPrice, 
             eventStart, eventEnd, eventFt, eventAvailability, 
-            suitability, venueName 
+            suitabilityName, venueName
         } = eventData;
-
+        console.log(eventData)
         const clone = DOM.list.cardTemplate.content.cloneNode(true);
         const root = clone.firstElementChild;
 
@@ -211,15 +211,15 @@
         root.querySelectorAll("._3").forEach(el => el.textContent = eventAvailability);
 
         // Set specific elements
-        setText("event-card-info-categ-text", suitability);
-        setText("event-card-categ", suitability);
+        setText("event-card-info-categ-text", suitabilityName);
+        setText("event-card-categ", suitabilityName);
         setText("_1", `${DateFmt.single.format(eventStart)} - ${DateFmt.single.format(eventEnd)}`);
         setText("price", `£${eventPrice}`);
 
         // Classes & Images
         const imgEl = root.querySelector(".event-card-image");
-        // Optimize string replace
-        const imgClass = (eventName.replace(/\s/g, "") == 'BristolBallonFiesta') ? "BristolBallonFiesta" : suitability.replace(/\s/g, "");
+
+        const imgClass = (eventName.replace(/\s/g, "") == 'BristolBallonFiesta') ? "BristolBallonFiesta" : suitabilityName.replace(/\s/g, "");
         imgEl.classList.add(imgClass);
 
         if (eventFt) root.classList.add("ft");

@@ -62,8 +62,6 @@ class BookingEntries(Base):
     entries = Column(DateTime, nullable=False)
     attendees = Column(Int, nullable=False)
     dayCost = Column(Float, nullable=False)
-    
-    const = Constraint(unique('bookingentryattcostPair','entries','attendees','dayCost'))
 
 class BookingManager:
 
@@ -147,7 +145,7 @@ class BookingManager:
         eInfo =  config.events_db[bookingInfo.get('eventID')]
         discount = config.discounts_db[bookingInfo['discountID']]['discountPercentage'] if bookingInfo['discountID'] else None
         
-        DAY_RANGE = (date.fromisoformat(eInfo['eventEnd']) - date.fromisoformat(eInfo['eventStart'])).days
+        DAY_RANGE = (eInfo['eventEnd'] - eInfo['eventStart']).days
         day_cost = eInfo['eventPrice'] / (DAY_RANGE + 1)
         
         # 2. Add a new booking entry
@@ -163,7 +161,7 @@ class BookingManager:
         for ticket in tickets.values():
             entry = BookingEntries({
                 'bookingID' : new_booking.get_id,
-                'entries' : datetime.datetime.fromisoformat(ticket['date']),
+                'entries' : datetime.datetime.now(datetime.timezone.utc),
                 'attendees' : ticket['attendees'],
                 'dayCost' : day_cost - (day_cost * (discount/ 100)) if discount else day_cost
             })        
@@ -190,10 +188,9 @@ class BookingManager:
             )   
 
         # 6. Update event availability
-        (db.update(Events.eventAvailability == eInfo['eventAvailability'] - 1)
+        (db.update(Events.eventAvailability == (eInfo['eventAvailability'] - 1))
          .where(Events.eventID == bookingInfo.get('eventID')).all()
         )
-        eInfo['eventAvailability'] -= 1
 
         db.commit()
         return bookingResponse()._replace(Message='Successfully Booked Event!',booking_ref=new_booking.get_id,totalPrice=total_price)
@@ -226,6 +223,13 @@ class BookingManager:
         [db.add(BookingDiscount(e)).on_duplicate() for e in config.discounts_db.values()]
         db.commit()
 
+    def update_booking_cache(self):
+        # 1. Get & set all discounts
+        discounts = db.query(BookingDiscount).all(as_dict=True)
+
+        for dis in discounts:
+            config.discounts_db[dis['discountID']] = dis
+            
 #Init
 booking_manager = BookingManager()
 bookings = BookedEvents

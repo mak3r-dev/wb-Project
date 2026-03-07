@@ -58,7 +58,7 @@ def Account():
             db.query(bookings.eventID,bookings.bookingStatus,bookings.bookingID)
             .where(bookings.userID == 1).all(as_dict=True)
         )
-        return user_class.get_user_profile(userInfo, bookingInfo)
+        return user_manager.get_user_profile(userInfo, bookingInfo)
 
     if request.json['OP'] == 'GET_ADMIN_PROFILE':
         all_users = db.query(user_class).all(as_dict=True)
@@ -74,25 +74,16 @@ def Account():
         all_booking_entries = db.query(entries).all(as_dict=True)
         all_events = db.query(event_class).all(as_dict=True)
         all_venues = db.query(venue_class).all(as_dict=True)
-
         return jsonify({
-           'events' : all_events, 
+           'events' : config.events_db, 
            'venues' : all_venues,
            'bookedEvents' : bookings.convert_all(all_bookings), 
            'bookingEntries' : bookings.convert_all(all_booking_entries), 
         })
     
-    if request.json['OP'] == 'ADD_EVENT':
-        print("add",request.json)
-        return jsonify({})
-
-    if request.json['OP'] == 'EDIT_EVENT':
-        print("edit",request.json)
-        return jsonify({})
-
-    if request.json['OP'] == 'DELETE_EVENT':
-        print("delete",request.json)
-        return jsonify({})
+    if request.json['OP'] == 'CANCEL_EVENT':
+        booking_manager.update_booking_status(request.json['id'],'Cancelled')
+        return jsonify({'Message' : 'Cancelled Event Successfully'})
     
     if request.json['OP'] == 'EDIT_USER_DETAILS':
         print("eidt_user",request.json)
@@ -101,11 +92,22 @@ def Account():
     if request.json['OP'] == 'EDIT_USER_PASSWORD':
         print("edit_user_password",request.json)
         return jsonify({})
-                
-    if request.json['OP'] == 'CANCEL_EVENT':
-        booking_manager.update_booking_status(request.json['id'],'Cancelled')
-        return jsonify({'Message' : 'Cancelled Event Successfully'})
-    
+            
+    if request.json['OP'] == 'ADD_EVENT':
+        print("add",request.json)
+        event_manager.update_events_cache()
+        return jsonify({})
+
+    if request.json['OP'] == 'EDIT_EVENT':
+        print("edit",request.json)
+        event_manager.update_events_cache()
+        return jsonify({})
+
+    if request.json['OP'] == 'DELETE_EVENT':
+        print("delete",request.json)
+        event_manager.update_events_cache()
+        return jsonify({})
+      
 # Login URL
 @app.route("/Users",methods=['GET','POST']) 
 def User():
@@ -117,9 +119,9 @@ def User():
     data = request.json
 
     if data['mode'] == 'signup':
-       return jsonify(user_class.signUp(request))
+       return jsonify(user_manager.signUp(request))
 
-    return jsonify(user_class.signIn(request))
+    return jsonify(user_manager.signIn(request))
 
 # Booking URL
 @app.route("/Booking",methods=['GET','POST']) 
@@ -148,7 +150,7 @@ def Booking():
 def checkout():
     # 1. Get the Booking Info
     data = request.json
-
+    
     # 2. Insert booking info
     response = booking_manager.insert_booking_info(data)
     booking_ref, total_price = response.booking_ref, response.totalPrice
@@ -164,6 +166,7 @@ def checkout():
                 }
             )
 
+            event_manager.update_events_cache() 
             return jsonify({
                 'client_secret' : intent['client_secret'], 
                 'key' : config.stripe_pub_key,
@@ -176,7 +179,8 @@ def checkout():
         except Exception as e:
             print(f"Other Error: {e}")
             return
-
+    
+    event_manager.update_events_cache() 
     booking_manager.update_payment_status(booking_ref)
     return jsonify(response._asdict())
     
@@ -209,6 +213,9 @@ def download_ticket():
 # Set all required statics
 booking_manager.insert_all_static()    
 event_manager.insert_all_static()
+
+event_manager.update_events_cache()
+booking_manager.update_booking_cache()
 
 if __name__ == "__main__":
     app.run(debug=True)

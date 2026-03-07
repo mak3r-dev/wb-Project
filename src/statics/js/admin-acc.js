@@ -574,20 +574,20 @@
             const status = clone.querySelector('.booking-status')
             const action = clone.querySelector('.booking-action')
 
-            if (bk.paymentStatus.toLowerCase() == 'confirmed'){ 
+            if (bk.paymentStatus.toLowerCase() == 'paid'){ 
                 status.classList.add('booking-status-confirmed')
                 action.classList.add('booking-status-confirmed')
             }
 
-            if (bk.paymentStatus.toLowerCase() == 'cancelled'){
-                status.classList.add('booking-status-cancelled')
-                action.classList.add('booking-status-cancelled')
-            }   
+            // if (bk.paymentStatus.toLowerCase() == 'cancelled'){
+            //     status.classList.add('booking-status-cancelled')
+            //     action.classList.add('booking-status-cancelled')
+            // }   
 
-            if (bk.paymentStatus.toLowerCase() == 'expired'){
-                status.classList.add('booking-status-unpaid')
-                action.classList.add('booking-status-unpaid')
-            }   
+            // if (bk.paymentStatus.toLowerCase() == 'expired'){
+            //     status.classList.add('booking-status-unpaid')
+            //     action.classList.add('booking-status-unpaid')
+            // }   
 
             bookingCardFrag.append(clone) 
         }) 

@@ -598,73 +598,105 @@ input[type = "text"],input[type = "password"]{
   pointer-events: auto;
 }
 
-.message-container{
+/* Final Confirmation*/
+.final-confirmation{
   display: none;
-}
-
-.already-booked,.waiting-list{
-  height: max-content;
-  background-color: rgb(46, 80, 109, 0.98);
+  width: 20rem;
+  background: rgb(46, 80, 109, 0.9);
   border-radius: 1rem;
   padding: 1rem;
-  justify-items: center;
-  justify-self: center;
-  width: 100%;
-  display: none;
-}
+  position: fixed;
+  pointer-events: auto;
+  
+  .confirmation-icon{
+    width: 3rem;
+    height: 3rem;
 
-.waiting-list{
-  display: none;
-}
-
-.warn-ic{
-  height: 3rem;
-  width: 3rem;
-
-  background-color: rgba(233, 142, 6, 0.692);
-
-  mask-image: url(../assets/warn.png);
-  mask-position: center;
-  mask-size: 3rem;
-  mask-repeat: no-repeat;
-}
-
-.msg-txt{
-  font: lighter 0.89rem var(--font-secondary);
-  text-align: center;
-  margin: 1rem 0rem 1.5rem 0rem;
-}
-
-.msg-redirect-btn-cont{
-  display: grid;
-  grid-template-columns: repeat(2,1fr);
-  gap: 0rem 1rem;
-  width: 100%;
-}
-
-.msg-redirect-btn{
-  font: lighter 1rem var(--font-secondary);
-  border: 0.13rem solid #355C7D;
-  border-radius: 0.5rem;
-  padding: 0.5rem 1rem 0.5rem 1rem;
-  background-color: rgb(0, 0, 0, 0.3);
-}
-
-.return-to-events-btn,.waiting-return-events,.waitin-continue-to-booking{
-  height: 3rem;
-  font: lighter 0.9rem var(--font-secondary); 
-  border-radius: 0.7rem;
-  background-color: rgba(42, 87, 136, 0.5);
-  transition: transform 0.3s ease;
-
-  &:hover{
-    transform: scale(1.03);
+    mask-position: center;
+    mask-size: 3rem;
+    mask-repeat: no-repeat;      
+    justify-self: center; 
   }
 
+  .action-txt{
+    margin-top: 1rem;
+    font: lighter 1.2rem var(--font-secondary);
+    letter-spacing: 0.03rem;
+    text-align: center;
+  }
+
+  .action-btns{
+    margin-top: 1rem;
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 1rem;
+  }
+
+  .msg{margin-top: 0.5rem;}
+  .msg,.next-stp{text-align: center; font: lighter 0.8rem var(--font-secondary); color: rgb(0,0,0,.5);}
+
+  .cancel-confirmation,.confirm-confirmation{
+    height: 2.5rem;
+    border-radius: 2rem;
+    font: lighter 0.8rem var(--font-secondary);
+    text-align: center;
+    align-content: center;
+    letter-spacing: 0.03rem;
+  }
 }
 
-.waitin-continue-to-booking{
-  background-color: rgba(72, 255, 0, 0.5);
+/* Confirmation types*/
+.availability{
+  .confirmation-icon{
+    background-color: rgb(81, 151, 255);
+    mask-image: url(../assets/info.png);
+  }
+
+  .action-txt::before{content: "Information";}
+  .msg::before{content: "The Availability for this event is filled!";}
+  .next-stp::before{content: "You will be added to a waiting list.";}
+
+  .cancel-confirmation{ 
+    color: rgb(81, 151, 255); 
+    border: 0.03rem solid rgb(81, 151, 255);
+
+    &::before{
+      content: "Return";
+    }
+  }
+  .confirm-confirmation{
+    background-color: rgb(81, 151, 255); color: white;
+    &::before{
+      content: "Continue";
+    }
+  }
+}
+
+.booked{
+  .confirmation-icon{
+    background-color: rgb(255, 148, 49);
+    mask-image: url(../assets/warn.png);
+  }
+
+  .action-txt::before{content: "Warning";}
+  .msg::before{content: "Your have already booked this event!";}
+  .next-stp::before{content: "If you wish to cancel this event, continue below.";}
+
+  .cancel-confirmation{ 
+    color: rgb(255, 148, 49); 
+    border: 0.03rem solid rgb(255, 148, 49);
+
+    &::before{
+      content: "Cancel Event";
+    }
+  }
+
+  .confirm-confirmation{
+    background-color: rgb(255, 148, 49); color: white;
+    &::before{
+      content: "Return";
+    }
+  }
 }
 
 .booking-confirmation-container{position: fixed;}

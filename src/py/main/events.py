@@ -156,6 +156,37 @@ class EventsManager:
         cur_id = len(config.events_db)
         self.insert_events({cur_id : event_to_add})
 
+    def update_events_cache(self) ->  None:
+
+        # 1. Get & set all Add-ons
+        add_ons = db.query(AddOns).all(as_dict=True)
+        for addOn in add_ons:
+            config.add_ons_db[addOn['addId']] = addOn
+
+        # 2. Get & set all events
+        events = (db.query(event_class, venue_class, suitability)
+            .join(venue_class, venue_class.venueID == event_class.venueID)
+            .join(suitableVenues, suitableVenues.venueID == event_class.venueID)
+            .join(suitability, suitableVenues.suitabilityID == suitability.suitabilityID)
+            .all(as_dict=True)
+        )   
+
+        for ev in events:
+            config.events_db[ev['eventID']] = ev
+
+        config.EVENT_NAME_INDEX = {details['eventName']: evt_id for evt_id, details in config.events_db.items()}
+
+        # 3. Get & set all events Addons
+        events_addon = (db.query(event_class,AddOns)
+            .join(eventAddOns, eventAddOns.eventID == event_class.eventID)
+            .join(AddOns, eventAddOns.addID == AddOns.addId)
+            .all(as_dict=True)
+        )
+
+        config.event_addons_map = {i + 1 : set() for i in range(0,len(config.events_db)) }
+        for addon in events_addon:    
+            config.event_addons_map[addon['eventID']].add(addon['addId'])
+
 # Init
 event_manager = EventsManager()
 event_class = Events
