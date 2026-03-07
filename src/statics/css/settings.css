@@ -169,12 +169,12 @@
   }
 
   /* Header Icons */
-  .h-child0 { background: url(../static/assets/home.png) center/var(--header-icon-size) no-repeat; }
-  .h-child1 { background: url(../static/assets/event.png) center/var(--header-icon-size) no-repeat; }
-  .h-child2 { background: url(../static/assets/info.png) center/var(--header-icon-size) no-repeat; }
+  .h-child0 { background: url(../statics/assets/home.png) center/var(--header-icon-size) no-repeat; }
+  .h-child1 { background: url(../statics/assets/event.png) center/var(--header-icon-size) no-repeat; }
+  .h-child2 { background: url(../statics/assets/info.png) center/var(--header-icon-size) no-repeat; }
   .h-child3 { display: var(--header-display-toggle); background: none; }
-  .h-child4 { background: url(../static/assets/setting.png) center/var(--header-icon-size) no-repeat; }
-  .h-child5 { background: url(../static/assets/user.png) center/var(--header-icon-size) no-repeat; }
+  .h-child4 { background: url(../statics/assets/setting.png) center/var(--header-icon-size) no-repeat; }
+  .h-child5 { background: url(../statics/assets/user.png) center/var(--header-icon-size) no-repeat; }
 
 /* =========================================
    5. Layout: Section: Settings 
@@ -215,18 +215,18 @@
   align-content: center;
 }
 
-.acc-icon{ mask-image: url(../static/assets/user.png);}
-.noti-icon{ mask-image: url(../static/assets/notifications.png);}
-.priv-icon{ mask-image: url(../static/assets/shield.png);}
-.pay-icon{ mask-image: url(../static/assets/credit-card-1.0.png);}
-.pref-icon{ mask-image: url(../static/assets/world.png);}
-.pass-icon{ mask-image: url(../static/assets/padlock.png);}
-.email-icon{ mask-image: url(../static/assets/email.png);}
-.mobile-icon{ mask-image: url(../static/assets/iphone.png);}
-.bell-icon{ mask-image: url(../static/assets/notifications.png);}
-.visible-icon{ mask-image: url(../static/assets/visible.png);}
+.acc-icon{ mask-image: url(../statics/assets/user.png);}
+.noti-icon{ mask-image: url(../statics/assets/notifications.png);}
+.priv-icon{ mask-image: url(../statics/assets/shield.png);}
+.pay-icon{ mask-image: url(../statics/assets/credit-card-1.0.png);}
+.pref-icon{ mask-image: url(../statics/assets/world.png);}
+.pass-icon{ mask-image: url(../statics/assets/padlock.png);}
+.email-icon{ mask-image: url(../statics/assets/email.png);}
+.mobile-icon{ mask-image: url(../statics/assets/iphone.png);}
+.bell-icon{ mask-image: url(../statics/assets/notifications.png);}
+.visible-icon{ mask-image: url(../statics/assets/visible.png);}
 .bin-icon{ 
-  mask-image: url(../static/assets/delete.png); 
+  mask-image: url(../statics/assets/delete.png); 
   background-color: red;
   mask-position: left;
 }

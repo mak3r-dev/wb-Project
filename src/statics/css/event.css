@@ -12,7 +12,7 @@
   --event-showcase-infobar-columns: max-content 1fr max-content; 
   --event-info-item4-columns: 1fr 5rem;
   --event-filter-intro-columns: 1fr 1.5rem;
-  --event-filter-close-btn-bg: url(../static/assets/Add.svg) center/1.5rem no-repeat;
+  --event-filter-close-btn-bg: url(../statics/assets/Add.svg) center/1.5rem no-repeat;
   --event-filter-close-btn-rotate: 45deg;
   --event-filter-close-btn-content: "";
   --event-card-ft-list-offset: 0rem;
@@ -98,7 +98,7 @@ input[type = "text"]{
 
   .event-filter-image{
       background-color: rgb(167, 167, 167,0.7);
-      mask-image: url(../static/assets/search.png);
+      mask-image: url(../statics/assets/search.png);
       mask-repeat: no-repeat;
       mask-position: center;
       mask-size: 0.9rem
@@ -189,7 +189,7 @@ input[type = "text"]{
   .filter-date-icon{
     background: rgba(255, 255, 255, 0.7);
 
-    mask-image: url(../static/assets/calendar.png);
+    mask-image: url(../statics/assets/calendar.png);
     mask-position: center;
     mask-size: 0.8rem;
     mask-repeat: no-repeat;   
@@ -218,14 +218,14 @@ input[type = "text"]{
   .event-filter-calender-prev,.event-filter-calender-next{
     background: rgba(255, 255, 255, 0.7);
 
-    mask-image: url(../static/assets/left-arrow.svg);
+    mask-image: url(../statics/assets/left-arrow.svg);
     mask-position: right;
     mask-size: 1.1rem;
     mask-repeat: no-repeat;       
   }
 
   .event-filter-calender-next{ 
-    mask-image: url(../static/assets/right-arrow.svg);  
+    mask-image: url(../statics/assets/right-arrow.svg);  
     mask-position: left;
   }
 
@@ -378,7 +378,7 @@ input[type = "text"]{
 .item2-opt1{
   background: rgba(255, 255, 255, 0.7);
 
-  mask-image: url(../static/assets/list.png);
+  mask-image: url(../statics/assets/list.png);
   mask-position: center;
   mask-size: 0.8rem;
   mask-repeat: no-repeat;
@@ -387,7 +387,7 @@ input[type = "text"]{
 .item2-opt2{
   background: rgba(255, 255, 255, 0.7);
 
-  mask-image: url(../static/assets/grid.svg);
+  mask-image: url(../statics/assets/grid.svg);
   mask-position: center;
   mask-size: 1rem;
   mask-repeat: no-repeat;
@@ -411,7 +411,7 @@ input[type = "text"]{
 .item3-icon{
   background: rgba(255, 255, 255, 0.7);
 
-  mask-image: url(../static/assets/filter.png);
+  mask-image: url(../statics/assets/filter.png);
   mask-position: center;
   mask-size: 0.85rem;
   mask-repeat: no-repeat;        
@@ -509,7 +509,7 @@ input[type = "text"]{
   background: var(--grad-main);
   background-size: 115%;
 
-  mask-image: url(../static/assets/star.png);
+  mask-image: url(../statics/assets/star.png);
   mask-position: center;
   mask-size: 0.8rem;
   mask-repeat: no-repeat;
@@ -521,21 +521,21 @@ input[type = "text"]{
   align-self: center;
 }
 
-.BristolBallonFiesta{background: url(../static/assets/BallonFestival.svg) center/cover no-repeat;}
-.Musical{background: url(../static/assets/Musical.svg) center/cover no-repeat;}
-.Sports{background: url(../static/assets/Sports.svg) center/cover no-repeat;}
-.Exhibitions{background: url(../static/assets/Exhibitions.jpg) center/cover no-repeat;}
-.Theatre{background: url(../static/assets/Theatre.svg) center/cover no-repeat;}
-.LibraryExhibitions{background: url(../static/assets/Library.svg) center/cover no-repeat;}
-.Workshops{background: url(../static/assets/Workshop.jpg) center/cover no-repeat;}
-.Courses{background: url(../static/assets/Courses.svg) center/cover no-repeat;}
-.Wedding{background: url(../static/assets/Wedding.jpg) center/cover no-repeat;}
-.Conference{background: url(../static/assets/Conference.svg) center/cover no-repeat;}
-.Birthdays{background: url(../static/assets/Birthday.svg) center/cover no-repeat;}
-.ReligiousEvents{background: url(../static/assets/ReligiousEvents.svg) center/cover no-repeat;}
-.Funfair{background: url(../static/assets/FunFair.svg) center/cover no-repeat;}
-.Entertainments{background: url(../static/assets/Entertainment.jpg) center/cover no-repeat;}
-.Community{background: url(../static/assets/Community.jpg) center/cover no-repeat;}
+.BristolBallonFiesta{background: url(../statics/assets/BallonFestival.svg) center/cover no-repeat;}
+.Musical{background: url(../statics/assets/Musical.svg) center/cover no-repeat;}
+.Sports{background: url(../statics/assets/Sports.svg) center/cover no-repeat;}
+.Exhibitions{background: url(../statics/assets/Exhibitions.jpg) center/cover no-repeat;}
+.Theatre{background: url(../statics/assets/Theatre.svg) center/cover no-repeat;}
+.LibraryExhibitions{background: url(../statics/assets/Library.svg) center/cover no-repeat;}
+.Workshops{background: url(../statics/assets/Workshop.jpg) center/cover no-repeat;}
+.Courses{background: url(../statics/assets/Courses.svg) center/cover no-repeat;}
+.Wedding{background: url(../statics/assets/Wedding.jpg) center/cover no-repeat;}
+.Conference{background: url(../statics/assets/Conference.svg) center/cover no-repeat;}
+.Birthdays{background: url(../statics/assets/Birthday.svg) center/cover no-repeat;}
+.ReligiousEvents{background: url(../statics/assets/ReligiousEvents.svg) center/cover no-repeat;}
+.Funfair{background: url(../statics/assets/FunFair.svg) center/cover no-repeat;}
+.Entertainments{background: url(../statics/assets/Entertainment.jpg) center/cover no-repeat;}
+.Community{background: url(../statics/assets/Community.jpg) center/cover no-repeat;}
 
 /*  Switch Between List or Grid - Start and Choose ft cards*/
 .ft{
@@ -545,13 +545,13 @@ input[type = "text"]{
 .locdateicon,.locdateicon1,.locdateicon2{
   background: rgba(172,172,172,0.35);
   mask-position: left;
-  mask-image: url(../static/assets/calendar.png);
+  mask-image: url(../statics/assets/calendar.png);
   mask-size: 1rem;
   mask-repeat: no-repeat; 
 }
 
-.locdateicon1{mask-image: url(../static/assets/pin.png);}
-.locdateicon2{mask-image: url(../static/assets/People.png);}
+.locdateicon1{mask-image: url(../statics/assets/pin.png);}
+.locdateicon2{mask-image: url(../statics/assets/People.png);}
 
 .grid{
   .event-card-intro-cont{ display: block; }
@@ -695,7 +695,7 @@ input[type = "text"]{
 .card-rating-icon{
   background: rgba(56, 42, 46, 0.7);
 
-  mask-image: url(../static/assets/star.png);
+  mask-image: url(../statics/assets/star.png);
   mask-position: center;
   mask-size: 1.3rem;
   mask-repeat: no-repeat;
@@ -774,7 +774,7 @@ input[type = "text"]{
   justify-self: center;
   border-radius: 50%;
 
-  mask-image: url(../static/assets/search1.png);
+  mask-image: url(../statics/assets/search1.png);
   mask-position: center;
   mask-size: 3.7rem;
   mask-repeat: no-repeat;

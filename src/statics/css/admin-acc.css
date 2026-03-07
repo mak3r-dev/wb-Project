@@ -58,12 +58,12 @@
     mask-repeat: no-repeat;   
   }
 
-  .dashboard-icon{mask-image: url(../static/assets/dashboard.png); mask-size: 0.9rem;}
-  .events-icon{mask-image: url(../static/assets/event.png);}
-  .users-icon{mask-image: url(../static/assets/user.png);}
-  .bookings-icon{mask-image: url(../static/assets/ticket.png);}
-  .reports-icon{mask-image: url(../static/assets/graph.png);}
-  .settings-icon{mask-image: url(../static/assets/setting.png);}
+  .dashboard-icon{mask-image: url(../statics/assets/dashboard.png); mask-size: 0.9rem;}
+  .events-icon{mask-image: url(../statics/assets/event.png);}
+  .users-icon{mask-image: url(../statics/assets/user.png);}
+  .bookings-icon{mask-image: url(../statics/assets/ticket.png);}
+  .reports-icon{mask-image: url(../statics/assets/graph.png);}
+  .settings-icon{mask-image: url(../statics/assets/setting.png);}
 
   .sel-btn-txt{
     height: 100%;
@@ -150,7 +150,7 @@ input[type = "text"]::placeholder{
     mask-size: 1.1rem;
     mask-repeat: no-repeat;      
   }
-  .event-btn{mask-image: url(../static/assets/Add.svg);}
+  .event-btn{mask-image: url(../statics/assets/Add.svg);}
 
   .add-btn-txt{font: lighter 0.9rem var(--font-secondary); align-content: center; text-align: left;}
 
@@ -169,7 +169,7 @@ input[type = "text"]::placeholder{
     height: 2rem;
     background-color: rgba(255, 255, 255, 0.3);
 
-    mask-image: url(../static/assets/search.png);;
+    mask-image: url(../statics/assets/search.png);;
     mask-position: center;
     mask-size: 1rem;
     mask-repeat: no-repeat;   
@@ -269,7 +269,7 @@ input[type = "text"]::placeholder{
 .deletion{
   .confirmation-icon{
     background-color: rgb(255, 81, 81);
-    mask-image: url(../static/assets/disposal.png);
+    mask-image: url(../statics/assets/disposal.png);
   }
 
   .cancel-confirmation{ color: rgb(255, 81, 81); border: 0.03rem solid rgb(255, 81, 81);}
@@ -284,7 +284,7 @@ input[type = "text"]::placeholder{
 .information{
   .confirmation-icon{
     background-color: rgb(81, 151, 255);
-    mask-image: url(../static/assets/info.png);
+    mask-image: url(../statics/assets/info.png);
   }
 
   .cancel-confirmation{ color: rgb(81, 151, 255); border: 0.03rem solid rgb(81, 151, 255);}
@@ -397,25 +397,25 @@ input[type = "text"]::placeholder{
 
   .total-revenue{
     background-color: green;
-    mask-image: url(../static/assets/dollar-sign.png);
+    mask-image: url(../statics/assets/dollar-sign.png);
   }
   .revenue-bg{background-color: rgba(36, 187, 36, 0.5);}
 
   .total-bookings{
     background-color: blue;
-    mask-image: url(../static/assets/ticket.png);
+    mask-image: url(../statics/assets/ticket.png);
   }
   .bookings-bg{background-color: rgba(57, 82, 167, 0.5);}
 
   .upcoming-events{
     background-color: purple;
-    mask-image: url(../static/assets/calendar.png);
+    mask-image: url(../statics/assets/calendar.png);
   }
   .events-bg{background-color: rgba(172, 81, 184, 0.5);}
 
   .total-users{
     background-color: orange;
-    mask-image: url(../static/assets/user.png);
+    mask-image: url(../statics/assets/user.png);
   }
   .users-bg{background-color: rgba(199, 133, 58, 0.5);}
 
@@ -518,11 +518,11 @@ input[type = "text"]::placeholder{
   .edit-action{
     background-color: rgb(61, 61, 255);
     mask-size: 1rem;
-    mask-image: url(../static/assets/edit.png);
+    mask-image: url(../statics/assets/edit.png);
   }
   .delete-action{
     background-color: rgb(255, 0, 0);
-    mask-image: url(../static/assets/delete.png);
+    mask-image: url(../statics/assets/delete.png);
   }
 
 }
@@ -616,7 +616,7 @@ input[type = "text"]::placeholder{
 
     .suspend-action{
       background-color: rgb(255, 0, 0);
-      mask-image: url(../static/assets/suspend.png);   
+      mask-image: url(../statics/assets/suspend.png);   
     }
   }
   
@@ -627,7 +627,7 @@ input[type = "text"]::placeholder{
 
     .suspend-action{
       background-color: rgb(0, 255, 0);
-      mask-image: url(../static/assets/check.png);    
+      mask-image: url(../statics/assets/check.png);    
     }
   }
 
@@ -641,11 +641,11 @@ input[type = "text"]::placeholder{
   .edit-action{
     background-color: rgb(61, 61, 255);
     mask-size: 1rem;
-    mask-image: url(../static/assets/edit.png);
+    mask-image: url(../statics/assets/edit.png);
   }
   .password-action{
     background-color: rgb(255, 0, 0);
-    mask-image: url(../static/assets/padlock.png);
+    mask-image: url(../statics/assets/padlock.png);
   }
 }
 
@@ -706,7 +706,7 @@ input[type = "text"]::placeholder{
 
   .cancel-action{
     background-color: rgb(255, 0, 0);
-    mask-image: url(../static/assets/suspend.png);
+    mask-image: url(../statics/assets/suspend.png);
   }
 }
 
@@ -837,7 +837,7 @@ select {
     mask-repeat: no-repeat;   
   }
 
-  .totl-rev-icon{mask-image: url(../static/assets/dollar-sign.png);}
+  .totl-rev-icon{mask-image: url(../statics/assets/dollar-sign.png);}
 
   /* Revenue report card types without icon title*/
   .rev-report-card-titl{
@@ -919,7 +919,7 @@ select {
   .venue-anal-card-icon{
     background: rgba(255, 255, 255, 0.7);
 
-    mask-image: url(../static/assets/location.svg);
+    mask-image: url(../statics/assets/location.svg);
     mask-position: center;
     mask-size: 1.1rem;
     mask-repeat: no-repeat;     

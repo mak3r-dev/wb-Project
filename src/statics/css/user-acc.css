@@ -173,26 +173,26 @@
   [class *= "user-history-icon"]{
     background: rgba(255, 255, 255, 1);
 
-    mask-image: url(../static/assets/ticket.png);
+    mask-image: url(../statics/assets/ticket.png);
     mask-position: left;
     mask-size: 1.1rem;
     mask-repeat: no-repeat;     
   }
 
   .user-history-icon1{
-    mask-image: url(../static/assets/calendar.png);
+    mask-image: url(../statics/assets/calendar.png);
   }
 
   .user-history-icon2{
-    mask-image: url(../static/assets/none.png);
+    mask-image: url(../statics/assets/none.png);
   }
 
   .user-history-icon3{
-    mask-image: url(../static/assets/past.png);
+    mask-image: url(../statics/assets/past.png);
   }
 
   .user-history-icon4{
-    mask-image: url(../static/assets/star.png);
+    mask-image: url(../statics/assets/star.png);
   }
 
   [class *= "user-history-card-text"]{
@@ -254,26 +254,26 @@
     height: 100%;
     background: rgba(255, 255, 255, 1);
 
-    mask-image: url(../static/assets/credit-card.png);
+    mask-image: url(../statics/assets/credit-card.png);
     mask-position: center;
     mask-size: 1.5rem;
     mask-repeat: no-repeat;       
   }
 
   .user-card-info-header-icon1{
-    mask-image: url(../static/assets/user.png);
+    mask-image: url(../statics/assets/user.png);
   }
 
   .user-card-info-header-icon2{
-    mask-image: url(../static/assets/ticket.png);
+    mask-image: url(../statics/assets/ticket.png);
   }
 
   .user-card-info-header-icon3{
-    mask-image: url(../static/assets/notifications.png);
+    mask-image: url(../statics/assets/notifications.png);
   }
 
   .user-card-info-header-icon4{
-    mask-image: url(../static/assets/waiting-list.png);
+    mask-image: url(../statics/assets/waiting-list.png);
   }
 
   .user-card-info-container{
@@ -381,7 +381,7 @@
   background: var(--grad-main);
   background-size: 115%;
 
-  mask-image: url(../static/assets/star.png);
+  mask-image: url(../statics/assets/star.png);
   mask-position: center;
   mask-size: 0.8rem;
   mask-repeat: no-repeat;
@@ -411,7 +411,7 @@
   }
 
   .event-card-image{ 
-    background: url(../static/assets/BallonFestival.svg) center/cover no-repeat; 
+    background: url(../statics/assets/BallonFestival.svg) center/cover no-repeat; 
     height: 40%;
   }
 
@@ -498,7 +498,7 @@
 
   .event-card-image{ 
     height: None;
-    background: url(../static/assets/BallonFestival.svg) center/cover no-repeat;
+    background: url(../statics/assets/BallonFestival.svg) center/cover no-repeat;
   }
 
   [class *= "event-showcase-card"]{
@@ -591,7 +591,7 @@
 .event-card-rating-icon{
   background: rgba(56, 42, 46, 0.7);
 
-  mask-image: url(../static/assets/star.png);
+  mask-image: url(../statics/assets/star.png);
   mask-position: center;
   mask-size: 1.3rem;
   mask-repeat: no-repeat;
@@ -612,7 +612,7 @@
   [class *= "event-card-info-locdate-icon"]{
     background: rgba(56, 42, 46, 0.7);
 
-    mask-image: url(../static/assets/calendar.png);
+    mask-image: url(../statics/assets/calendar.png);
     mask-size: 1.2rem;
     mask-repeat: no-repeat;
 
@@ -631,7 +631,7 @@
   .event-card-info-locdate-icon1{
     background: rgba(56, 42, 46, 0.7);
 
-    mask-image: url(../static/assets/location.svg);   
+    mask-image: url(../statics/assets/location.svg);   
     mask-repeat: no-repeat;        
   }
 }
@@ -642,7 +642,7 @@
   .event-card-info-locdate-icon2{
     background: rgba(56, 42, 46, 0.7);
 
-    mask-image: url(../static/assets/People.png);
+    mask-image: url(../statics/assets/People.png);
     mask-repeat: no-repeat;        
   }
 }
