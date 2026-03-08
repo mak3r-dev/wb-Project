@@ -193,7 +193,7 @@
             eventStart, eventEnd, eventFt, eventAvailability, 
             suitabilityName, venueName
         } = eventData;
-        console.log(eventData)
+        
         const clone = DOM.list.cardTemplate.content.cloneNode(true);
         const root = clone.firstElementChild;
 

@@ -851,6 +851,11 @@
 
         const check = !data.available || data.booked
         if (check) {
+            // Add Listeners
+            confirmBtn.addEventListener('click',() => {handleEStatus(confirmBtn)})
+            cancelBtn.addEventListener('click',() => {handleEStatus(cancelBtn)})
+
+            // Logic
             loadingComp.style.display = 'none'
             bgBlur.style.display = !data.available || data.booked ? 'block' : 'none'
 
@@ -907,11 +912,7 @@
         DOM.confirmation.proceedBtn.addEventListener('click', handleConfirmProceed);
         DOM.confirmation.buttons.return.addEventListener('click', () => window.location.replace('../Event'));
         DOM.confirmation.buttons.download.addEventListener('click',() => {window.open('/download-ticket', '_blank')})
-
-        const {confirmBtn, cancelBtn} = DOM.msg
-        confirmBtn.addEventListener('click',() => {handleEStatus(confirmBtn)})
-        cancelBtn.addEventListener('click',() => {handleEStatus(cancelBtn)})
-        
+   
     };  
     
     // Init

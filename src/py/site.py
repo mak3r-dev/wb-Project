@@ -40,15 +40,11 @@ def Settings():
 @user_manager.login_required
 def Account():
     # 1. Get user id
-    userID = user_manager.get_id()    
-    userInfo = (db.query(user_class.FirstName,user_class.LastName,
-        user_class.Email,user_class.Phone,user_class.Permission,user_class.DateJoined)
-                .where(user_class.userID == userID).all(as_dict=True))
-    perm = userInfo[0]['Permission'] 
+    userInfo = config.users_db[user_manager.get_id()]   
 
     # GET
     if request.method == 'GET':
-        return render_template("user-acc-temp.html") if perm == 'Standard' else render_template("admin-acc-temp.html")
+        return render_template("user-acc-temp.html") if userInfo['Permission']  == 'Standard' else render_template("admin-acc-temp.html")
 
     # POST
     if request.method != 'POST': return jsonify({})
@@ -56,7 +52,7 @@ def Account():
     if request.json['OP'] == 'GET_USER_PROFILE':
         bookingInfo = (
             db.query(bookings.eventID,bookings.bookingStatus,bookings.bookingID)
-            .where(bookings.userID == 1).all(as_dict=True)
+            .where(bookings.userID == user_manager.get_id()).all(as_dict=True)
         )
         return user_manager.get_user_profile(userInfo, bookingInfo)
 
@@ -72,42 +68,51 @@ def Account():
     if request.json['OP'] == 'GET_ADMIN_REPORT':
         all_bookings = db.query(bookings).all(as_dict=True)
         all_booking_entries = db.query(entries).all(as_dict=True)
-        all_events = db.query(event_class).all(as_dict=True)
         all_venues = db.query(venue_class).all(as_dict=True)
+
         return jsonify({
            'events' : config.events_db, 
            'venues' : all_venues,
            'bookedEvents' : bookings.convert_all(all_bookings), 
            'bookingEntries' : bookings.convert_all(all_booking_entries), 
         })
+
+# Operation Actions
+@app.route("/actions",methods=['POST'])     
+@user_manager.login_required
+def actions():
+    # 1. Get User Perm
+    userInfo = config.users_db[user_manager.get_id()]
     
-    if request.json['OP'] == 'CANCEL_EVENT':
-        booking_manager.update_booking_status(request.json['id'],'Cancelled')
-        return jsonify({'Message' : 'Cancelled Event Successfully'})
-    
-    if request.json['OP'] == 'EDIT_USER_DETAILS':
-        print("eidt_user",request.json)
-        return jsonify({})   
+    # 2. Get Event ID
+    admin = userInfo['Permission'] == "admin" 
+    ID, EID, OP = request.json['ID'], request.json['EID'],request.json['OP']  
 
-    if request.json['OP'] == 'EDIT_USER_PASSWORD':
-        print("edit_user_password",request.json)
-        return jsonify({})
-            
-    if request.json['OP'] == 'ADD_EVENT':
-        print("add",request.json)
-        event_manager.update_events_cache()
-        return jsonify({})
+    match OP:
+        case 'CANCEL_BOOKING':
+            booking_manager.cancel_booking(ID,int(EID))
+            return jsonify({"message" : "Cancellation Successful!"})  
+        
+        case 'ADD_EVENT':
+            if not admin: return
+            print("add_event")
 
-    if request.json['OP'] == 'EDIT_EVENT':
-        print("edit",request.json)
-        event_manager.update_events_cache()
-        return jsonify({})
+        case 'EDIT_EVENT':
+            if not admin: return
+            print("edit_event")
 
-    if request.json['OP'] == 'DELETE_EVENT':
-        print("delete",request.json)
-        event_manager.update_events_cache()
-        return jsonify({})
-      
+        case 'DELETE_EVENT':
+            if not admin: return
+            print("del_event")
+
+        case 'EDIT_USER_DETAILS':
+            if not admin: return
+            print("edit_user")
+
+        case 'EDIT_USER_PASSWORD':
+            if not admin: return
+            print("edit_user_password")
+
 # Login URL
 @app.route("/Users",methods=['GET','POST']) 
 def User():
@@ -216,6 +221,7 @@ event_manager.insert_all_static()
 
 event_manager.update_events_cache()
 booking_manager.update_booking_cache()
+user_manager.update_users_cache()
 
 if __name__ == "__main__":
     app.run(debug=True)

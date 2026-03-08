@@ -57,13 +57,13 @@
 
     /**
      * Cancel Event Logic
-     * @param {string} bookingID 
+     * @param {string} eventID 
      */
-    const cancelEvent = async (bookingID) => {
+    const cancelEvent = async (eventID) => {
         try {
             const result = await base.request({
-                URL: window.location.href,
-                Data: { State: 'CANCEL_EVENT', id: bookingID }
+                URL: "/actions",
+                Data: {OP: 'CANCEL_BOOKING', ID: State.bookings[eventID][0], EID: eventID}
             });
             console.log('Cancellation result:', result);
         } catch (error) {
@@ -85,7 +85,7 @@
         const { 
             eventName, eventRating, eventOrganizers, eventPrice, 
             eventStart, eventEnd, eventFt, eventAvailability, 
-            suitability, venueName 
+            suitability, venueName, eventID 
         } = data;
 
         const bindings = {
@@ -109,7 +109,7 @@
 
         const btn = root.querySelector(".cancel-booking");
         if (allowCancel) {
-            btn.dataset.bookingId = id; 
+            btn.dataset.eventID = eventID;
         } else {
             btn.style.display = 'none';
         }
@@ -167,8 +167,8 @@
     // 1. Event Delegation for Cancel Buttons
     DOM.list.addEventListener('click', (e) => {
         if (e.target.matches('.cancel-booking')) {
-            const id = e.target.dataset.bookingId;
-            if (id) cancelEvent(id);
+            const eid = e.target.dataset.eventID;
+            if (eid) cancelEvent(eid);
         }
     });
 
@@ -231,16 +231,14 @@
                 Data: { OP: 'GET_USER_PROFILE' } 
             });
 
-            console.log("Profile Data:", info);
-
             const now = Date.now(); // Calculate once
             const rawEvents = info.events || []; 
             const rawBookings = info.bookings || {};
-
-            // 1. Identify Cancelled IDs (O(B) where B is bookings)
+            console.log(rawEvents)
+            // 1. Identify Cancelled IDs
             const cancelledIDs = new Set();
             for (const [id, details] of Object.entries(rawBookings)) {
-                if (details[1] == 'Cancelled') cancelledIDs.add(id);
+                if (details[1].toLowerCase() == 'cancelled') cancelledIDs.add(id);
             }
             
             rawEvents.forEach(item => {

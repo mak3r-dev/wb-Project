@@ -1,6 +1,10 @@
 # Modules
 from imports.glo import *
 
+# Event Actions
+ADD_EVENT, EDIT_EVENT, DELETE_EVENT, UPDATE_AVAILABILITY = 0, 1, 2, 3
+UPDATE_CACHE, CACHE_EVENT = 4, 5
+
 # Add - ons -> Static
 class AddOns(Base):
     
@@ -91,12 +95,17 @@ class EventsManager:
     
     def get_all_events(self) -> list[dict]:
         return list(config.events_db.values())
-    
-    def insert_events(self, event_data_list: dict[dict[int,str]]) -> None:
+
+
+    def up_eventAvailability(self, evID: int, val: int) -> None:
+        (db.update(Events.eventAvailability == (config.events_db[evID]['eventAvailability'] + val))
+         .where(Events.eventID == evID).all())        
+
+    def insert_events(self, event_data_list: list[dict[int,str]]) -> None:
         if not event_data_list: return
 
         venue_cache: dict[str, int] = {}
-        for id, entry in event_data_list.items():
+        for entry in event_data_list:
             
             # Separate Venue, Suitability, and Event data
             venue_payload = {k: v for k, v in entry.items() if k in self.VENUE_KEYS}
@@ -136,7 +145,7 @@ class EventsManager:
         db.commit()
 
         # 2. Insert Events and its addons
-        EventsManager().insert_events(config.events_db)
+        EventsManager().insert_events(config.events_db.items())
         db.flush()
 
         event_addon_instances = [
@@ -152,11 +161,8 @@ class EventsManager:
 
         db.commit()
 
-    def add_event(self, event_to_add: dict):
-        cur_id = len(config.events_db)
-        self.insert_events({cur_id : event_to_add})
-
-    def update_events_cache(self) ->  None:
+    # UTILITIES
+    def get_events_cache(self) -> None:
 
         # 1. Get & set all Add-ons
         add_ons = db.query(AddOns).all(as_dict=True)
@@ -185,7 +191,21 @@ class EventsManager:
 
         config.event_addons_map = {i + 1 : set() for i in range(0,len(config.events_db)) }
         for addon in events_addon:    
-            config.event_addons_map[addon['eventID']].add(addon['addId'])
+            config.event_addons_map[addon['eventID']].add(addon['addId'])        
+
+    def update_events_cache(self, evID: int) ->  None:
+        ev = (db.query(event_class, venue_class, suitability)
+            .join(venue_class, venue_class.venueID == event_class.venueID)
+            .join(suitableVenues, suitableVenues.venueID == event_class.venueID)
+            .join(suitability, suitableVenues.suitabilityID == suitability.suitabilityID)
+            .where(event_class.eventID == evID)
+            .all(as_dict=True)
+        )  
+
+        config.events_db[ev['eventID']] = ev
+
+    def add_event(self, event_to_add: dict):
+        self.insert_events([event_to_add])
 
 # Init
 event_manager = EventsManager()

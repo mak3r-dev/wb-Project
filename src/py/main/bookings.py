@@ -3,7 +3,7 @@ from imports.glo import *
 
 # Specific imports
 from .users import UsersManager,Users,user_input_eval,phone_eval
-from .events import Events
+from .events import Events,event_manager
 
 class bookingResponse(NamedTuple):
     Message: str = None
@@ -116,25 +116,33 @@ class BookingManager:
         return buffer
 
     def update_payment_status(self, bookingID: str = None) -> None:
-        # 1. Update status in db
-        sql = (
-            db.update(BookedEvents.paymentStatus == 'paid')
+        (db.update(BookedEvents.paymentStatus == 'paid')
             .where(BookedEvents.bookingID == bookingID).all()
-        )
-        
-        # 2. commit the db
+        ) 
         db.commit()
 
-    def update_booking_status(self, bookingID: str = None, status: str = 'Active') -> None:
-        # 1. Update status in db
-        sql = (
-            db.update(BookedEvents.bookingStatus == status)
-            .where(BookedEvents.bookingID == bookingID).all()
-        )
+    def cancel_booking(self, booking_ref: str, EID: int):
+        print(booking_ref,EID)
+        # 1. Update event & booking status
+        (db.update(BookedEvents.bookingStatus == 'cancelled')
+            .where(BookedEvents.bookingID == booking_ref).all()
+        )              
         
-        # 2. commit the db
-        db.commit()
+        event_manager.up_eventAvailability(EID,1)  
 
+        # 2. Update Waiting Status
+        early_booking = (db.query(BookedEvents.bookingID, BookedEvents.bookingStatus)
+         .order_by(BookedEvents.dateTimeBooked.asc())
+         .limit(1).all(as_dict=True)
+        )
+
+        print(early_booking[0])
+        if (early_booking and early_booking[0]['bookingStatus'] == 'waiting'):
+            self.update_payment_status(early_booking[0]['bookingID'])
+            return
+         
+        db.commit()
+        
     def insert_booking_info(self, bookingInfo: dict[str,str | dict]) -> None:
         if not bookingInfo: return
         
@@ -185,12 +193,11 @@ class BookingManager:
         if eInfo['eventAvailability'] == 0:
             (db.update(BookedEvents.bookingStatus == 'waiting')
              .where(BookedEvents.bookingID == new_booking.get_id).all()  
-            )   
+            )  
 
-        # 6. Update event availability
-        (db.update(Events.eventAvailability == (eInfo['eventAvailability'] - 1))
-         .where(Events.eventID == bookingInfo.get('eventID')).all()
-        )
+        # 6. Update event availability 
+        else:
+            event_manager.up_eventAvailability(bookingInfo.get('eventID'),-1)
 
         db.commit()
         return bookingResponse()._replace(Message='Successfully Booked Event!',booking_ref=new_booking.get_id,totalPrice=total_price)

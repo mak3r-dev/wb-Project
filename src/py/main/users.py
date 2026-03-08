@@ -223,27 +223,27 @@ class UsersManager():
 
         return wrapper  
 
-
     def _handle_auth_failure(self, req, message: str):
-
         query_string = req.query_string.decode()
         state_str = f"{message}?{req.path.lstrip('/').split('/',1)[0]}?{query_string}"
         encoded_state = base64.b64encode(state_str.encode('utf-8')).decode('utf-8')
         if req.method == 'GET': return redirect(url_for('User', linked=encoded_state))
 
-        # For AJAX/POST requests, return JSON instruction
+        # For POST requests, return JSON instruction
         return jsonify({"redirect_url": "Users", "linked": state_str, "message": "Authentication required"})
 
     def get_user_profile(self, userInfo: list[dict], bookingInfo: list[dict]):
-
-        # 1. Get Event 
         evntIDs = [info['eventID'] for info in bookingInfo]
         eventInfo = [[config.events_db[id],id] for id in evntIDs]
 
         # 2. Get Booking Info
         bookings = {info['eventID'] : [str(uuid.UUID(bytes=info['bookingID'])),info['bookingStatus']] for info in bookingInfo}    
-        return jsonify({'user' : userInfo[0], 'events' : eventInfo, 'bookings' : bookings})
+        return jsonify({'user' : userInfo, 'events' : eventInfo, 'bookings' : bookings})
 
+    def update_users_cache(self):
+        users = db.query(user_class).all(as_dict=True)
+        for user in users:
+            config.users_db[user['userID']] = user
 
 # Init
 user_manager = UsersManager()
