@@ -49,6 +49,74 @@ class Users(Base):
     Phone: Column  = Column(string(45), unique=True)
     Permission: Column  = Column(string(45), nullable=False)
 
+    def cache_user(id: int):
+        user = db.query(Users).where(Users.userID == id).all(as_dict=True)
+        config.users_db[user[0]['userID']] = user[0]
+        print(f"user-cache -> {id}, data -> {config.users_db[user[0]['userID']]}\n")
+
+    def get_all_users():
+        users = db.query(Users).all(as_dict=True)
+        for user in users:
+            config.users_db[user['userID']] = user
+
+    def edit_details(id: int, data: dict) -> Action:
+        if id > len(config.users_db): return
+
+        for key, val in data.items():
+            if config.users_db[id][key] == val: return
+
+            if key == 'Phone':
+                val_Phone = None
+                try:
+                    val_Phone = phone_eval(Phone=val).model_dump()      
+                except ValidationError as e:
+                    val_Phone = val # Test -> should return an empty dict if true 
+                
+                config.users_db[id]['Phone'] = val
+                db.update(Users.Phone == val).where(Users.userID == id).all()
+
+            if key == 'DateJoined':
+                val = datetime.datetime.fromisoformat(val).date().isoformat()
+                config.users_db[id]['DateJoined'] = val
+                db.update(Users.DateJoined == val).where(Users.userID == id).all()
+
+            config.users_db[id][key] = val
+            print(f"Edited {key} with new value {config.users_db[id][key]}")
+            db.update(getattr(Users,key) == val).where(Users.userID == id).all()
+
+        db.commit()
+        return {}
+        # return Action()._replace(message='Updated User Details Succesfully',OP='EDIT_DETAILS')._asdict()
+    
+    def edit_password(id: int, data: str):
+        # 1. Validate sign in data    
+        try:
+            val_Pass = password_eval(Password=data['Password']).model_dump()      
+            passHash =  bcrypt.generate_password_hash(val_Pass['Password'])
+
+            config.users_db[id]['Password'] = passHash
+            db.update(getattr(Users.Pass_Hash) == passHash).where(Users.userID == id).all()
+
+            db.commit()
+            return Action()._replace(message='Updated User Password Succesfully',OP='EDIT_PASSWORD')._asdict()
+        except ValidationError as e:
+            return data # Test -> should return an empty dict if true
+        
+
+    def delete_user(id: int):
+        config.users_db[id]['userStatus'] = 'deleted'
+        db.update(getattr(Users.Status) == 'deleted').where(Users.userID == id).all()
+        db.commit()
+
+        return Action()._replace(message='Deleted User Succesfully',OP='DELETE_USER')._asdict()
+    
+    def suspend_user(id: int, status: str = 'suspended'):
+        config.users_db[id]['userStatus'] = status
+        db.update(getattr(Users.Status) == status).where(Users.userID == id).all()
+        db.commit()
+
+        return Action()._replace(message='Suspended User Succesfully',OP='SUSPEND_USER')._asdict()
+
 class UsersManager():
     def __init__(self): pass
     
@@ -144,6 +212,8 @@ class UsersManager():
             # if valid cred, return token
             payload = {'id': full_user.userID , 'status': full_user.Status , 'perm': full_user.Permission}
             Redirect, Message = 'Home', f'Successfuly signed in at {datetime.datetime.now(datetime.timezone.utc).time()}'
+            if not full_user.userID in config.users_db :
+                Users.cache_user(full_user.userID)
 
             if not validated_data['refresh']:
                 tokens_acc = {'access': Auth.create_token(payload,True), 'refresh': None}
@@ -152,8 +222,8 @@ class UsersManager():
             tokens_ref = {'access': Auth.create_token(payload,True), 'refresh': Auth.create_token(payload)}
             return Response()._replace(redirect_for=Redirect,message=Message,tokens=tokens_ref)._asdict()  
         
-        # if account isnt locked
-        Redirect, Message = 'Home', f'Account Locked, Please try again later!!' 
+        # if account is locked
+        Redirect, Message = 'Home', f'Account Locked, Please try again later!!'
         return Response()._replace(redirect_for=Redirect,message=Message,tokens=tokens_ref)._asdict()   
 
     def signUp(self, request):
@@ -240,11 +310,25 @@ class UsersManager():
         bookings = {info['eventID'] : [str(uuid.UUID(bytes=info['bookingID'])),info['bookingStatus']] for info in bookingInfo}    
         return jsonify({'user' : userInfo, 'events' : eventInfo, 'bookings' : bookings})
 
-    def update_users_cache(self):
-        users = db.query(user_class).all(as_dict=True)
-        for user in users:
-            config.users_db[user['userID']] = user
+    def action(self, Perm:str, OP: str, ID: int, DATA: dict):
+        if not isinstance(ID, int): return
+        if Perm != 'Admin' : return
 
+        match OP:
+            case 'EDIT_DETAILS': 
+                if not DATA: return
+                return Users.edit_details(ID,DATA)
+            case 'EDIT_PASSWORD': 
+                if not DATA: return
+                return Users.edit_password(ID,DATA)
+            case 'DELETE_USER' : return Users.delete_user(ID)
+            case 'SUSPEND_USER' : return Users.suspend_user(ID)
+            case 'UNSUSPEND_USER' : return Users.suspend_user(ID,'Active')
+            case 'CACHE_USER' : Users.cache_user(ID)
+
+    def internal_actions(self,OP: str):
+        match OP:
+            case 'CACHE_ALL': Users.get_all_users()
 # Init
 user_manager = UsersManager()
 user_class = Users

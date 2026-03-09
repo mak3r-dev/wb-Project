@@ -44,6 +44,105 @@ class BookedEvents(Base):
 
         return result
     
+    def insert_all_static():
+        [db.add(BookingDiscount(e)).on_duplicate() for e in config.discounts_db.values()]
+        db.commit()
+
+    def update_booking_cache():
+        discounts = db.query(BookingDiscount).all(as_dict=True)
+
+        for dis in discounts:
+            config.discounts_db[dis['discountID']] = dis
+
+    def update_payment_status(bookingID: str = None) -> None:
+        (db.update(BookedEvents.paymentStatus == 'paid')
+            .where(BookedEvents.bookingID == bookingID).all()) 
+
+        db.commit()
+        return Action()._replace(message='Updated Status Successfully', OP='UPDATE_PAYMENT_STATUS')
+    
+    def update_booking_status(Status: str, bookingID: str = None) -> None:
+        (db.update(BookedEvents.bookingStatus == Status)
+            .where(BookedEvents.bookingID == bookingID).all()) 
+        
+        db.commit()
+        print(f"New Status -> {db.query(BookedEvents.bookingStatus).where(BookedEvents.bookingID == bookingID).all(as_dict=True)}")
+        
+    def cancel_booking(booking_ref: str, eventID: int):
+        # 1. Update event & booking status
+        BookedEvents.update_booking_status(Status='cancelled',bookingID=booking_ref)
+        event_manager.action('admin','UPDATE_AVAILABILITY',eventID,1)
+ 
+        # 2. Update Waiting Status
+        early_booking = (db.query(BookedEvents.bookingID, BookedEvents.bookingStatus)
+         .order_by(BookedEvents.dateTimeBooked.asc())
+         .limit(1).all(as_dict=True)
+        )
+
+        if (early_booking and early_booking[0]['bookingStatus'] == 'waiting'):
+            BookedEvents.update_payment_status(early_booking[0]['bookingID'])
+            return Action()._replace(message='Updated Waiting List Successfully', OP='CANCEL_BOOKING')
+
+        return Action()._replace(message='Cancelled Event Successfully', OP='CANCEL_BOOKING')
+    
+    def insert_booking_info(uID: int, bookingInfo: dict[str,str | dict]) -> None:
+        if not bookingInfo: return
+        
+        recieved_tickets = bookingInfo.get('tickets')
+        tickets = {i : recieved_tickets[i] for i in range(len(recieved_tickets))}
+            
+        # 1. Get statics
+        eInfo =  config.events_db[bookingInfo.get('eventID')]
+        discount = config.discounts_db[bookingInfo['discountID']]['discountPercentage'] if bookingInfo['discountID'] else None
+        
+        DAY_RANGE = (eInfo['eventEnd'] - eInfo['eventStart']).days
+        day_cost = eInfo['eventPrice'] / (DAY_RANGE + 1)
+        
+        # 2. Add a new booking entry
+        addOns = bookingInfo.get('AddOns')
+        total_price = sum([day_cost * ticket['attendees'] for ticket in tickets.values()] + [config.add_ons_db[aid]['Price'] for aid in addOns])
+        total_price = total_price - (total_price * discount/ 100) if discount else total_price
+        new_booking = BookedEvents(userID=uID,eventID=bookingInfo.get('eventID'),
+            dateTimeBooked=datetime.datetime.now(datetime.timezone.utc), totalPrice = total_price
+        )   
+     
+        db.add(new_booking).on_duplicate()
+        # 2. Calucate and add individual ticket info
+        for ticket in tickets.values():
+            entry = BookingEntries({
+                'bookingID' : new_booking.get_id,
+                'entries' : datetime.datetime.now(datetime.timezone.utc),
+                'attendees' : ticket['attendees'],
+                'dayCost' : day_cost - (day_cost * (discount/ 100)) if discount else day_cost
+            })        
+
+            db.add(entry).on_duplicate()
+        
+        # 3. Insert Add-Ons Chosen
+        [db.add(BookingAddOns(bookingID=new_booking.get_id,addID=aid)).on_duplicate() for aid in bookingInfo.get('AddOns')]
+
+        # 4. Insert user Info
+        userInfo = UsersManager.validate_booking_info(bookingInfo.get('userInfo'))
+      
+        (db.update(Users.Phone == userInfo['Phone'])
+         .where(Users.Email == userInfo['Email'], Users.FirstName == userInfo['FirstName'], Users.LastName == userInfo['LastName'])
+         .all()
+        )
+        config.users_db[uID]['Phone'] = userInfo['Phone']
+
+        # 5. Update Booking status
+        if eInfo['eventAvailability'] == 0:
+            (db.update(BookedEvents.bookingStatus == 'waiting')
+             .where(BookedEvents.bookingID == new_booking.get_id).all()  
+            )  
+
+        # 6. Update event availability 
+        else:
+            event_manager.action(Perm='admin',OP='UPDATE_AVAILABILITY',ID=bookingInfo.get('eventID'),DATA=-1)
+
+        db.commit()
+        return bookingResponse()._replace(Message='Successfully Booked Event!',booking_ref=new_booking.get_id,totalPrice=total_price)         
+
 # Bookings Add-Ons -> Dynamic
 class BookingAddOns(Base):
 
@@ -114,94 +213,7 @@ class BookingManager:
         buffer.seek(0)
 
         return buffer
-
-    def update_payment_status(self, bookingID: str = None) -> None:
-        (db.update(BookedEvents.paymentStatus == 'paid')
-            .where(BookedEvents.bookingID == bookingID).all()
-        ) 
-        db.commit()
-
-    def cancel_booking(self, booking_ref: str, EID: int):
-        print(booking_ref,EID)
-        # 1. Update event & booking status
-        (db.update(BookedEvents.bookingStatus == 'cancelled')
-            .where(BookedEvents.bookingID == booking_ref).all()
-        )              
-        
-        event_manager.up_eventAvailability(EID,1)  
-
-        # 2. Update Waiting Status
-        early_booking = (db.query(BookedEvents.bookingID, BookedEvents.bookingStatus)
-         .order_by(BookedEvents.dateTimeBooked.asc())
-         .limit(1).all(as_dict=True)
-        )
-
-        print(early_booking[0])
-        if (early_booking and early_booking[0]['bookingStatus'] == 'waiting'):
-            self.update_payment_status(early_booking[0]['bookingID'])
-            return
-         
-        db.commit()
-        
-    def insert_booking_info(self, bookingInfo: dict[str,str | dict]) -> None:
-        if not bookingInfo: return
-        
-        recieved_tickets = bookingInfo.get('tickets')
-        tickets = {i : recieved_tickets[i] for i in range(len(recieved_tickets))}
-            
-        # 1. Get statics
-        eInfo =  config.events_db[bookingInfo.get('eventID')]
-        discount = config.discounts_db[bookingInfo['discountID']]['discountPercentage'] if bookingInfo['discountID'] else None
-        
-        DAY_RANGE = (eInfo['eventEnd'] - eInfo['eventStart']).days
-        day_cost = eInfo['eventPrice'] / (DAY_RANGE + 1)
-        
-        # 2. Add a new booking entry
-        addOns = bookingInfo.get('AddOns')
-        total_price = sum([day_cost * ticket['attendees'] for ticket in tickets.values()] + [config.add_ons_db[aid]['Price'] for aid in addOns])
-        total_price = total_price - (total_price * discount/ 100) if discount else total_price
-        new_booking = BookedEvents(userID=UsersManager().get_id(),eventID=bookingInfo.get('eventID'),
-            dateTimeBooked=datetime.datetime.now(datetime.timezone.utc), totalPrice = total_price
-        )   
-     
-        db.add(new_booking).on_duplicate()
-        # 2. Calucate and add individual ticket info
-        for ticket in tickets.values():
-            entry = BookingEntries({
-                'bookingID' : new_booking.get_id,
-                'entries' : datetime.datetime.now(datetime.timezone.utc),
-                'attendees' : ticket['attendees'],
-                'dayCost' : day_cost - (day_cost * (discount/ 100)) if discount else day_cost
-            })        
-
-            db.add(entry).on_duplicate()
-        
-        # 3. Insert Add-Ons Chosen
-        [db.add(BookingAddOns(bookingID=new_booking.get_id,addID=aid)).on_duplicate() for aid in bookingInfo.get('AddOns')]
-
-        # 4. Insert user Info
-        userInfo = UsersManager.validate_booking_info(bookingInfo.get('userInfo'))
       
-        (db.update(Users.Phone == userInfo['Phone'])
-         .where(Users.Email == userInfo['Email'], Users.FirstName == userInfo['FirstName'], Users.LastName == userInfo['LastName'])
-         .all()
-        )
-
-        db.flush()
-
-        # 5. Update Booking status
-        if eInfo['eventAvailability'] == 0:
-            (db.update(BookedEvents.bookingStatus == 'waiting')
-             .where(BookedEvents.bookingID == new_booking.get_id).all()  
-            )  
-
-        # 6. Update event availability 
-        else:
-            event_manager.up_eventAvailability(bookingInfo.get('eventID'),-1)
-
-        db.commit()
-        return bookingResponse()._replace(Message='Successfully Booked Event!',booking_ref=new_booking.get_id,totalPrice=total_price)
-
     def check_user_status(self, request, eventName: dict):
         response = {'available' : True, 'booked' :False}
 
@@ -226,16 +238,25 @@ class BookingManager:
            
     def get_discounts(self): return db.query(BookingDiscount).all(as_dict=True)
 
-    def insert_all_static(self):
-        [db.add(BookingDiscount(e)).on_duplicate() for e in config.discounts_db.values()]
-        db.commit()
+    def action(self, OP: str, ID: int | str, DATA: dict | str):        
+        match OP:
+            case 'ADD_BOOKING': 
+                if not isinstance(ID, int): return
+                return BookedEvents.insert_booking_info(ID,DATA)
+            
+            case 'CANCEL_BOOKING':
+                if not isinstance(ID, str): return
+                return BookedEvents.cancel_booking(ID,DATA)
+            
+            case 'UPDATE_PAYMENT_STATUS': 
+                if not isinstance(ID, str): return
+                return BookedEvents.update_payment_status(ID)
 
-    def update_booking_cache(self):
-        # 1. Get & set all discounts
-        discounts = db.query(BookingDiscount).all(as_dict=True)
+    def internal_actions(self, OP: str):
+        match OP:
+            case 'INSERT_DEFAULTS': BookedEvents.insert_all_static()
+            case 'CACHE_DISCOUNTS': BookedEvents.update_booking_cache()
 
-        for dis in discounts:
-            config.discounts_db[dis['discountID']] = dis
             
 #Init
 booking_manager = BookingManager()

@@ -63,7 +63,12 @@
         try {
             const result = await base.request({
                 URL: "/actions",
-                Data: {OP: 'CANCEL_BOOKING', ID: State.bookings[eventID][0], EID: eventID}
+                Data: {
+                    ACTION : 'BOOKING_ACTION',
+                    ID:  State.bookings[eventID][0],
+                    OP: 'CANCEL_BOOKING',
+                    DATA : eventID
+                }
             });
             console.log('Cancellation result:', result);
         } catch (error) {
@@ -222,7 +227,7 @@
         DOM.buttons.cancelled.textContent = `Cancelled (${counts.cancelled})`;
     };
 
-    const init = async () => {
+    const init = (async () => {
         try {
             handleResize();
 
@@ -234,11 +239,11 @@
             const now = Date.now(); // Calculate once
             const rawEvents = info.events || []; 
             const rawBookings = info.bookings || {};
-            console.log(rawEvents)
+            
             // 1. Identify Cancelled IDs
             const cancelledIDs = new Set();
             for (const [id, details] of Object.entries(rawBookings)) {
-                if (details[1].toLowerCase() == 'cancelled') cancelledIDs.add(id);
+                if (details[1] == 'cancelled') cancelledIDs.add(Number(id));
             }
             
             rawEvents.forEach(item => {
@@ -247,7 +252,6 @@
                 const start = new Date(eventData.eventStart).getTime();
                 
                 const stdEvent = { data: eventData, id: eventId };
-
                 if (cancelledIDs.has(eventId)) {
                     State.events.cancelled.push(stdEvent);
                 } else {
@@ -257,7 +261,10 @@
 
                 if (eventData.eventFt) State.events.featured.push(stdEvent);
             });
-
+            console.log(State.events.cancelled) 
+            console.log(State.events.upcoming) 
+            console.log(State.events.past) 
+            console.log(State.events.featured) 
             State.bookings = rawBookings;
 
             // Render Info
@@ -275,8 +282,6 @@
         } catch (err) {
             console.error("Initialization failed", err);
         }
-    };
-
-    init();
+    })();
 
 })();

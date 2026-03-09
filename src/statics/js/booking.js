@@ -855,7 +855,7 @@
             confirmBtn.addEventListener('click',() => {handleEStatus(confirmBtn)})
             cancelBtn.addEventListener('click',() => {handleEStatus(cancelBtn)})
 
-            // Logic
+            // Set Statics
             loadingComp.style.display = 'none'
             bgBlur.style.display = !data.available || data.booked ? 'block' : 'none'
 

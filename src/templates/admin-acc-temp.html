@@ -14,7 +14,7 @@
     {% extends "base-temp.html" %}
         
     {% block scripts %}
-       <script  src="../statics/js/admin-acc.js" defer></script>
+       <script  src="../statics/js/test.js" defer></script>
        <script  src="../statics/js/admin-rep.js" defer></script>
        <script src="https://cdn.jsdelivr.net/npm/apexcharts" defer></script>
     {% endblock %}    
@@ -167,7 +167,7 @@
                 </template>
                 <template id="event-card-template">
                     <tr><td colspan="8"><div class="table-dividr"></div></td></tr>
-                    <tr class="evnt-card" data-event="Centre Exhibitions Tour">
+                    <tr class="evnt-card">
                         <td class="card-title-cat">
                             <h1 class="evnt-titl tabl-sec-ftn pad-left">Bristol Ballon Fiesta</h1>
                             <h1 class="evnt-cat tabl-f-section-info pad-left">Entertainment</h1>
@@ -441,15 +441,15 @@
                     <div class="input-body-grp-3-inputs custom-lyout">
                         <div class="input-body-ctn">
                             <h1 class="input-headr">Event Title</h1>
-                            <input type="text" class="input-body evnt-title-to-update">  
+                            <input type="text" class="input-body evnt-title-to-update" data-key="eventName">  
                         </div>  
                         <div class="input-body-ctn">
                             <h1 class="input-headr">Category</h1>
-                            <input type="text" class="input-body evnt-cat-to-update">  
+                            <input type="text" class="input-body evnt-cat-to-update" data-key="suitabilityName">  
                         </div>                          
                         <div class="input-body-ctn">
                             <h1 class="input-headr ft-header">Ft?</h1>
-                            <button class="ft-checkbox evnt-ft-to-update" data-state="off">
+                            <button class="ft-checkbox evnt-ft-to-update">
                                 <div class="check-indicator check-indicator-off"></div>
                             </button>
                         </div>                                
@@ -458,60 +458,60 @@
                     <div class="input-body-grp-2-inputs">
                         <div class="input-body-ctn">
                             <h1 class="input-headr">Start</h1>
-                            <input type="text" class="input-body evnt-start-to-update">  
+                            <input type="text" class="input-body evnt-start-to-update" data-key="eventStart">  
                         </div>  
                         <div class="input-body-ctn">
                             <h1 class="input-headr">End</h1>
-                            <input type="text" class="input-body evnt-end-to-update">  
+                            <input type="text" class="input-body evnt-end-to-update" data-key="eventEnd">  
                         </div>        
                     </div>
 
                     <h1 class="input-headr">Description</h1>
-                    <input type="text" class="input-body evnt-desc-to-update"> 
+                    <input type="text" class="input-body evnt-desc-to-update" data-key="eventDesc"> 
                     
                     <div class="input-body-grp-3-inputs">
                         <div class="input-body-ctn">
                             <h1 class="input-headr">Price</h1>
-                            <input type="text" class="input-body evnt-price-to-update">  
+                            <input type="text" class="input-body evnt-price-to-update" data-key="eventPrice">  
                         </div>  
                         <div class="input-body-ctn">
                             <h1 class="input-headr">Availability</h1>
-                            <input type="text" class="input-body evnt-availability-to-update">  
+                            <input type="text" class="input-body evnt-availability-to-update" data-key="eventAvailability">  
                         </div>  
                         <div class="input-body-ctn">
                             <h1 class="input-headr">Status</h1>
-                            <input type="text" class="input-body evnt-status-to-update">  
+                            <input type="text" class="input-body evnt-status-to-update" data-key="eventStatus">  
                         </div>          
                     </div>
 
                     <div class="input-body-grp-2-inputs">
                         <div class="input-body-ctn">
                             <h1 class="input-headr">Organizers</h1>
-                            <input type="text" class="input-body evnt-org-to-update">  
+                            <input type="text" class="input-body evnt-org-to-update" data-key="eventOrganizers">  
                         </div>  
                         <div class="input-body-ctn">
                             <h1 class="input-headr">Rating</h1>
-                            <input type="text" class="input-body evnt-rating-to-update">  
+                            <input type="text" class="input-body evnt-rating-to-update" data-key="eventRating">  
                         </div>        
                     </div>
 
                     <h1 class="input-headr">Venue Name</h1>
-                    <input type="text" class="input-body venue-name-to-update">
+                    <input type="text" class="input-body venue-name-to-update" data-key="venueName">
 
                     <div class="input-body-grp-2-inputs">
                         <div class="input-body-ctn">
                             <h1 class="input-headr">Venue Capacity</h1>
-                            <input type="text" class="input-body venue-capacity-to-update">  
+                            <input type="text" class="input-body venue-capacity-to-update" data-key="venueCapacity">  
                         </div>  
                         <div class="input-body-ctn">
                             <h1 class="input-headr">Venue Address</h1>
-                            <input type="text" class="input-body venue-address-to-update">  
+                            <input type="text" class="input-body venue-address-to-update" data-key="venueAddress">  
                         </div>        
                     </div>
 
                     <div class="input-body-grp-2-inputs final-btns">
                         <button class="cancel-btn edit-add-events-cancel-btn">Cancel</button>
-                        <button class="confirm-btn edit-add-events-confirm-btn">Create Event</button>
+                        <button class="confirm-btn edit-add-events-confirm-btn"></button>
                     </div>
                 </div>
             </div>
@@ -539,26 +539,26 @@
                     <div class="input-body-grp-2-inputs">
                         <div class="input-body-ctn">
                             <h1 class="input-headr">First Name</h1>
-                            <input type="text" class="input-body frst-name-to-update">  
+                            <input type="text" class="input-body frst-name-to-update" data-key="FirstName">  
                         </div>  
                         <div class="input-body-ctn">
                             <h1 class="input-headr">Last Name</h1>
-                            <input type="text" class="input-body last-name-to-update">  
+                            <input type="text" class="input-body last-name-to-update" data-key="LastName">  
                         </div>        
                     </div>
                     <div class="input-body-grp-2-inputs">
                         <div class="input-body-ctn">
                             <h1 class="input-headr">Email</h1>
-                            <input type="text" class="input-body email-to-update">  
+                            <input type="text" class="input-body email-to-update" data-key="Email">  
                         </div>  
                         <div class="input-body-ctn">
                             <h1 class="input-headr">Phone Number</h1>
-                            <input type="text" class="input-body phone-to-update">  
+                            <input type="text" class="input-body phone-to-update" data-key="Phone">  
                         </div>        
                     </div>
                     <div class="input-body-grp-2-inputs final-btns">
-                        <button class="cancel-btn user-info-confirm-btn">Cancel</button>
-                        <button class="confirm-btn user-info-cancel-btn">Continue</button>
+                        <button class="cancel-btn user-info-cancel-btn">Cancel</button>
+                        <button class="confirm-btn user-info-confirm-btn">Continue</button>
                     </div>
                 </div>
             </div>
@@ -588,10 +588,6 @@
                 </div>
             </div>   
             
-            <!--Report Bar Content-->
-            <div class="report-bar-dropdown">
-
-            </div>
         </div>
     {% endblock %}
     </div>

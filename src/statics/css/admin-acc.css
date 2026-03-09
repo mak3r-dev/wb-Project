@@ -82,8 +82,6 @@
    ========================================= */ 
 
 /* Global Content*/
-.input-valid{border: 0.123rem solid rgb(136,231,136);}
-.input-error{border: 0.08rem solid rgb(255, 83, 83);}
 
 .no-result{
   display: grid;
@@ -102,7 +100,6 @@
 
 input[type = "text"]{
   outline: none;
-  border: none;
   caret-color: rgb(0,0,0,.6);
 }
 
@@ -179,6 +176,7 @@ input[type = "text"]::placeholder{
     background: none;
     font: lighter 0.8rem var(--font-secondary); 
     color: rgb(0,0,0,.6);
+    border: none;
   }
 }
 
@@ -227,6 +225,7 @@ input[type = "text"]::placeholder{
   padding: 1rem;
   position: fixed;
   pointer-events: auto;
+  z-index: 5;
   
   .confirmation-icon{
     width: 3rem;
@@ -339,7 +338,6 @@ input[type = "text"]::placeholder{
 
 .input-body{
   border-radius: 0.5rem;
-  border: 0.01rem solid gray;
   width: 100%;
   height: 2rem;
   margin-bottom: 0.5rem;
@@ -589,7 +587,7 @@ input[type = "text"]::placeholder{
   .role-user{
     background-color: rgba(65, 65, 65, 0.5);
     &::before{
-      content: "user";
+      content: "standard";
     }
   }
 
@@ -974,6 +972,8 @@ select {
 }
 
 .visible-rp-contn{display: grid;}
+.input-valid{border: 0.123rem solid rgb(136,231,136);}
+.input-error{border: 0.08rem solid rgb(255, 83, 83);}
 
 /* =========================================
    3. Media Queries

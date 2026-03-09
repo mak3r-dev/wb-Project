@@ -61,7 +61,7 @@
   margin: 0;
 }
 
-input[type = "range"],input[type = "text"],
+input[type = "range"],
 input[type = "password"],input[type = "select"]{
   border: none;
   outline: none; 

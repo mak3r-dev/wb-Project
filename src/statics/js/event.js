@@ -133,7 +133,7 @@
             if (featured && !event.eventFt) return false;
 
             // 3. Category Check
-            if (category && !event.suitability.toLowerCase().includes(category)) return false;
+            if (category && !event.suitabilityName.toLowerCase().includes(category)) return false;
 
             // 4. Date Check
             const evtDate = event.eventStart; // Already a Date object
@@ -178,11 +178,10 @@
 
         const frag = document.createDocumentFragment();
         
-        events.forEach(event => {
+        for (const event of events){
             const card = createCardNode(event);
             frag.appendChild(card);
-        });
-
+        }
         DOM.list.container.appendChild(frag);
     };
 
@@ -522,12 +521,15 @@
             if (typeof base !== 'undefined') {
                 const events = await base.request({ URL: window.location.href });
                 
-                state.events = events.map(ev => ({
-                    ...ev,
-                    eventStart: new Date(ev.eventStart),
-                    eventEnd: new Date(ev.eventEnd)
-                }));
-                
+                state.events = []
+                for (let [id, ev] of Object.entries(events)){
+                    if (ev.eventStatus == 'Deleted') continue;
+
+                    ev.eventStart = new Date(ev.eventStart)
+                    ev.eventEnd = new Date(ev.eventEnd)
+                    state.events.push(ev)               
+                }
+
                 // Initial Render
                 renderEventList(state.events);
             } else {

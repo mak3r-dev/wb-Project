@@ -57,12 +57,13 @@ def Account():
         return user_manager.get_user_profile(userInfo, bookingInfo)
 
     if request.json['OP'] == 'GET_ADMIN_PROFILE':
-        all_users = db.query(user_class).all(as_dict=True)
         all_bookings = db.query(bookings).all(as_dict=True)
+        all_booking_entries = db.query(entries).all(as_dict=True)
         return jsonify({
-            'users' : all_users, 
+            'users' : config.users_db, 
             'events' : config.events_db, 
-            'bookings' : bookings.convert_all(all_bookings)
+            'bookings' : bookings.convert_all(all_bookings),
+            'bookingEntries' : bookings.convert_all(all_booking_entries), 
         })
     
     if request.json['OP'] == 'GET_ADMIN_REPORT':
@@ -81,38 +82,20 @@ def Account():
 @app.route("/actions",methods=['POST'])     
 @user_manager.login_required
 def actions():
-    # 1. Get User Perm
-    userInfo = config.users_db[user_manager.get_id()]
+    perm = config.users_db[user_manager.get_id()]['Permission']   
+    ACTION = request.json['ACTION']
+    ID, OP, DATA = request.json['ID'], request.json['OP'], request.json['DATA']  
+
+    if ACTION == 'EVENT_ACTION':
+        return jsonify(event_manager.action(perm,OP,ID,DATA))
+
+    if ACTION == 'USER_ACTION':
+        return jsonify(user_manager.action(perm,OP,ID,DATA))
     
-    # 2. Get Event ID
-    admin = userInfo['Permission'] == "admin" 
-    ID, EID, OP = request.json['ID'], request.json['EID'],request.json['OP']  
-
-    match OP:
-        case 'CANCEL_BOOKING':
-            booking_manager.cancel_booking(ID,int(EID))
-            return jsonify({"message" : "Cancellation Successful!"})  
-        
-        case 'ADD_EVENT':
-            if not admin: return
-            print("add_event")
-
-        case 'EDIT_EVENT':
-            if not admin: return
-            print("edit_event")
-
-        case 'DELETE_EVENT':
-            if not admin: return
-            print("del_event")
-
-        case 'EDIT_USER_DETAILS':
-            if not admin: return
-            print("edit_user")
-
-        case 'EDIT_USER_PASSWORD':
-            if not admin: return
-            print("edit_user_password")
-
+    if ACTION == 'BOOKING_ACTION':
+        print(f"booking-act -> {OP}, data -> {DATA} id -> {ID}")
+        return jsonify(booking_manager.action(OP,ID,DATA))  
+      
 # Login URL
 @app.route("/Users",methods=['GET','POST']) 
 def User():
@@ -157,7 +140,7 @@ def checkout():
     data = request.json
     
     # 2. Insert booking info
-    response = booking_manager.insert_booking_info(data)
+    response = booking_manager.action(OP='ADD_BOOKING',ID=user_manager.get_id(),DATA=data)
     booking_ref, total_price = response.booking_ref, response.totalPrice
     
     if total_price > 0:
@@ -171,7 +154,6 @@ def checkout():
                 }
             )
 
-            event_manager.update_events_cache() 
             return jsonify({
                 'client_secret' : intent['client_secret'], 
                 'key' : config.stripe_pub_key,
@@ -185,8 +167,7 @@ def checkout():
             print(f"Other Error: {e}")
             return
     
-    event_manager.update_events_cache() 
-    booking_manager.update_payment_status(booking_ref)
+    booking_manager.action(OP='UPDATE_PAYMENT_STATUS',ID=booking_ref,DATA={})
     return jsonify(response._asdict())
     
 @app.route("/payment-webhook", methods=['POST'])
@@ -200,7 +181,7 @@ def webhook():
         if event.get('type') == 'payment_intent.succeeded':
             ref = event.get('data').get('object').get('metadata').get('ref')
 
-            booking_manager.update_payment_status(ref)
+            booking_manager.action(OP='UPDATE_PAYMENT_STATUS',ID=ref,DATA={})
 
     except ValueError as e:
         return jsonify(error=str(e)), 400
@@ -216,12 +197,11 @@ def download_ticket():
     return send_file(buffer,'application/pdf',False)
 
 # Set all required statics
-booking_manager.insert_all_static()    
-event_manager.insert_all_static()
-
-event_manager.update_events_cache()
-booking_manager.update_booking_cache()
-user_manager.update_users_cache()
+booking_manager.internal_actions(OP='INSERT_DEFAULTS')    
+booking_manager.internal_actions(OP='CACHE_DISCOUNTS')
+event_manager.internal_actions(OP='INSERT_DEFAULTS')
+event_manager.internal_actions(OP='CACHE_ALL')
+user_manager.internal_actions(OP='CACHE_ALL')
 
 if __name__ == "__main__":
     app.run(debug=True)
