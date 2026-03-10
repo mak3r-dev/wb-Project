@@ -128,7 +128,6 @@
         } 
         
         // 2. Set Values
-        // const graphData1 = [2983,302,2479,1575,307,4210,4685,782,1012,1462,1077,0]
         const graphOptions = {
             colors: ['#355C7D'],
             series: [{name: 'Monthly Trends',data: graphData}],
@@ -163,8 +162,8 @@
             grid: { borderColor: '#f1f1f1' }
         }
 
-        const avgRev = states.calculatedData.totalRevenue / Object.values(states.bookedEvents).length;
-        
+        let avgRev = states.calculatedData.totalRevenue * (1 / Object.values(states.bookedEvents).length);
+
         totalRevenue.textContent = `${FMT.currency.format(states.calculatedData.totalRevenue)}`
         avgRevenue.textContent = `${FMT.currency.format(avgRev)}`
 
@@ -327,16 +326,23 @@
 
         // 1. Build Graph Data
         let xLabels = []
-        for (const evt of Object.values(states.venues)) 
-            xLabels.push(evt.venueName)    
-        
-        const vAnalytics = Array(xLabels.length).fill(0,0,xLabels.length)
-        const vCapacity = Array(xLabels.length).fill(0,0,xLabels.length)
+        for (const evt of Object.values(states.venues)){
+            xLabels.push(evt.venueName)
+        } 
+                
+        const vAnalytics = {}
+        const vCapacity = {}
+        for (const label of xLabels){
+            vAnalytics[label] = 0
+            vCapacity[label] = 0
+        }
+
+
         for (const evt of Object.values(states.events)) {
-            const vID = evt.venueID
-            vAnalytics[vID - 1] += 1 
+            const vName = states.venues[evt.venueID].venueName
+            vAnalytics[vName] += 1 
             
-            let totlCap = states.venues[evt.venueID - 1].venueCapacity, UsedCap = 0;
+            let totlCap = states.venues[evt.venueID].venueCapacity, UsedCap = 0;
             for (const bE of Object.values(states.bookedEvents)){
                 if (bE.eventID == evt.eventID){
                     
@@ -348,11 +354,11 @@
                 }
             }
 
-            vCapacity[vID - 1] = [UsedCap,totlCap]
+            vCapacity[vName] = [UsedCap,totlCap]
         }
 
         const graphOptions = {
-            series: vAnalytics, 
+            series: Object.values(vAnalytics), 
             chart: {
                 type: 'donut',
                 height: 350,
@@ -394,9 +400,9 @@
             const clone = venueCard.content.cloneNode(true)
             
             setText(clone,"venue-anal-card-ctn",`${vn.venueName}`)
-            setText(clone,"evnt-hosted",`- ${vAnalytics[vn.venueID - 1]} Event Hosted`)
+            setText(clone,"evnt-hosted",`- ${vAnalytics[vn.venueName]} Event Hosted`)
             setText(clone,"vn-anal-card-evnt-filled",
-                `${vCapacity[vn.venueID - 1][0]} / ${vCapacity[vn.venueID - 1][1]} total tickets`
+                `${vCapacity[vn.venueName][0]} / ${vCapacity[vn.venueName][1]} total tickets`
             )
             vnFrag.append(clone);
         }
@@ -547,8 +553,11 @@
         }))  
         
         // Venues
-        states.venues = reportTables.venues
-
+        states.venues = {}
+        for (let [id, v] of Object.entries(reportTables.venues)){
+            states.venues[v.venueID] = v
+        }   
+        
         // BookedEvents
         states.bookedEvents = Object.values(reportTables.bookedEvents).map(bE => ({
             ...bE,

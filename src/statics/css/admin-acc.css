@@ -280,6 +280,14 @@ input[type = "text"]::placeholder{
   }
 }
 
+.suspend{
+  .confirm-confirmation{
+    &::before{
+      content: "Suspend";
+    }
+  }  
+}
+
 .information{
   .confirmation-icon{
     background-color: rgb(81, 151, 255);
@@ -293,6 +301,14 @@ input[type = "text"]::placeholder{
       content: "Continue";
     }
   }
+}
+
+.re-instate{
+  .confirm-confirmation{
+    &::before{
+      content: "Re-instate";
+    }
+  }  
 }
 
 /* User info -> Updating Info*/

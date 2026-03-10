@@ -149,7 +149,7 @@
             Date : /^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/,
             EMAIL: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
             PASS: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*\[\]]).{12,}$/,
-            WHITELIST: new Set(['test', 'standard', 'test123', 'standard123'])       
+            WHITELIST: new Set(['test', 'standard', 'test123', 'standard123','test222'])       
         }
     }
 
@@ -196,11 +196,19 @@
         })
     };
 
+    const resetToggle = () => {
+        const eventFt = DOM.popupEls.editingEventsEls[2]
+        const indicator = DOM.popupEls.editingEventsEls[14]
+
+        indicator.classList.replace('check-indicator-on','check-indicator-off')  
+        eventFt.value = 0
+    }
+
     // edit/add events toggle button
     const toggleButton = (state) => {
         const eventFt = DOM.popupEls.editingEventsEls[2]
-        const indicator = DOM.popupEls.editingEventsEls[3]
-
+        const indicator = DOM.popupEls.editingEventsEls[14]
+        
         if (state){
             indicator.classList.replace('check-indicator-off','check-indicator-on')  
             eventFt.value = 1
@@ -211,6 +219,7 @@
     };
 
     const setEditContent = (ev) => {
+        resetToggle()
         const {editingEventsEls} = DOM.popupEls
 
         const ft = ev.eventFt
@@ -229,6 +238,14 @@
         }
     }
 
+    const setAddContent = () => {
+        resetToggle()
+        const {editingEvents} = DOM.popups
+        const titleEl = DOM.popupEls.editingEventsEls[0]
+
+        setText(editingEvents,"section-header",`Adding ${titleEl.value.trim()}...`)
+    }
+
     const setUserContent = (usr) => {
         const {userEls} = DOM.popupEls
         for (const el of userEls){
@@ -241,13 +258,6 @@
         }
     }
 
-    const setAddContent = () => {
-        const {editingEvents} = DOM.popups
-        const titleEl = DOM.popupEls.editingEventsEls[0]
-
-        setText(editingEvents,"section-header",`Adding ${titleEl.value.trim()}...`)
-    }
-
     // View final confirmation
     const viewFinalConfirmation = (type) => {
         const {confirmation} = DOM.popups
@@ -256,12 +266,16 @@
         confirmation.classList.remove('deletion')
         confirmation.classList.remove('information')
 
-        if (type == 'delete') {
+        confirmation.classList.remove('suspend')
+        confirmation.classList.remove('re-instate')
+        if (type == 'delete' || type == 'suspend') {
             confirmation.style.display = 'grid'
             confirmation.classList.add('deletion')
-        }else if (type  == 'info'){
+            if (type == 'suspend') confirmation.classList.add('suspend')
+        }else if (type  == 'info' || type == 're-instate'){
             confirmation.style.display = 'grid'
             confirmation.classList.add('information')
+            if (type == 're-instate') confirmation.classList.add('re-instate')
         }
 
         actionTxt.textContent = State.ElStates.cActionTxt;
@@ -313,7 +327,7 @@
             const {newP,newPConfirm} = DOM.popupEls.userPEls
             
             const newPV = newP.value.toLowerCase().trim()
-            const newPVC = newP.value.toLowerCase().trim()
+            const newPVC = newPConfirm.value.toLowerCase().trim()
             if (newPV != newPVC) return false
 
             const { WHITELIST, PASS } = CONFIG.REGEX;
@@ -398,7 +412,8 @@
         const {eventCard} = DOM.templates
         const {eventCardCont} = DOM.containers
         const {eventCardFrag} = DOM.frags   
-        
+        const {addEvents} = DOM.Btns
+
         const arrEvents = Array.from(State.searchSets.eventSet)
         if (arrEvents.length < 1){
             renderNoResult(eventCardCont)
@@ -422,11 +437,13 @@
             setText(clone,"card-revenue",`${revenue}`)
             
             const status = clone.querySelector('.card-status')
-            status.classList.add(State.now < ev.eventStart ? 'status-upcoming' : 'status-completed')
+            status.classList.add(State.utils.today < ev.eventStart ? 'status-upcoming' : 'status-completed')
 
             // Set Button ID
             clone.querySelector(".edit-action").dataset.eventID = ev.eventID
             clone.querySelector(".delete-action").dataset.eventID = ev.eventID
+            
+            addEvents.dataset.eventID = ev.eventID
             eventCardFrag.append(clone)   
         }
 
@@ -499,22 +516,23 @@
         viewFinalConfirmation('delete')     
     }
 
-    const addEvent = (action) => {
+    const addEvent = (action,evID) => {
         const {editingEvents} = DOM.popups
         const {confirmEdit} = DOM.Btns
-
+        
         // Styles
         if (action == 'view'){
-            setText(editingEvents,"section-header",`Adding ...`)
+            DOM.popupEls.editingEventsEls[0].value = ""    
+            setAddContent()
             
             for (const el of DOM.popupEls.editingEventsEls){el.value = ""}
             editingEvents.style.display = 'grid'
             confirmEdit.textContent = 'Add Event'
             confirmEdit.dataset.state = 'adding'  
+            confirmEdit.dataset.eventID = evID
         }
 
-        let newEV = State.events[1]
-        newEV.eventID, newEV.venueID, newEV.suitabilityID = -1
+        let newEV = State.events[evID]
         if (action == 'add'){
             for (const el of DOM.popupEls.editingEventsEls){
                 el.classList.remove('input-valid','input-error')
@@ -581,10 +599,11 @@
             
            const status = clone.querySelector('.user-status')
            const action = clone.querySelector('.user-action')
-           if (usr.Status == 'Active'){ status.classList.add('user-status-active')
+           if (usr.Status == 'active'){ status.classList.add('user-status-active')
                 action.classList.add('user-status-active')
            }
-           if (usr.Status == 'Suspended'){status.classList.add('user-status-suspended')
+          
+           if (usr.Status == 'suspended'){status.classList.add('user-status-suspended')
                 action.classList.add('user-status-suspended')
            }
            
@@ -656,10 +675,13 @@
         }       
 
         // Logic
-        const {newP} = DOM.popupEls.userPEls
+        const {newP,newPConfirm} = DOM.popupEls.userPEls
         if (action == 'change'){
-            el.classList.remove('input-valid','input-error')
-            if (!validateInput('User-Pass',el)) return el.classList.add('input-error')
+            newP.classList.remove('input-valid','input-error')
+            newPConfirm.classList.remove('input-valid','input-error')
+
+            if (!validateInput('User-Pass',newP)) return newP.classList.add('input-error')
+            if (!validateInput('User-Pass',newPConfirm)) return newPConfirm.classList.add('input-error')
             State.users[usrID].Password = newP.value.trim()
 
             // Final Confirmation
@@ -675,27 +697,28 @@
     }
 
     const suspendUser = (usrID) => {
+        const {confirmConfirm}  = DOM.Btns
         const usr = State.users[usrID]
-
+        
         State.currentAction = 'USER_ACTION'
-        State.currentUserID = usrID   
-        if (usr.userStatus == 'Active'){
+        State.currentUserID = usrID 
+        if (usr.Status == 'active'){
             State.ElStates.cActionTxt = 'Confirm User Suspension?'
             State.ElStates.cMoralTxt = 'Are you sure you want to suspend this user?'
             State.ElStates.cConsequenceTxt = 'This action is reversible.'   
 
             State.currentOP = 'SUSPEND_USER'
-            viewFinalConfirmation('delete')   
-        }else if(usr.userStatus == 'suspended'){
+            viewFinalConfirmation('suspend')   
+        }else if(usr.Status == 'suspended'){
             State.ElStates.cActionTxt = 'Confirm User Re-instation?'
             State.ElStates.cMoralTxt = 'Are you sure you want to re-instate this user?'
             State.ElStates.cConsequenceTxt = 'This action is reversible.'   
 
             State.currentOP = 'UNSUSPEND_USER'
-            viewFinalConfirmation('info')  
+            viewFinalConfirmation('re-instate')  
         }
     }
-    // =======================================
+    // =======================================               
     // 6. CORE -> BOOKINGS TAB
     // =======================================     
    const renderBookings = () => {
@@ -710,7 +733,8 @@
         }
 
         bookingCardCont.innerHTML = "";
-        for (const bk of arrBookings) {
+        for (let i = 0; i < arrBookings.length; i++) {
+            const bk = arrBookings[i]
             const clone = bookingCard.content.cloneNode(true)  
 
             setText(clone,"booking-ref",`${bk.bookingID}`)
@@ -719,7 +743,7 @@
 
             setText(clone,"booking-event",`${State.events[bk.eventID].eventName}`)
             setText(clone,"booking-tickets",`${Info.tltEntries[bk.bookingID]}`)
-            setText(clone,"booking-total",`${bk.totalPrice}`)
+            setText(clone,"booking-total",`${FMT.currency.format(bk.totalPrice)}`)
             setText(clone,"booking-date",`${FMT.date.format(bk.dateTimeBooked)}`)
 
             const status = clone.querySelector('.booking-status')
@@ -730,22 +754,44 @@
                 action.classList.add('booking-status-confirmed')
             }
 
-            if (bk.paymentStatus.toLowerCase() == 'cancelled'){
-                status.classList.add('booking-status-cancelled')
-                action.classList.add('booking-status-cancelled')
-            }   
-
-            if (bk.paymentStatus.toLowerCase() == 'expired'){
+            if (bk.paymentStatus.toLowerCase() == 'unpaid'){
                 status.classList.add('booking-status-unpaid')
                 action.classList.add('booking-status-unpaid')
             }   
 
+            if (bk.bookingStatus.toLowerCase() == 'cancelled'){
+                status.classList.add('booking-status-cancelled')
+                action.classList.add('booking-status-cancelled')
+            }   
+            
+            const cAction = clone.querySelector('.cancel-action')
+            cAction.dataset.bookingID = bk.bookingID
+            cAction.dataset.eventID = bk.eventID
             bookingCardFrag.append(clone) 
         }
 
         bookingCardCont.append(bookingCardFrag)
     };    
- 
+    
+    const cancelBooking = (bId,eId) => {
+        const bk = State.bookings[bId]
+        
+        State.currentAction = 'BOOKING_ACTION'
+        State.currentOP = 'CANCEL_BOOKING'
+        State.currentBookingID = bId
+        State.currentEvent = eId
+
+        const validStatus = bk.bookingStatus == 'Active' && bk.paymentStatus == 'paid'
+        const invalidStatus = bk.bookingStatus == 'Active' && bk.paymentStatus == 'expired'
+        if (validStatus || invalidStatus){
+            State.ElStates.cActionTxt = 'Confirm Booking Cancellation?'
+            State.ElStates.cMoralTxt = 'Are you sure you want to cancel this booking?'
+            State.ElStates.cConsequenceTxt = 'This action is permanent.'           
+        }
+        
+        viewFinalConfirmation(validStatus ? 'delete' : 'info')     
+    }
+
     const searchHandler = () => {
        const {event,user,booking} = DOM.searchBars 
        const {eventSet,userSet,bookingSet} = State.searchSets
@@ -811,7 +857,7 @@
         DOM.sectionBtns.forEach(el => {
             el.addEventListener('click',() => {changeContent(el.dataset.contentmap)})
         })
-        DOM.sectionBtns[2].click();      
+        DOM.sectionBtns[3].click();      
 
         Object.values(DOM.searchBars).forEach(el => {
            el.addEventListener('input',searchHandler) 
@@ -842,14 +888,15 @@
 
         // 1. Delegation for Event Actions
         const eventFt = DOM.popupEls.editingEventsEls[2]
+        const titleEl = DOM.popupEls.editingEventsEls[0]
 
         eventFt.addEventListener('click',() => {
             toggleButton(eventFt.value == 1 ? 0 : 1)
         })
         DOM.containers.eventCardCont.addEventListener('click', (e) => {
             const tar = e.target
-            if (tar.classList.contains('edit-action')) editEvents(Number(tar.dataset.eventID),'view')
-            if (tar.classList.contains('delete-action')) deleteEvent(Number(tar.dataset.eventID))
+            if (tar.classList.contains('edit-action')) editEvents(tar.dataset.eventID,'view')
+            if (tar.classList.contains('delete-action')) deleteEvent(tar.dataset.eventID)
             
         })
 
@@ -857,12 +904,16 @@
         confirmEdit.addEventListener('click',() => {
             const state = confirmEdit.dataset.state
 
-            if (state == 'editing') editEvents(Number(confirmEdit.dataset.eventID),'edit')
-            if (state == 'adding') addEvent('add')
+            if (state == 'editing') editEvents(confirmEdit.dataset.eventID,'edit')
+            if (state == 'adding') addEvent('add',confirmEdit.dataset.eventID)
         })
 
         // Adding Events
-        addEvents.addEventListener('click',() => {addEvent('view')})
+        addEvents.addEventListener('click',() => {addEvent('view',addEvents.dataset.eventID)})
+        titleEl.addEventListener('input',() => {
+            const state = confirmEdit.dataset.state
+            if (state == 'adding') setAddContent()
+        })
 
         // 2. Delegation for User Actions
         DOM.containers.userCardCont.addEventListener('click', (e) => {
@@ -870,13 +921,19 @@
             if (tar.classList.contains('edit-action')) editUser(Number(tar.dataset.userID),'view')
             if (tar.classList.contains('password-action')) editUserPassword(Number(tar.dataset.userID),'view')
             if (tar.classList.contains('suspend-action')) suspendUser(Number(tar.dataset.userID))
-            
         })
         cancelUser.addEventListener('click',() => {editUserInfo.style.display = 'none'})
         confirmUser.addEventListener('click',() => {editUser(Number(confirmUser.dataset.userID),'edit')})
 
         cancelUserP.addEventListener('click',() => {editUserPass.style.display = 'none'})
         confirmUserP.addEventListener('click',() => {editUserPassword(Number(confirmUserP.dataset.userID),'change')})
+        
+        // 3. Delegation for Booking Actions
+        DOM.containers.bookingCardCont.addEventListener('click', (e) => {
+           const tar = e.target 
+           if (tar.classList.contains('cancel-action')) 
+            cancelBooking(tar.dataset.bookingID,(tar.dataset.eventID))  
+        })
     }
 
     (async () => {
@@ -892,7 +949,7 @@
 
             ev.eventStart = new Date(ev.eventStart)
             ev.eventEnd = new Date(ev.eventEnd)
-            State.events[Number(id)] = ev
+            State.events[ev.eventID] = ev
         }
 
         State.users = {}
@@ -904,7 +961,7 @@
         State.bookings = {}
         for (let [id, bk] of Object.entries(DATA.bookings)){
             bk.dateTimeBooked = new Date(bk.dateTimeBooked)
-            State.bookings[Number(id)] = bk
+            State.bookings[bk.bookingID] = bk
 
             // Get Event Revenues
             const idx_e = Info.evRevenues[State.events[bk.eventID].eventName]
@@ -974,7 +1031,29 @@
             const USR = State.users[ID]
 
             const actionResult = await send(Action,OP,ID,USR)
-            console.log("Users",actionResult)     
+            if (OP == 'EDIT_PASSWORD') handleLoginState()    
+            if (OP == 'SUSPEND_USER') State.users[ID].Status = 'suspended'       
+            if (OP == 'UNSUSPEND_USER') State.users[ID].Status = 'active' 
+ 
+            console.log("Users",actionResult)  
+            
+            State.searchSets.userSet = new Set(Object.values(State.users))
+            renderUsers()                
         }
+
+        // Booking Actions
+        if (Action == 'BOOKING_ACTION'){
+            const OP = State.currentOP
+            const ID = State.currentBookingID
+            const EID = State.currentEvent.eventID
+
+            const actionResult = await send(Action,OP,ID,EID)
+            if (OP == 'CANCEL_BOOKING') State.bookings[ID].bookingStatus = 'cancelled'  
+
+            console.log("Booking",actionResult)   
+            
+            State.searchSets.bookingSet = new Set(Object.values(State.bookings))
+            renderBookings()  
+        }        
     }
 })();    

@@ -59,6 +59,8 @@ def Account():
     if request.json['OP'] == 'GET_ADMIN_PROFILE':
         all_bookings = db.query(bookings).all(as_dict=True)
         all_booking_entries = db.query(entries).all(as_dict=True)
+    
+        event_class.convert_all(all_bookings)
         return jsonify({
             'users' : config.users_db, 
             'events' : config.events_db, 
@@ -69,13 +71,13 @@ def Account():
     if request.json['OP'] == 'GET_ADMIN_REPORT':
         all_bookings = db.query(bookings).all(as_dict=True)
         all_booking_entries = db.query(entries).all(as_dict=True)
-        all_venues = db.query(venue_class).all(as_dict=True)
 
+        event_class.convert_all(all_bookings)
         return jsonify({
            'events' : config.events_db, 
-           'venues' : all_venues,
+           'venues' : config.venues_db,
            'bookedEvents' : bookings.convert_all(all_bookings), 
-           'bookingEntries' : bookings.convert_all(all_booking_entries), 
+           'bookingEntries' : bookings.convert_all(all_booking_entries),  
         })
 
 # Operation Actions

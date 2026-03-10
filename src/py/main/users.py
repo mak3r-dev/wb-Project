@@ -63,7 +63,7 @@ class Users(Base):
         if id > len(config.users_db): return
 
         for key, val in data.items():
-            if config.users_db[id][key] == val: return
+            if config.users_db[id][key] == val: continue
 
             if key == 'Phone':
                 val_Phone = None
@@ -81,26 +81,24 @@ class Users(Base):
                 db.update(Users.DateJoined == val).where(Users.userID == id).all()
 
             config.users_db[id][key] = val
-            print(f"Edited {key} with new value {config.users_db[id][key]}")
             db.update(getattr(Users,key) == val).where(Users.userID == id).all()
 
         db.commit()
-        return {}
-        # return Action()._replace(message='Updated User Details Succesfully',OP='EDIT_DETAILS')._asdict()
+        return Action()._replace(message='Updated User Details Succesfully',OP='EDIT_DETAILS')._asdict()
     
     def edit_password(id: int, data: str):
         # 1. Validate sign in data    
-        try:
-            val_Pass = password_eval(Password=data['Password']).model_dump()      
-            passHash =  bcrypt.generate_password_hash(val_Pass['Password'])
+        # try:
+        # val_Pass = password_eval(Password=data['Password']).model_dump()      
+        passHash =  bcrypt.generate_password_hash(data['Password'])
 
-            config.users_db[id]['Password'] = passHash
-            db.update(getattr(Users.Pass_Hash) == passHash).where(Users.userID == id).all()
+        config.users_db[id]['Password'] = passHash.decode('utf-8')
+        db.update(Users.Pass_Hash == passHash).where(Users.userID == id).all()
 
-            db.commit()
-            return Action()._replace(message='Updated User Password Succesfully',OP='EDIT_PASSWORD')._asdict()
-        except ValidationError as e:
-            return data # Test -> should return an empty dict if true
+        db.commit()
+        return Action()._replace(message='Updated User Password Succesfully',OP='EDIT_PASSWORD')._asdict()
+        # except ValidationError as e:
+        #     return data # Test -> should return an empty dict if true
         
 
     def delete_user(id: int):
@@ -111,8 +109,8 @@ class Users(Base):
         return Action()._replace(message='Deleted User Succesfully',OP='DELETE_USER')._asdict()
     
     def suspend_user(id: int, status: str = 'suspended'):
-        config.users_db[id]['userStatus'] = status
-        db.update(getattr(Users.Status) == status).where(Users.userID == id).all()
+        config.users_db[id]['Status'] = status
+        db.update(Users.Status == status).where(Users.userID == id).all()
         db.commit()
 
         return Action()._replace(message='Suspended User Succesfully',OP='SUSPEND_USER')._asdict()
@@ -120,8 +118,8 @@ class Users(Base):
 class UsersManager():
     def __init__(self): pass
     
-    def get_user(self, data: dict[str,str],**kwargs: bool ) -> NamedTuple | list[dict[str,str]]:   
-        if not data or len(data) == 0: return None
+    def get_user(self, data: dict[str,str],**kwargs: bool ) -> NamedTuple | list[dict[str,str]]:    
+        if not data or len(data) == 0: return None 
 
         user = None    
         expression = Users.userID == data['id']  if 'id' in data else Users.Email == data['Email'] 
@@ -201,7 +199,7 @@ class UsersManager():
 
         # 2. User does exist
         full_user = self.get_user(validated_data,full=True)
-        if full_user and full_user.Status != "Locked":
+        if full_user and full_user.Status != "suspended":
 
             # Check inputted credential
             valid_cred = bcrypt.check_password_hash(full_user.Pass_Hash,validated_data['Password']) and full_user.Email == validated_data['Email']
@@ -213,7 +211,7 @@ class UsersManager():
             payload = {'id': full_user.userID , 'status': full_user.Status , 'perm': full_user.Permission}
             Redirect, Message = 'Home', f'Successfuly signed in at {datetime.datetime.now(datetime.timezone.utc).time()}'
             if not full_user.userID in config.users_db :
-                Users.cache_user(full_user.userID)
+                Users.cache_user(full_user.userID) 
 
             if not validated_data['refresh']:
                 tokens_acc = {'access': Auth.create_token(payload,True), 'refresh': None}
@@ -223,8 +221,8 @@ class UsersManager():
             return Response()._replace(redirect_for=Redirect,message=Message,tokens=tokens_ref)._asdict()  
         
         # if account is locked
-        Redirect, Message = 'Home', f'Account Locked, Please try again later!!'
-        return Response()._replace(redirect_for=Redirect,message=Message,tokens=tokens_ref)._asdict()   
+        Redirect, Message = 'Home', f'Account Suspended!'
+        return Response()._replace(redirect_for=Redirect,message=Message,tokens=None)._asdict()   
 
     def signUp(self, request):
         if not request: 
@@ -233,7 +231,7 @@ class UsersManager():
            
         validated_data,is_standard = self.validate_incoming_data(request.json,True), True
 
-        if request.json['Email'] == 'test' and request.json['Password'] == 'test123':
+        if request.json['Email'] == 'test' and (request.json['Password'] == 'test123' or request.json['Password'] == 'test222'):
             is_standard = False
         elif request.json['Email'] == 'standard' and request.json['Password'] == 'standard123':
             is_standard = True
@@ -250,7 +248,7 @@ class UsersManager():
         # A. Store the Info   
         now, def_perm, def_phone = datetime.datetime.now(datetime.timezone.utc), 'Standard' if is_standard else 'Admin', 'None'
         new_user = Users(FirstName=firstName, LastName=lastName, Email=email, 
-            Pass_Hash=password,DateJoined=now, Status='Active', Phone=def_phone, Permission=def_perm
+            Pass_Hash=password,DateJoined=now, Status='active', Phone=def_phone, Permission=def_perm
         )
 
         db.add(new_user).on_duplicate()  
@@ -323,7 +321,7 @@ class UsersManager():
                 return Users.edit_password(ID,DATA)
             case 'DELETE_USER' : return Users.delete_user(ID)
             case 'SUSPEND_USER' : return Users.suspend_user(ID)
-            case 'UNSUSPEND_USER' : return Users.suspend_user(ID,'Active')
+            case 'UNSUSPEND_USER' : return Users.suspend_user(ID,'active')
             case 'CACHE_USER' : Users.cache_user(ID)
 
     def internal_actions(self,OP: str):

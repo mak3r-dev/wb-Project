@@ -25,18 +25,18 @@ class BookingDiscount(Base):
 class BookedEvents(Base):
     
     __table__ = 'BookedEvents'
-    bookingID = Column(UUID(), unique=True, default=uuid.uuid4)
+    bookingID = Column(UUID(), unique=True, default=uuid6.uuid7)
     userID = Column(Int,ForeignKey('Users.userID','CASCADE','CASCADE'))
-    eventID = Column(Int,ForeignKey('events.eventID','CASCADE','CASCADE'))  
+    eventID = Column(UUID(),ForeignKey('events.eventID','CASCADE','CASCADE'))  
     bookingStatus = Column(string(45), nullable=False, default='Active')
     dateTimeBooked = Column(DateTime, nullable=False)
     totalPrice = Column(Float, nullable=False)
-    paymentStatus = Column(string(45), nullable=False, default='expired')
+    paymentStatus = Column(string(45), nullable=False, default='unpaid')
 
     const = Constraint(unique('bookingusereventPair','userID','eventID'))
 
     @property
-    def get_id(self): return str(uuid.UUID(bytes=self.bookingID))
+    def bID(self): return str(uuid.UUID(bytes=self.bookingID))
 
     def convert_all(result: list[dict]):
         for res in result:
@@ -110,7 +110,7 @@ class BookedEvents(Base):
         # 2. Calucate and add individual ticket info
         for ticket in tickets.values():
             entry = BookingEntries({
-                'bookingID' : new_booking.get_id,
+                'bookingID' : new_booking.bID,
                 'entries' : datetime.datetime.now(datetime.timezone.utc),
                 'attendees' : ticket['attendees'],
                 'dayCost' : day_cost - (day_cost * (discount/ 100)) if discount else day_cost
@@ -119,7 +119,7 @@ class BookedEvents(Base):
             db.add(entry).on_duplicate()
         
         # 3. Insert Add-Ons Chosen
-        [db.add(BookingAddOns(bookingID=new_booking.get_id,addID=aid)).on_duplicate() for aid in bookingInfo.get('AddOns')]
+        [db.add(BookingAddOns(bookingID=new_booking.bID,addID=aid)).on_duplicate() for aid in bookingInfo.get('AddOns')]
 
         # 4. Insert user Info
         userInfo = UsersManager.validate_booking_info(bookingInfo.get('userInfo'))
@@ -133,7 +133,7 @@ class BookedEvents(Base):
         # 5. Update Booking status
         if eInfo['eventAvailability'] == 0:
             (db.update(BookedEvents.bookingStatus == 'waiting')
-             .where(BookedEvents.bookingID == new_booking.get_id).all()  
+             .where(BookedEvents.bookingID == new_booking.bID).all()  
             )  
 
         # 6. Update event availability 
@@ -141,7 +141,7 @@ class BookedEvents(Base):
             event_manager.action(Perm='admin',OP='UPDATE_AVAILABILITY',ID=bookingInfo.get('eventID'),DATA=-1)
 
         db.commit()
-        return bookingResponse()._replace(Message='Successfully Booked Event!',booking_ref=new_booking.get_id,totalPrice=total_price)         
+        return bookingResponse()._replace(Message='Successfully Booked Event!',booking_ref=new_booking.bID,totalPrice=total_price)         
 
 # Bookings Add-Ons -> Dynamic
 class BookingAddOns(Base):
@@ -225,11 +225,14 @@ class BookingManager:
         booked_event = (db.query(BookedEvents)
          .where(BookedEvents.userID == userID, BookedEvents.eventID == eventID).all()
         )
+        # If event is cancelled
+        if booked_event and booked_event[0].bookingStatus == 'cancelled':
+            return response
         
         # If event is already booking by user
         if booked_event and booked_event[0].paymentStatus == 'paid':
             response['booked'] = True
-        
+
         # If event availability is full
         if config.events_db.get(eventID)['eventAvailability'] == 0:
             response['available'] = False

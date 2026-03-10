@@ -35,7 +35,7 @@
     REGEX : {
       EMAIL: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
       PASS: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*\[\]]).{12,}$/,
-      WHITELIST: new Set(['test', 'standard', 'test123', 'standard123'])       
+      WHITELIST: new Set(['test', 'standard', 'test123', 'standard123','test222','TEST'])       
     },
 
     // Check Patterns
@@ -223,10 +223,15 @@
       const result = await response.json();
       
       if (result) {
-        
+        if (result.message == 'Account Suspended!'){
+          showMessage('warn', 'Account Suspended. If you wish to appeal this suspension, visit our Help Page.', 35000)             
+          return
+        };    
+
         result.message == 'Invalid Credentials!' ? showMessage('warn', result.message, 1500) : showMessage('success', result.message, 1500);
-      
+
         if (!result.tokens){
+
           setTimeout(() => window.location.reload(), 1700);
           return
         }
