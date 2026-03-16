@@ -12,9 +12,6 @@ class AddOns(Base):
     PriceDesc = Column(string(70), nullable=False)
     Category = Column(string(70), nullable=False)
 
-    # @property
-    # def aID(self): return str(uuid.UUID(bytes=self.addId))
-
 # Event Add Ons
 class eventAddOns(Base):
 
@@ -213,22 +210,33 @@ class Events(Base):
         return Action()._replace(message='Edited Event Successfully',OP='EDIT_EVENT')._asdict()
     
     def delete_event(id: int):
-        print(id)
-        config.events_db[id]['eventStatus'] = 'Deleted'
-        (db.update(Events.eventStatus == 'Deleted').where(Events.eventID == id).all())
+        BookedEvents: type[Base] = getTable('BookedEvents')
+
+        config.events_db[id]['eventStatus'] = 'deleted'
+        (db.update(Events.eventStatus == 'deleted').where(Events.eventID == id).all())
+
+        all_bookings = db.query(BookedEvents).all(as_dict=True)
+        Events.convert_all(all_bookings)
+        BookedEvents.convert_all(all_bookings)
+
+        for booking in all_bookings:
+            if booking['eventID'] != id: continue
+
+            if booking['paymentStatus'] == 'paid':
+                # refund money -> then set to suspended
+                (db.update(BookedEvents.bookingStatus == 'suspended')
+                .where(BookedEvents.bookingID == booking.bookingID).all()
+                )
+                continue
+
+            if booking['paymentStatus'] != 'paid' :
+                (db.update(BookedEvents.bookingStatus == 'suspended')
+                .where(BookedEvents.bookingID == booking.bookingID).all()
+                )           
 
         db.commit()
         return Action()._replace(message='Deleted Event Successfully',OP='DELETE_EVENT')._asdict() 
-
-    def update_availability(id:int, val: int):
-        if not isinstance(val,int): return
-        if id > len(config.events_db): return
-
-        config.events_db[id]['eventAvailability'] = val
-        (db.update(Events.eventAvailability == (config.events_db[id]['eventAvailability'] + val))
-         .where(Events.eventID == id).all()) 
-        db.commit()
-            
+          
     def get_event_caches() -> None:
 
         # 1. Get & set all Add-ons
@@ -336,10 +344,10 @@ class EventsManager:
     def get_all_events(self) -> list[dict]:
         return list(config.events_db.values())
 
-    def action(self, Perm:str, OP: int, ID: int, DATA: dict | int = 0) -> Action: 
+    def action(self, Perm:str, OP: int, ID: str, DATA: dict | int = 0) -> Action: 
         if not ID or not isinstance(ID,str): return
         if Perm != 'Admin' : return
-        
+
         match OP:
             case 'ADD_EVENT': 
                 if not isinstance(DATA,dict): return
@@ -349,9 +357,6 @@ class EventsManager:
                 return Events.edit_event(ID,DATA) 
             
             case 'DELETE_EVENT': return Events.delete_event(ID)     
-            case 'UPDATE_AVAILABILITY': 
-                if not isinstance(DATA,int): return
-                Events.update_availability(ID,DATA)     
             case 'CACHE_EVENT': Events.cache_event(ID)
     
     def internal_actions(self, OP: str):

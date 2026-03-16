@@ -68,7 +68,8 @@
         events: [],           // Immutable master list
         activeLayout: 'grid', // 'grid' | 'list'
         filtersVisible: true,
-        
+        now: new Date(),
+
         // Calendar State
         datePicker: {
             refDate: new Date(), // Current viewing month
@@ -225,9 +226,14 @@
 
         // Event Listener
         const btn = root.querySelector(".start-booking");
-        btn.addEventListener('click', () => {
-            window.location.href = `../Booking?q=${btoa(eventName)}`;
-        });
+
+        if (state.now > eventStart){
+            btn.style.display = 'none'
+        }else{
+            btn.addEventListener('click', () => {
+                window.location.href = `../Booking?q=${btoa(eventName)}`;
+            });
+        }
 
         return clone;
     };

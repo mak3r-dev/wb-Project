@@ -21,8 +21,6 @@
   --account-profile-main-card-container: 1fr;
   --account-profile-main-card-container-width: 94.5%;
   --account-profile-icon-container-width: 100%;
-
-  --acount-cancel-btn-width: max-content;
 }
 
 /* =========================================
@@ -574,7 +572,8 @@
   }
 
   .event-card-info-price{
-    grid-template-columns: 1fr 0.15fr;
+    width: 99%;
+    grid-template-columns: 1fr max-content;
   }
 
 }
@@ -665,17 +664,15 @@
 
 
 .event-card-info-detailbtn{
-  justify-self: flex-end;
-  justify-self: center;
   height: 100%;
-  width: var(--acount-cancel-btn-width);
+  width: max-content;
   border-radius: 0.5rem;
   border: 0.13rem solid rgb(255,0,0,0.1);
   background: rgb(255,0,0,0.3);
   font: lighter 0.7rem var(--font-secondary);
   letter-spacing: 0.03rem;
   transition: transform 0.3s ease;
-  padding: 0rem 2rem 0rem 2rem;
+  padding: 0rem 1rem 0rem 1rem; 
 
   &:hover{
     transform: scale(1.03);
@@ -704,9 +701,6 @@
       --acount-user-card-columns: repeat(2,1fr);
       --account-profile-main-card-container: max-content 1rem 1fr;
       --account-profile-icon-container-width: 12rem;
-
-      --acount-cancel-btn-width: 95%
-      
     }
   }
 

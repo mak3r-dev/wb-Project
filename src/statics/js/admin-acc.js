@@ -728,7 +728,7 @@
             URL: window.location.href, 
             Data: { OP: 'GET_ADMIN_PROFILE' } 
         });
-
+   
         State.infoLists.events = Object.values(info.events).map(ev => ({
             ...ev,
             eventStart: new Date(ev.eventStart),
@@ -738,6 +738,16 @@
            ...usr, 
            DateJoined: new Date(usr.DateJoined),
         }))
+
+        State.infoLists.bookings = {}
+        for (let [id, bk] of Object.entries(info.bookings)){
+            if (bk.bookingStatus == 'suspended') continue;
+
+            bk.dateTimeBooked = new Date(bk.dateTimeBooked)
+            State.infoLists.bookings[bk.bookingID] = bk
+            // state.events.push(ev)               
+        }     
+
         State.infoLists.bookings = Object.values(info.bookings).map(bk => ({
             ...bk,
             dateTimeBooked: new Date(bk.dateTimeBooked),

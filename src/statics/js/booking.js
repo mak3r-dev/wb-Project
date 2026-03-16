@@ -145,6 +145,7 @@
                 count: document.querySelector(".confirmed-ticket-count"),
                 subTotal: document.querySelector(".confirmed-subtotal-info"),
                 finalEmail: document.querySelector(".confirmation-email"),
+
                 // Confirmed Contact Details
                 name: document.querySelector(".coned-Name"),
                 email: document.querySelector(".coned-Email"),
@@ -176,6 +177,7 @@
 
     const REF_MAP = new Map();
     const State = {
+        url: new URLSearchParams(document.location.search),
         eventDetails: null,
         suitableDiscount: null,
         tickets: {}, // Payload Data
@@ -184,6 +186,7 @@
         activeAddonIds: new Set(), // UI State
         totalPrice: 0,
         totalTicketCount : 0,
+        finalPayload: null,
         stripe: {
             instance: null,
             elements: null,
@@ -498,10 +501,8 @@
             toggleElements(refs.toggles, false);
         }
 
-        console.log(change)
         if (change > 0 && State.totalTicketCount >= availability){
             refs.uiCount.style.color = "red"
-            console.log("no")
 
             record.attendees -= 1
             State.totalTicketCount -= 1;
@@ -648,8 +649,7 @@
     };
 
     const handleBookingClick = () => {
-
-        // // 1. Verify user inputs
+        // 1. Verify user inputs
         const {first, last, email, phone} = DOM.inputs
 
         const hasEmpty = [first,last,email,phone].some(el => {
@@ -665,54 +665,89 @@
         if (!validateField(email) || !validateField(phone)) return alert('Invalid Email or Phone Number');     
 
         toggleLoadingScreen(true);
-        State.loading.timeout = setTimeout(() => {changeConfirmationView('confirmation')}, Math.random() * 800 + 1000);
+
+        // 2. View Confirmation
+        State.loading.timeout = setTimeout(getPaymentIntent, Math.random() * 800 + 1000);
     };
 
-    const handleConfirmProceed = () => {
+    const handleConfirmProceed = async () => {
         const btn = DOM.confirmation.proceedBtn;
         
-        if (btn.dataset.state == 'confirmed') {
-            toggleLoadingScreen(true, 'Setting Up Payment');
-            State.loading.timeout = setTimeout(getPaymentIntent, Math.random() * 800 + 1000);
+        if (btn.dataset.state == 'payment') {
+            const { error } = await State.stripe.elements.submit();
+
+            if (error) {
+                alert(error.message);
+                return;
+            } else{
+                changeConfirmationView('confirmation');
+            }
+
             return;
         }
 
-        if (btn.dataset.state == 'payment') {
-            toggleLoadingScreen(true, 'Processing Payment');
-            console.log(State.response.total)
-            if (State.response.total != 0) {
-                State.loading.timeout = setTimeout(verifyPayment, Math.random() * 800 + 1000);
-            } else {
-                viewFinalConfirmation();
-            }
+        if (btn.dataset.state == 'confirmed') {
+            toggleLoadingScreen(true, 'Verifying Booking');
+            State.loading.timeout = setTimeout(verifyBooking, Math.random() * 800 + 1000);
         }
-    };   
-    
+    };  
+ 
     const handleCancel = () => {
         const { bgBlur, parent, proceedBtn } = DOM.confirmation;
         
         if (proceedBtn.dataset.state == 'confirmed') {
-            bgBlur.style.display = 'none';
-            parent.style.display = 'none';
-        } else if (proceedBtn.dataset.state == 'payment') {
             if (State.totalPrice == 0) {
                 parent.style.display = 'none';
                 bgBlur.style.display = 'none';
             } else {
-                changeConfirmationView('confirmation');
+                changeConfirmationView('payment');
             }
+
+        } else if (proceedBtn.dataset.state == 'payment') {
+            bgBlur.style.display = 'none';
+            parent.style.display = 'none';
         }
         
         clearTimeout(State.loading.timeout);
         clearInterval(State.loading.interval);
     };  
 
-    const url = new URLSearchParams(document.location.search)
+    const verifyBooking = async () => {
+        clearTimeout(State.loading.timeout);
+        DOM.confirmation.confirmed.count.textContent = `${State.finalPayload.tickets.length} ticket(s)`;
+
+        // 1. Send Info
+        try {
+            const response = await base.request({ 
+                URL: `/Booking/Checkout?q=${State.url.get('q')}`, 
+                Data: { 
+                    ACTION_TYPE: 'INSERT_INFO',
+                    DATA: State.finalPayload,
+                    REF: State.response.ref
+                }, 
+            });       
+            
+            if (response){
+                toggleLoadingScreen(true, 'Processing Payment');
+                if (State.response.total != 0) {
+                    State.loading.timeout = setTimeout(verifyPayment, Math.random() * 800 + 1000);
+                } else {
+                    State.loading.timeout = setTimeout(viewFinalConfirmation, Math.random() * 800 + 1000);
+                }
+            }
+
+        } catch (err) {
+            console.error("Insertion error", err);
+            toggleLoadingScreen(false);
+            DOM.confirmation.bgBlur.style.display = 'none';
+        }
+    }
+
     const getPaymentIntent = async () => {
         clearTimeout(State.loading.timeout);
         const { first, last, email, phone } = DOM.inputs;
 
-        const payload = {
+        State.finalPayload = {
             eventID: State.eventDetails.eventID,
             tickets: Object.values(State.tickets).filter(t => t.attendees > 0),
             AddOns: [...State.addOns],
@@ -725,12 +760,15 @@
             },
         };
 
-        DOM.confirmation.confirmed.count.textContent = `${payload.tickets.length} ticket(s)`;
-        
-        
         try {
-            const data = await base.request({ URL: `/Booking/Checkout?q=${url.get('q')}`, Data: payload });
-            console.log('t_price',data.totalPrice)
+            const data = await base.request({ 
+                URL: `/Booking/Checkout?q=${State.url.get('q')}`, 
+                Data: { 
+                    ACTION_TYPE: 'CALCULATE_TOTAL',
+                    DATA: State.finalPayload 
+                } , 
+            });
+
             State.response.message = data.Message;
             State.response.ref = data.booking_ref;
             State.response.total = data.totalPrice;
@@ -768,18 +806,18 @@
         if (type == 'payment') {
             confirmPayment.style.display = 'block';
             confirmParent.style.display = 'none';
-            cancelBtn.textContent = 'Back';
-            proceedBtn.textContent = 'Confirm Your Booking';
+            cancelBtn.textContent = 'Cancel';
+            proceedBtn.textContent = 'Continue';
             texts.main.textContent = 'Payment';
             texts.sub.textContent = 'Please input your card details.';
             proceedBtn.dataset.state = 'payment';
         } else if (type == 'confirmation') {
             confirmPayment.style.display = 'none';
             confirmParent.style.display = 'block';
-            proceedBtn.textContent = 'Continue';
+            proceedBtn.textContent = 'Confirm Booking';
             texts.main.textContent = 'Confirm Your Booking';
             texts.sub.textContent = 'Please review your booking details.';
-            cancelBtn.textContent = 'Cancel';
+            cancelBtn.textContent = State.totalPrice == 0? 'Cancel' : 'Back';
             proceedBtn.dataset.state = 'confirmed';
         }
         
@@ -807,9 +845,9 @@
         });
 
         if (error) {
-            alert(error.message);
             toggleLoadingScreen(false);
             changeConfirmationView('payment'); // Go back to payment input
+            alert(error.message);
             return;
         }
 

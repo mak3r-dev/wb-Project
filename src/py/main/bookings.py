@@ -2,9 +2,9 @@
 from imports.glo import *
 
 # Specific imports
-from .users import UsersManager,Users,user_input_eval,phone_eval
-from .events import Events,event_manager
+from .users import UsersManager,Users
 
+Events: type[Base] = getTable('Events')
 class bookingResponse(NamedTuple):
     Message: str = None
     booking_ref: UUID | str = None
@@ -28,12 +28,10 @@ class BookedEvents(Base):
     bookingID = Column(UUID(), unique=True, default=uuid6.uuid7)
     userID = Column(Int,ForeignKey('Users.userID','CASCADE','CASCADE'))
     eventID = Column(UUID(),ForeignKey('events.eventID','CASCADE','CASCADE'))  
-    bookingStatus = Column(string(45), nullable=False, default='Active')
+    bookingStatus = Column(string(45), nullable=False, default='active')
     dateTimeBooked = Column(DateTime, nullable=False)
     totalPrice = Column(Float, nullable=False)
     paymentStatus = Column(string(45), nullable=False, default='unpaid')
-
-    const = Constraint(unique('bookingusereventPair','userID','eventID'))
 
     @property
     def bID(self): return str(uuid.UUID(bytes=self.bookingID))
@@ -60,49 +58,109 @@ class BookedEvents(Base):
 
         db.commit()
         return Action()._replace(message='Updated Status Successfully', OP='UPDATE_PAYMENT_STATUS')
-    
-    def update_booking_status(Status: str, bookingID: str = None) -> None:
-        (db.update(BookedEvents.bookingStatus == Status)
-            .where(BookedEvents.bookingID == bookingID).all()) 
-        
-        db.commit()
-        print(f"New Status -> {db.query(BookedEvents.bookingStatus).where(BookedEvents.bookingID == bookingID).all(as_dict=True)}")
-        
-    def cancel_booking(booking_ref: str, eventID: int):
+       
+    def cancel_booking(booking_ref: str, eventID: int) -> None:
         # 1. Update event & booking status
-        BookedEvents.update_booking_status(Status='cancelled',bookingID=booking_ref)
-        event_manager.action('admin','UPDATE_AVAILABILITY',eventID,1)
- 
+        (db.update(BookedEvents.bookingStatus == 'cancelled')
+            .where(BookedEvents.bookingID == booking_ref).all()) 
+        
+        prev_av = config.events_db[eventID]['eventAvailability']
+        config.events_db[eventID]['eventAvailability'] = prev_av + 1 
+        db.update(Events.eventAvailability == (prev_av + 1)).where(Events.eventID == eventID).all()
+
         # 2. Update Waiting Status
-        early_booking = (db.query(BookedEvents.bookingID, BookedEvents.bookingStatus)
+        early_booking = (db.query(BookedEvents)
+         .where(BookedEvents.bookingStatus == 'waiting')
          .order_by(BookedEvents.dateTimeBooked.asc())
          .limit(1).all(as_dict=True)
         )
 
-        if (early_booking and early_booking[0]['bookingStatus'] == 'waiting'):
-            BookedEvents.update_payment_status(early_booking[0]['bookingID'])
-            return Action()._replace(message='Updated Waiting List Successfully', OP='CANCEL_BOOKING')
+        if (early_booking):
+            (db.update(BookedEvents.bookingStatus == 'active')
+            .where(BookedEvents.bookingID == booking_ref).all()) 
 
-        return Action()._replace(message='Cancelled Event Successfully', OP='CANCEL_BOOKING')
-    
-    def insert_booking_info(uID: int, bookingInfo: dict[str,str | dict]) -> None:
+            BookedEvents.update_payment_status(early_booking[0]['bookingID'])
+
+        db.commit()  
+        return Action()._replace(message='Cancelled Event Successfully', OP='CANCEL_BOOKING')     
+
+# Bookings Add-Ons -> Dynamic
+class BookingAddOns(Base):
+
+    __table__ = 'BookingAddOns'
+    bookingID = Column(UUID(),ForeignKey('BookedEvents.bookingID','NO ACTION','CASCADE'))
+    addID = Column(Int,ForeignKey('AddOns.addID','CASCADE','CASCADE'))
+
+    const = Constraint(unique('bookingAddPair','bookingID','addID'))
+
+# Bookings Entries -> Dynamic
+class BookingEntries(Base):
+
+    __table__ = 'BookingEntries'
+    entryID = Column(Int, auto_increment=True, primary_key=True)
+    bookingID = Column(UUID(),ForeignKey('BookedEvents.bookingID','NO ACTION','CASCADE'))
+    entries = Column(DateTime, nullable=False)
+    attendees = Column(Int, nullable=False)
+    dayCost = Column(Float, nullable=False)
+
+class BookingManager:
+
+    def __init__(self):
+        pass
+      
+    def check_user_status(self, request, eventName: dict):
+        response = {'available' : True, 'booked' :False}
+
+        # 1. Get event ID and UserID
+        eventID = config.EVENT_NAME_INDEX.get(eventName)
+        userID = Auth.validate_token(req=request).payload['id']
+        
+        # 2. Verify existence
+        booked_event = (db.query(BookedEvents)
+         .where(BookedEvents.userID == userID, BookedEvents.eventID == eventID).all(as_dict=True)
+        )
+
+        for bk in booked_event:
+            # If event is already booking by user
+            if bk['bookingStatus'] == 'active' and bk['paymentStatus'] == 'paid':
+               response['booked'] = True
+            
+        # If event availability is full
+        if config.events_db.get(eventID)['eventAvailability'] == 0:
+            response['available'] = False
+            
+        return response
+           
+    def get_discounts(self): return db.query(BookingDiscount).all(as_dict=True)
+
+    def final_booking_sequence(self,type: str, bookingInfo: dict[str,str | dict], B_REF: str = None) -> None:
         if not bookingInfo: return
         
+        # 1. Calculate Price and important info
         recieved_tickets = bookingInfo.get('tickets')
         tickets = {i : recieved_tickets[i] for i in range(len(recieved_tickets))}
-            
-        # 1. Get statics
-        eInfo =  config.events_db[bookingInfo.get('eventID')]
+        eventID = bookingInfo.get('eventID')
+
+        eInfo =  config.events_db[eventID]
         discount = config.discounts_db[bookingInfo['discountID']]['discountPercentage'] if bookingInfo['discountID'] else None
-        
+
         DAY_RANGE = (eInfo['eventEnd'] - eInfo['eventStart']).days
         day_cost = eInfo['eventPrice'] / (DAY_RANGE + 1)
-        
-        # 2. Add a new booking entry
+
         addOns = bookingInfo.get('AddOns')
         total_price = sum([day_cost * ticket['attendees'] for ticket in tickets.values()] + [config.add_ons_db[aid]['Price'] for aid in addOns])
-        total_price = total_price - (total_price * discount/ 100) if discount else total_price
-        new_booking = BookedEvents(userID=uID,eventID=bookingInfo.get('eventID'),
+        total_price = total_price - (total_price * discount/ 100) if discount else total_price    
+
+        # 2. CALCULATE_TOTAL -> ACTION_TYPE
+        if type == 'CALCULATE_TOTAL':
+
+            # A. Get booing ref
+            new_ref = uuid6.uuid7()     
+            return bookingResponse()._replace(Message='Successfully Calculated total!',booking_ref=new_ref,totalPrice=total_price)    
+
+        # 3. INSERT_INFO -> ACTION_TYPE
+        userID = Auth.validate_token(req=request).payload['id']
+        new_booking = BookedEvents(bookingID=B_REF, userID=userID,eventID=eventID,
             dateTimeBooked=datetime.datetime.now(datetime.timezone.utc), totalPrice = total_price
         )   
      
@@ -128,7 +186,7 @@ class BookedEvents(Base):
          .where(Users.Email == userInfo['Email'], Users.FirstName == userInfo['FirstName'], Users.LastName == userInfo['LastName'])
          .all()
         )
-        config.users_db[uID]['Phone'] = userInfo['Phone']
+        config.users_db[userID]['Phone'] = userInfo['Phone']
 
         # 5. Update Booking status
         if eInfo['eventAvailability'] == 0:
@@ -138,115 +196,15 @@ class BookedEvents(Base):
 
         # 6. Update event availability 
         else:
-            event_manager.action(Perm='admin',OP='UPDATE_AVAILABILITY',ID=bookingInfo.get('eventID'),DATA=-1)
+            prev_av = eInfo['eventAvailability']
+            config.events_db[eventID]['eventAvailability'] = prev_av - 1 
+            db.update(Events.eventAvailability == (prev_av - 1)).where(Events.eventID == eventID).all()
 
         db.commit()
-        return bookingResponse()._replace(Message='Successfully Booked Event!',booking_ref=new_booking.bID,totalPrice=total_price)         
-
-# Bookings Add-Ons -> Dynamic
-class BookingAddOns(Base):
-
-    __table__ = 'BookingAddOns'
-    bookingID = Column(UUID(),ForeignKey('BookedEvents.bookingID','NO ACTION','CASCADE'))
-    addID = Column(Int,ForeignKey('AddOns.addID','CASCADE','CASCADE'))
-
-    const = Constraint(unique('bookingAddPair','bookingID','addID'))
-
-# Bookings Entries -> Dynamic
-class BookingEntries(Base):
-
-    __table__ = 'BookingEntries'
-    entryID = Column(Int, auto_increment=True, primary_key=True)
-    bookingID = Column(UUID(),ForeignKey('BookedEvents.bookingID','NO ACTION','CASCADE'))
-    entries = Column(DateTime, nullable=False)
-    attendees = Column(Int, nullable=False)
-    dayCost = Column(Float, nullable=False)
-
-class BookingManager:
-
-    def __init__(self):
-        pass
+        return bookingResponse()._replace(Message='Successfully Booked Event!',booking_ref=B_REF,totalPrice=total_price)    
     
-    def get_booking_ticket(self):
-        # 1. Setup the buffer and canvas
-        buffer = BytesIO()
-        # We define a custom size (Width: 6 inches, Height: 3 inches)
-        ticket_size = (6 * inch, 3 * inch)
-        ticket = canvas.Canvas(buffer, pagesize=ticket_size)
-
-        # 2. Draw a Border
-        ticket.setLineWidth(1)
-        ticket.rect(0.1*inch, 0.1*inch, 5.8*inch, 2.8*inch)      
-
-        # 3. Add Branding / Header
-        ticket.setFont("Helvetica-Bold", 18)
-        ticket.drawString(0.3*inch, 2.4*inch, 'TEST EVENT')
-
-        ticket.setFont("Helvetica", 10)
-        ticket.setFillGray(0.3) # Subtle grey for secondary info
-        ticket.drawString(0.3*inch, 2.2*inch, f"Date: 2026-10-10 | Time: 12:00")
-        ticket.drawString(0.3*inch, 2.0*inch, f"Venue: Aston Gate, Bristol")
-
-        # 4. Seat / Tier Info (The "High Visibility" area)
-        ticket.setFillGray(0) # Reset to black
-        ticket.setFont("Helvetica-Bold", 14)
-        ticket.drawString(0.3*inch, 1.4*inch, f"SECTION: A4")
-        ticket.drawString(0.3*inch, 1.1*inch, f"ROW: A  |  SEAT: 9")
-
-        # 5. Generate and Draw the QR Code
-        # We use 'segno' to create the QR, then convert it to an image ReportLab understands
-        qr = segno.make(str(uuid.uuid4()), error='h') # 'h' is high error correction (best for printing)
-        qr_buffer = BytesIO()
-        qr.save(qr_buffer, kind='png', border=0, scale=10)
-        qr_buffer.seek(0)
-
-        qr_img = ImageReader(qr_buffer)
-        # Positioning the QR code on the right side
-        ticket.drawImage(qr_img, 4.3 * inch, 0.5 * inch, width=1.3 * inch, height=1.3 * inch)
-
-        ticket.setFont("Helvetica", 7)
-        ticket.drawCentredString(4.95 * inch, 0.4 * inch, 'TKT-99887766')     
-
-        # 6. Finalize
-        ticket.showPage()
-        ticket.save()           
-        buffer.seek(0)
-
-        return buffer
-      
-    def check_user_status(self, request, eventName: dict):
-        response = {'available' : True, 'booked' :False}
-
-        # 1. Get event ID and UserID
-        eventID = config.EVENT_NAME_INDEX.get(eventName)
-        userID = Auth.validate_token(req=request).payload['id']
-        
-        # 2. Verify existence
-        booked_event = (db.query(BookedEvents)
-         .where(BookedEvents.userID == userID, BookedEvents.eventID == eventID).all()
-        )
-        # If event is cancelled
-        if booked_event and booked_event[0].bookingStatus == 'cancelled':
-            return response
-        
-        # If event is already booking by user
-        if booked_event and booked_event[0].paymentStatus == 'paid':
-            response['booked'] = True
-
-        # If event availability is full
-        if config.events_db.get(eventID)['eventAvailability'] == 0:
-            response['available'] = False
-            
-        return response
-           
-    def get_discounts(self): return db.query(BookingDiscount).all(as_dict=True)
-
     def action(self, OP: str, ID: int | str, DATA: dict | str):        
         match OP:
-            case 'ADD_BOOKING': 
-                if not isinstance(ID, int): return
-                return BookedEvents.insert_booking_info(ID,DATA)
-            
             case 'CANCEL_BOOKING':
                 if not isinstance(ID, str): return
                 return BookedEvents.cancel_booking(ID,DATA)

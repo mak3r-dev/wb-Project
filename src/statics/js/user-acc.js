@@ -46,6 +46,7 @@
     // State Container
     const State = {
         bookings: {}, // ID mapping
+        cancelledIDs: new Set(),
         events: {
             upcoming: [],
             past: [],
@@ -70,7 +71,9 @@
                     DATA : eventID
                 }
             });
-            console.log('Cancellation result:', result);
+
+            if (result) window.location.reload()
+                
         } catch (error) {
             console.error("Failed to cancel event:", error);
         }
@@ -90,17 +93,17 @@
         const { 
             eventName, eventRating, eventOrganizers, eventPrice, 
             eventStart, eventEnd, eventFt, eventAvailability, 
-            suitability, venueName, eventID 
+            suitabilityName, venueName, eventID 
         } = data;
 
         const bindings = {
-            ".event-card-title": eventName,
+            ".event-card-title": eventName, 
             ".event-card-rating": eventRating,
             ".event-card-info-organizers": eventOrganizers,
             "._2": `${venueName}, Bristol`,
             "._3": eventAvailability,
-            ".event-card-info-categ-text": suitability,
-            ".event-card-categ": suitability,
+            ".event-card-info-categ-text": suitabilityName,
+            ".event-card-categ": suitabilityName,
             ".price": Formatters.currency(eventPrice),
             "._1": `${Formatters.dateShort.format(new Date(eventStart))} - ${Formatters.dateShort.format(new Date(eventEnd))}`
         };
@@ -113,7 +116,7 @@
         if (eventFt) root.classList.add("ft");
 
         const btn = root.querySelector(".cancel-booking");
-        if (allowCancel) {
+        if (allowCancel && !State.cancelledIDs.has(eventID)) {
             btn.dataset.eventID = eventID;
         } else {
             btn.style.display = 'none';
@@ -183,7 +186,7 @@
     DOM.buttons.featured.addEventListener('click', () => switchTab('featured', DOM.buttons.featured));
     DOM.buttons.cancelled.addEventListener('click', () => switchTab('cancelled', DOM.buttons.cancelled));
 
-    // 3. Layout Handling (Debounced)
+    // 3. Layout Handling 
     let resizeTimeout;
     const handleResize = () => {
         const mode = window.innerWidth <= 600 ? 'grid' : 'list';
@@ -239,11 +242,12 @@
             const now = Date.now(); // Calculate once
             const rawEvents = info.events || []; 
             const rawBookings = info.bookings || {};
-            
+
             // 1. Identify Cancelled IDs
-            const cancelledIDs = new Set();
             for (const [id, details] of Object.entries(rawBookings)) {
-                if (details[1] == 'cancelled') cancelledIDs.add(Number(id));
+                if (details[1] == 'cancelled'){
+                    State.cancelledIDs.add(id)
+                };
             }
             
             rawEvents.forEach(item => {
@@ -252,19 +256,18 @@
                 const start = new Date(eventData.eventStart).getTime();
                 
                 const stdEvent = { data: eventData, id: eventId };
-                if (cancelledIDs.has(eventId)) {
+                if (State.cancelledIDs.has(eventId)) {
                     State.events.cancelled.push(stdEvent);
                 } else {
                     if (start > now) State.events.upcoming.push(stdEvent);
                     else State.events.past.push(stdEvent);
                 }
 
-                if (eventData.eventFt) State.events.featured.push(stdEvent);
+                if (eventData.eventFt){
+                    State.events.featured.push(stdEvent)
+                };
             });
-            console.log(State.events.cancelled) 
-            console.log(State.events.upcoming) 
-            console.log(State.events.past) 
-            console.log(State.events.featured) 
+
             State.bookings = rawBookings;
 
             // Render Info

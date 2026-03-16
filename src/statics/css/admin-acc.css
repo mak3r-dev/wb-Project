@@ -311,6 +311,14 @@ input[type = "text"]::placeholder{
   }  
 }
 
+.cancel{
+  .confirm-confirmation{
+    &::before{
+      content: "Cancel Booking";
+    }
+  }  
+}
+
 /* User info -> Updating Info*/
 .section-main-ctn{
   display: grid;

@@ -139,39 +139,49 @@ def Booking():
 @user_manager.login_required
 def checkout():
     # 1. Get the Booking Info
-    data = request.json
+    ACTION_TYPE, DATA = request.json['ACTION_TYPE'], request.json['DATA']
     
-    # 2. Insert booking info
-    response = booking_manager.action(OP='ADD_BOOKING',ID=user_manager.get_id(),DATA=data)
-    booking_ref, total_price = response.booking_ref, response.totalPrice
-    
-    if total_price > 0:
-        try:
-            intent = stripe.PaymentIntent.create(
-                amount= int(total_price * 100),
-                currency='GBP',
-                automatic_payment_methods={'enabled' : True},
-                metadata={
-                    'ref' : f"{booking_ref}"
-                }
-            )
+    # 2. Check Action
+    if ACTION_TYPE == 'CALCULATE_TOTAL':
+        response = booking_manager.final_booking_sequence(ACTION_TYPE,DATA)
+        booking_ref, total_price = response.booking_ref, response.totalPrice
 
-            return jsonify({
-                'client_secret' : intent['client_secret'], 
-                'key' : config.stripe_pub_key,
-            } | response._asdict())
+        # Paid Events
+        if total_price > 0:
+            try:
+                intent = stripe.PaymentIntent.create(
+                    amount= int(total_price * 100),
+                    currency='GBP',
+                    automatic_payment_methods={'enabled' : True},
+                    metadata={
+                        'ref' : f"{booking_ref}"
+                    }
+                )
+
+                return jsonify({
+                    'client_secret' : intent['client_secret'], 
+                    'key' : config.stripe_pub_key,
+                } | response._asdict())
+            
+            except stripe.error.PermissionError as e:
+                print(f"Permission Error: {e}")
+                return
+
+            except Exception as e:
+                print(f"Other Error: {e}")
+                return
         
-        except stripe.error.PermissionError as e:
-            print(f"Permission Error: {e}")
-            return
+        # Free Events
+        return jsonify(response._asdict())
+    
+    if ACTION_TYPE == 'INSERT_INFO':
+        REF = request.json.get('REF')
+        
+        response = booking_manager.final_booking_sequence('INSERT_INFO',DATA,REF)
+        booking_manager.action(OP='UPDATE_PAYMENT_STATUS',ID=REF,DATA={})
+        return jsonify(response._asdict())
 
-        except Exception as e:
-            print(f"Other Error: {e}")
-            return
-    
-    booking_manager.action(OP='UPDATE_PAYMENT_STATUS',ID=booking_ref,DATA={})
-    return jsonify(response._asdict())
-    
+
 @app.route("/payment-webhook", methods=['POST'])
 def webhook():
     sig = request.headers.get('stripe-signature')
@@ -204,6 +214,6 @@ booking_manager.internal_actions(OP='CACHE_DISCOUNTS')
 event_manager.internal_actions(OP='INSERT_DEFAULTS')
 event_manager.internal_actions(OP='CACHE_ALL')
 user_manager.internal_actions(OP='CACHE_ALL')
-
+ 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -162,7 +162,9 @@
             grid: { borderColor: '#f1f1f1' }
         }
 
-        let avgRev = states.calculatedData.totalRevenue * (1 / Object.values(states.bookedEvents).length);
+
+        let avgRev = Object.values(states.bookedEvents).length == 0 ? 0 :  
+        states.calculatedData.totalRevenue / Object.values(states.bookedEvents).length
 
         totalRevenue.textContent = `${FMT.currency.format(states.calculatedData.totalRevenue)}`
         avgRevenue.textContent = `${FMT.currency.format(avgRev)}`
@@ -233,7 +235,11 @@
         for (const evt of Object.values(states.events)) 
             xLabels.push(evt.eventName)
         
-        const ticketSold = Array(xLabels.length).fill(0,0,xLabels.length)
+        const ticketSold = {}
+        for (const evt of Object.values(states.events)) {
+            ticketSold[evt.eventID] = 0
+        } 
+
         const evntCapacity = xLabels.map((_, i) => {
             return states.events[i].eventAvailability;
         })
@@ -242,8 +248,8 @@
             const evntID = data.eventID, bookingID = data.bookingID
         
             for (const entry of Object.values(states.bookingEntries)) {
-                if (entry.bookingID == bookingID){    
-                    ticketSold[evntID - 1] += 1;
+                if (entry.bookingID == bookingID){  
+                    ticketSold[evntID] += 1
                 }
                 totalTicketSold += 1;
             }
@@ -257,7 +263,7 @@
 
         const graphOptions = {
             series: [
-                {name: 'Tickets Sold',data: ticketSold},
+                {name: 'Tickets Sold',data: Object.values(ticketSold)},
                 {name: 'Total Capacity',data: evntCapacity}
             ],
             chart: {type: 'bar',height: 350,toolbar: { show: false }},      
@@ -307,7 +313,7 @@
         for (const evt of Object.values(states.events)) {
             const clone = eventPerfCard.content.cloneNode(true)
             
-            let perOccupancy = (ticketSold[evt.eventID - 1] / evt.eventAvailability) * 100 
+            let perOccupancy = (ticketSold[evt.eventID] / evt.eventAvailability) * 100 
             perOccupancy = evt.eventAvailability == 0 ? 0 : perOccupancy
             
             setText(clone,"evnt-titl",evt.eventName)
@@ -410,6 +416,7 @@
         vnCardContainer.append(vnFrag)        
     }
     
+
     const loadYearlyReport = () => {
         const {yearlyRevLineChart, eventPerYearBarChart, message, projEvent, title} = DOM.YearlyReportObjs  
 

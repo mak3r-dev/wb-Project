@@ -301,11 +301,29 @@ class UsersManager():
         return jsonify({"redirect_url": "Users", "linked": state_str, "message": "Authentication required"})
 
     def get_user_profile(self, userInfo: list[dict], bookingInfo: list[dict]):
-        evntIDs = [info['eventID'] for info in bookingInfo]
-        eventInfo = [[config.events_db[id],id] for id in evntIDs]
+        Events: type[Base] = getTable('Events')
 
         # 2. Get Booking Info
-        bookings = {info['eventID'] : [str(uuid.UUID(bytes=info['bookingID'])),info['bookingStatus']] for info in bookingInfo}    
+        activeIDs, cancelledIDs = set(), set()
+        for info in bookingInfo:
+            evID = Events.convert(info['eventID'])
+
+            if info['bookingStatus'] == 'active': activeIDs.add(evID)
+            if info['bookingStatus'] == 'cancelled': cancelledIDs.add(evID)
+
+        bookings, eventInfo  = {}, []
+        for info in bookingInfo:
+            evID = Events.convert(info['eventID'])
+            
+            if info['bookingStatus'] == 'cancelled': 
+                if evID in activeIDs : continue
+                if evID not in cancelledIDs: continue
+                else:
+                    cancelledIDs.remove(evID)
+
+            eventInfo.append([config.events_db[evID], evID])
+            bookings[evID] = [str(uuid.UUID(bytes=info['bookingID'])),info['bookingStatus']]
+
         return jsonify({'user' : userInfo, 'events' : eventInfo, 'bookings' : bookings})
 
     def action(self, Perm:str, OP: str, ID: int, DATA: dict):

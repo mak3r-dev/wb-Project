@@ -192,7 +192,6 @@
                 corEl.style.display = "none"
                 el.classList.remove('selected')
             }
-            
         })
     };
 
@@ -268,14 +267,18 @@
 
         confirmation.classList.remove('suspend')
         confirmation.classList.remove('re-instate')
-        if (type == 'delete' || type == 'suspend') {
+
+        confirmation.classList.remove('cancel')
+        if (type == 'delete' || type == 'suspend' || type == 'cancel-paid') {
             confirmation.style.display = 'grid'
             confirmation.classList.add('deletion')
             if (type == 'suspend') confirmation.classList.add('suspend')
-        }else if (type  == 'info' || type == 're-instate'){
+            if (type == 'cancel-paid') confirmation.classList.add('cancel')
+        }else if (type  == 'info' || type == 're-instate' || type == 'cancel-unpaid'){
             confirmation.style.display = 'grid'
             confirmation.classList.add('information')
             if (type == 're-instate') confirmation.classList.add('re-instate')
+            if (type == 'cancel-unpaid') confirmation.classList.add('cancel')
         }
 
         actionTxt.textContent = State.ElStates.cActionTxt;
@@ -754,16 +757,19 @@
                 action.classList.add('booking-status-confirmed')
             }
 
-            if (bk.paymentStatus.toLowerCase() == 'unpaid'){
-                status.classList.add('booking-status-unpaid')
-                action.classList.add('booking-status-unpaid')
-            }   
+            const unpaid = bk.paymentStatus.toLowerCase() == 'unpaid'
+            const cancelled = bk.bookingStatus.toLowerCase() == 'cancelled'
 
-            if (bk.bookingStatus.toLowerCase() == 'cancelled'){
+            if ((cancelled && !unpaid) || (cancelled && unpaid)){
                 status.classList.add('booking-status-cancelled')
                 action.classList.add('booking-status-cancelled')
-            }   
-            
+            }
+
+            if (!cancelled && unpaid){
+                status.classList.add('booking-status-unpaid')
+                action.classList.add('booking-status-unpaid')               
+            }
+
             const cAction = clone.querySelector('.cancel-action')
             cAction.dataset.bookingID = bk.bookingID
             cAction.dataset.eventID = bk.eventID
@@ -779,17 +785,17 @@
         State.currentAction = 'BOOKING_ACTION'
         State.currentOP = 'CANCEL_BOOKING'
         State.currentBookingID = bId
-        State.currentEvent = eId
+        State.currentEvent = State.events[eId]
 
-        const validStatus = bk.bookingStatus == 'Active' && bk.paymentStatus == 'paid'
-        const invalidStatus = bk.bookingStatus == 'Active' && bk.paymentStatus == 'expired'
+        const validStatus = bk.bookingStatus == 'active' && bk.paymentStatus == 'paid'
+        const invalidStatus = bk.bookingStatus == 'active' && bk.paymentStatus == 'unpaid'
         if (validStatus || invalidStatus){
             State.ElStates.cActionTxt = 'Confirm Booking Cancellation?'
             State.ElStates.cMoralTxt = 'Are you sure you want to cancel this booking?'
             State.ElStates.cConsequenceTxt = 'This action is permanent.'           
         }
         
-        viewFinalConfirmation(validStatus ? 'delete' : 'info')     
+        viewFinalConfirmation(validStatus ? 'cancel-paid' : 'cancel-unpaid')     
     }
 
     const searchHandler = () => {
@@ -857,7 +863,7 @@
         DOM.sectionBtns.forEach(el => {
             el.addEventListener('click',() => {changeContent(el.dataset.contentmap)})
         })
-        DOM.sectionBtns[3].click();      
+        DOM.sectionBtns[0].click();      
 
         Object.values(DOM.searchBars).forEach(el => {
            el.addEventListener('input',searchHandler) 
@@ -1021,7 +1027,6 @@
             const EV = State.currentEvent 
 
             const actionResult = await send(Action,OP,ID,EV)
-            console.log("Events",actionResult)     
         }
 
         // User Actions
@@ -1034,9 +1039,7 @@
             if (OP == 'EDIT_PASSWORD') handleLoginState()    
             if (OP == 'SUSPEND_USER') State.users[ID].Status = 'suspended'       
             if (OP == 'UNSUSPEND_USER') State.users[ID].Status = 'active' 
- 
-            console.log("Users",actionResult)  
-            
+             
             State.searchSets.userSet = new Set(Object.values(State.users))
             renderUsers()                
         }
@@ -1049,8 +1052,6 @@
 
             const actionResult = await send(Action,OP,ID,EID)
             if (OP == 'CANCEL_BOOKING') State.bookings[ID].bookingStatus = 'cancelled'  
-
-            console.log("Booking",actionResult)   
             
             State.searchSets.bookingSet = new Set(Object.values(State.bookings))
             renderBookings()  

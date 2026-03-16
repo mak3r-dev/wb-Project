@@ -185,6 +185,7 @@ class baseClass{
             return window.location.replace(`../${data.redirect_url}?linked=${btoa(data.linked)}`)
         }
     };
+
 }
 
 base = new baseClass()
