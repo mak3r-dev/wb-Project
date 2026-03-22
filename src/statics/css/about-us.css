@@ -1,0 +1,348 @@
+/* =========================================
+   1. Global Variables & Theming
+   ========================================= */
+:root {
+   /* Section -> Mission*/
+   --mission-layout: 1fr;
+
+   --about-us-border: 1rem 1rem 0rem 0rem;
+   --achv-border: 0rem 0rem 1rem 1rem;
+
+   /* Section -> Values */
+   --val-layout-col: 1fr;
+   --val-layout-row: none;
+
+   /* Section -> Milestones */
+   --milestone-layout-col: 1fr;
+   --milstone-cards-width:97%;
+
+   --blur-height: 30rem;
+}
+
+/* =========================================
+   2. Global Classes
+   ========================================= */
+.section-txt{
+   font: lighter 3.6rem var(--font-secondary);;
+   color: rgb(0, 0, 0); 
+   z-index:-1; 
+   letter-spacing: 0.1rem;
+}
+
+.section-info{
+   font: lighter 1.344rem var(--font-secondary); 
+   color: white; 
+   z-index: -1; 
+   letter-spacing: 0.05rem;
+}
+
+.section-title{
+   height: 10rem;
+   align-content: flex-end;
+   text-align: center;
+   margin-bottom: 2rem;
+}
+
+.card{
+   z-index: 1;
+   display: grid;
+   gap: 0.3rem;
+   border-radius: 1rem;
+   background-color: rgb(211, 211, 211);
+   padding: 1rem;
+}
+
+.card-icon-bg{
+   width: max-content;
+   background-color: rgb(46, 80, 109, 0.8);
+   border-radius: 1rem;
+} 
+
+.card-icon{
+   height: 3rem;
+   width: 3rem;        
+   background-color: white;
+
+   mask-size: 1.3rem;
+   mask-position: center;
+   mask-repeat: no-repeat;
+}      
+
+.card-info{font: lighter 1.5rem var(--font-secondary);}
+.card-info-txt{font: lighter 1rem var(--font-secondary);}
+
+/* =========================================
+   3. Layout: Section: Mission (Our Mission)
+   ========================================= */  
+.section-mission{
+   display: grid;
+   grid-template-columns: var(--mission-layout);
+   margin-top: 2.2rem;
+   min-height: 50rem;
+
+   /* About Us -> Info*/
+   .about-us{
+      align-content: center;
+      border-radius: var(--about-us-border);
+      background: linear-gradient(to bottom, #2e506d, #243B55);
+   
+      padding: 5rem;
+   }
+
+   .about-us-txt{
+      font: lighter 3.5rem var(--font-secondary);
+      letter-spacing: 0.03rem;
+      margin-bottom: 1rem;
+      color: rgb(204, 204, 204);
+   }
+
+   .our-mission-txt,.our-vision-txt{
+      font: lighter 1.3rem var(--font-secondary);
+      margin-bottom: 0.5rem;
+   }
+
+   .our-mission-info,.our-vision-info{
+      font: lighter 0.9rem var(--font-secondary);
+      text-align: left;
+      margin-bottom: 1rem;
+   }
+
+   /* Acievements*/
+   .achievements{
+      display: grid;
+      place-items: center;
+      border-radius: var(--achv-border);
+      background: url(../assets/conference-hall.jpg) center/cover no-repeat;
+      padding: 2rem;
+
+      /* Achievements cards*/
+      .achievements-cards{
+         display: grid;
+         grid-template-columns: repeat(2,1fr);
+         grid-template-rows: repeat(2,1fr);
+         gap: 1.2rem;
+      }
+
+      .achv-card{
+         padding: 1.3rem;
+         border-radius: 1rem;
+         border: 0.1rem solid rgb(255,255,255,0.5);
+         background-color: rgb(167, 167, 167, 0.5);
+         backdrop-filter: blur(0.3rem);
+         width: 10rem;
+         &:hover{
+            filter: brightness(1.1rem);
+         }
+      }
+
+      .achv-icon-bg{
+         border-radius: 1rem;
+         background-color: rgb(255, 255, 255, 0.5);
+         backdrop-filter: blur(5rem);
+         margin-bottom: 1rem;
+         width: max-content;
+      }
+      .achv-info{
+         font: lighter 1.1rem var(--font-secondary);
+         margin-bottom: 0.5rem;
+      }
+      .achv-info-txt{
+         font: lighter 1rem var(--font-secondary);
+      }
+      .calender-icon{mask-image: url(../assets/calendar.png);}
+      .attendees-icon{mask-image: url(../assets/People.png);}
+      .world-icon{mask-image: url(../assets/world.png);}
+      .star-icon{mask-image: url(../assets/star.png);}
+   }
+}
+
+/* =========================================
+   4. Layout: Section: Values (Our Values)
+   ========================================= */  
+.section-values{
+   width: 101%;
+   align-self: center;
+
+   /* Value cards*/
+   .value-cards{
+      display: grid;
+      grid-template-columns: var(--val-layout-col);
+      grid-template-rows: var(--val-layout-row);
+      gap: 1rem;
+      justify-self: center;
+
+      width: 98%;
+   }
+
+   .value-card{
+      align-items: center;
+      justify-items: center;
+      background: none;
+   }
+
+   .value-icon-bg{background-color: #243B55;}
+   .value-card-info-txt{
+      text-align: center;
+      font: lighter 0.9rem var(--font-secondary);
+   }
+
+   .heart-icon{mask-image: url(../assets/heart.png);}
+   .innovation-icon{mask-image: url(../assets/innovation.png);}
+   .community-icon{mask-image: url(../assets/community.png);}
+   .sustainability-icon{mask-image: url(../assets/sustainability.png);}
+}
+
+/* =========================================
+   5. Layout: Section: Milestones (Major Milestones)
+   ========================================= */  
+.section-milestones{
+   width: 101%;
+   align-self: center;
+   
+   /* Milestones cards*/
+   .milestone-cards{
+      display: grid;
+      grid-template-columns: var(--milestone-layout-col);
+      gap: 1rem;
+      justify-self: center;
+
+      width: var(--milstone-cards-width);
+      margin-bottom: 5rem;
+   }
+
+   .milestone-card{
+      display: grid;
+      grid-template-rows: 10rem 1fr;
+      border-radius: 1rem;
+      
+      .milestone-year-cont{
+         padding: 2rem;
+         background: url(../assets/conference-hall.jpg) center/cover no-repeat;
+         border-radius: 1rem 1rem 0rem 0rem;
+      }
+
+      .milestone-year{
+         text-align: left;
+         font: lighter 1.5rem var(--font-secondary);
+         color: rgb(0, 0, 0);
+      }
+
+      .milestone-info{
+         padding: 2rem;
+         background-color: rgb(167, 167, 167, 0.4);
+         border-radius:0rem 0rem 1rem 1rem;
+      }
+
+      .milestone-txt{font: lighter 1rem var(--font-secondary); color: white; margin-bottom: 1rem;}
+      .milestone-info-txt{
+         font: lighter 0.8rem var(--font-secondary); 
+         color: rgb(216, 216, 216);
+         text-overflow: ellipsis;
+         
+      }
+   }
+}
+
+/* =========================================
+   6. Layout: Section: CTA
+   ========================================= */  
+.CTA-icon{
+   justify-self: center;
+   height: 10rem; width: 10rem;
+
+   background-color: white;
+   mask-image: url(../assets/award.png);
+   mask-size: 5rem;
+   mask-position: center;
+   mask-repeat: no-repeat;
+}
+
+.CTA-txt,.CTA-assurance{
+   font: lighter 2rem var(--font-secondary);
+   text-align: center;
+   letter-spacing: 0.5rem;
+   margin-bottom: 1.5rem;
+}
+
+.CTA-assurance{
+   font: lighter 0.95rem var(--font-secondary); 
+   letter-spacing: 0.07rem;
+   margin-bottom: 2rem;
+}
+
+.CTA-prompts{
+   display: grid;
+   grid-template-columns: max-content max-content;
+   gap: 1rem;
+   justify-self: center;
+   width: max-content;
+   margin-bottom: 2rem;
+
+   .browse-events-btn,.contact-us-btn{
+      padding: 1rem 1.5rem 1rem 1.5rem;
+      border-radius: 2rem;
+      font: lighter 1rem var(--font-secondary);
+   }
+
+   .browse-events{display: flex;}
+   .browse-events-btn{
+      font: lighter 1rem var(--font-secondary);
+      text-align: center;
+
+      background-color: rgb(192, 108, 132);
+      box-shadow: 0rem 0rem 1rem rgb(192, 108, 132);
+      letter-spacing: 0.05rem;
+      
+      border-radius: 2rem;
+      transition: transform 0.05s ease;
+
+      &:hover{
+         transform: scale(1.02);
+      }
+   }
+
+   .contact-us-btn{
+      padding: 1rem;
+      letter-spacing: 0.05rem;
+      border: 0.1rem solid rgb(192, 108, 132);
+      transition: transform 0.05s ease;
+
+      &:hover{
+         transform: scale(1.02);
+      }
+   }
+}
+
+/* =========================================
+   7. Media Queries
+   ========================================= */
+
+/* Tablet & Up */
+@media only screen and (min-width: 600px) {
+   :root {
+      --val-layout-col: repeat(2,1fr);
+      --val-layout-row: repeat(2,1fr);    
+      
+      --milestone-layout-col: repeat(auto-fill,minmax(15rem,1fr));
+      --milstone-cards-width: max-content;
+   }
+}
+
+/* Desktop & Up */
+@media only screen and (min-width: 992px) {    
+   :root {
+      --mission-layout: repeat(2,1fr);
+      --about-us-border: 1rem 0rem 0rem 1rem;
+      --achv-border: 0rem 1rem 1rem 0rem;
+
+      --val-layout-col: repeat(4,1fr);
+      --val-layout-row: 1fr;
+
+      --blur-height: 20rem;
+   }
+}
+
+/* Small vertical screens */
+@media only screen and (max-height: 800px) {
+   :root {}
+}  

@@ -31,30 +31,69 @@
     <!-- Event Section -->
     <div class="event-housing">
       <h1 class="nav-section-title"> Featured Events </h1> 
-      <div class="event-showcase-group">
-        <img src="../statics/assets/BallonFestival.svg" class="ft-card card-start"></img>
-        <img src="../statics/assets/FunFair.svg" class="ft-card"></img>
-        <img src="../statics/assets/Musical.svg" class="ft-card"></img>
-        <img src="../statics/assets/Birthday.svg" class="ft-card"></img>
-        <img src="../statics/assets/Theatre.svg" class="ft-card"></img>
-        <img src="../statics/assets/Conference.svg" class="ft-card"></img> 
-        <img src="../statics/assets/Sports.svg" class="ft-card"></img> 
-        <img src="../statics/assets/Library.svg" class="ft-card card-end"></img>                
-      </div>
 
-      <div class="indicator"> 
-        <button class="indicator-btn-left"></button>
-        <div class="indicator-main">
-          <h1 class="mobile-indicator-text"> 1/4 </h1>
-          <div class="desktop-indicator-dots">
-            <a class="dot"></a> <a class="dot"></a>
-            <a class="dot"></a> <a class="dot"></a>     
-            <a class="dot"></a> <a class="dot"></a>
-            <a class="dot"></a> <a class="dot"></a>        
+      <div class="event-carousel">
+        <template id="card-template">
+          <div class="ft-card card-closed">
+            <div class="closed-cont">
+                <div class="evnt-alias-cont">
+                    <h1 class="evnt-alias"> BBF</h1>
+                </div>
+                <div class="sep-bar"></div>
+                <div class="evnt-date">1 / 1 / 2025</div>
+            </div>
+
+            <div class="opened-cont">
+              <h1 class="evnt-category">Entertainments</h1>
+              <h1 class="evnt-title">Bristol Ballon Fiesta</h1>
+              <h1 class="evnt-desc">Twice-daily launches (weather permitting) at dawn (~6:00 am) and dusk (~6:00 pm), where over 100 balloons of all shapes and colours fill the sky simultaneously.</h1>
+              
+              <div class="evnt-details">
+                <div class="evnt-detail-card date-detail">
+                  <div class="evnt-icon date-icon"></div>
+                  <h1 class="date-txt detail-txt">Date</h1>
+                  <h1 class="date detail-info">September 10, 2026</h1>
+                </div>
+
+                <div class="evnt-detail-card cap-detail">
+                  <div class="evnt-icon cap-icon"></div>
+                  <h1 class="date-txt detail-txt">Capacity</h1>
+                  <h1 class="capacity detail-info">5000</h1>
+                </div>
+
+                <div class="evnt-detail-card price-detail">
+                  <div class="evnt-icon ticket-icon"></div>
+                  <h1 class="date-txt detail-txt">Price</h1>
+                  <h1 class="price detail-info">£150</h1>
+                </div>
+
+              </div>
+
+              <div class="price-loc-cont">
+                <div class="evnt-loc-icon evnt-icon loc-icon"></div>
+                <div class="evnt-loc">Ashton Gate, Bristol</div>
+                <div class="btn-ctn"><button class="start-booking-desktop booking-btn"> Start Boooking </button></div>
+              </div>
+
+              <div class="movement-dot-cont">
+                <div class="dot-cont-mobile"></div>
+
+                <div class="movement-btns">
+                  <div class="prev"><button class="mv-btn-icon prev-icon"></button></div>
+                  <div class="next"><button class="mv-btn-icon next-icon"></button></div>
+                </div>
+              </div>
+
+              <div class="dot-cont-desktop"></div>
+
+              <button class="start-booking-mobile booking-btn"> Start Boooking </button>
+            </div>
           </div>
-        </div>
-        <button class="indicator-btn-right"></button>
+        </template>
       </div>
+      <template id="dot-template">
+        <div class="dot dot-closed"></div>
+      </template>
     </div>
 
     <div class="main3 s-b">
@@ -139,7 +178,7 @@
     <div class="CTA-housing">
       <h1 class="CTA-title"> Ready to Book your Next Experience? </h1>
       <div class="CTA-Prompt">
-        <a href="" class = "CTA-Prompt-btn" > Try for Free </a>
+        <a href="../Event" class = "CTA-Prompt-btn" > Try for Free </a>
         <h1 class="CTA-Prompt-text">Get Started in less than 30 seconds </h1>
       </div>
     </div>

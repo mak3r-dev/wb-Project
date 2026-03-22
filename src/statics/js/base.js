@@ -69,7 +69,7 @@ playAnimation();
  */
 navHome.addEventListener('click', () => { window.location.href = "../Home"; });
 navEvent.addEventListener('click', () => { window.location.href = "../Event"; });
-navAbout.addEventListener('click', () => { window.location.href = "../"; });
+navAbout.addEventListener('click', () => { window.location.href = "../About"; });
 navAccount.addEventListener('click', () => { window.location.href = "../Account"; });
 
 /**

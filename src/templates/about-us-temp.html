@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" id="html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope&family=Akaya Kanadaka&display=swap">
+    <link rel="stylesheet" href="../statics/css/about-us.css">
+    <title> Re-Design v2 </title>
+</head>
+
+<body id="body">
+    {% extends "base-temp.html" %}
+        
+    {% block scripts %}
+       <!-- <script  src="../statics/js/booking.js" defer></script> -->
+    {% endblock %}    
+        
+    {% block content %}
+
+    <!-- Section: Our Mission-->
+    <div class="section-mission">
+        <div class="about-us">
+            <h1 class="about-us-txt">About Us</h1>
+
+            <h1 class="our-mission-txt">Our Mission</h1>
+            <h1 class="our-mission-info">To create extraordinary events that inspire, connect, and transform communities around the world.</h1>
+
+            <h1 class="our-mission-txt">Our Vision</h1>
+            <h1 class="our-mission-info">A world where every event is an unforgettable experience that brings people together and creates lasting impact.</h1>
+        </div>
+
+        <div class="achievements">
+            <div class="achievements-cards">
+                <div class="achv-card">
+                    <div class="achv-icon-bg"><div class="achv-icon calender-icon card-icon"></div></div>
+                    <h1 class="achv-info card-info">500+</h1>
+                    <h1 class="achv-info-txt card-info-txt">Events Hosted</h1>
+                </div>
+
+                <div class="achv-card">
+                    <div class="achv-icon-bg"><div class="achv-icon attendees-icon card-icon"></div></div>
+                    <h1 class="achv-info card-info">2M+</h1>
+                    <h1 class="achv-info-txt card-info-txt">Happy Attendees</h1>
+                </div>
+
+                <div class="achv-card">
+                    <div class="achv-icon-bg"><div class="achv-icon world-icon card-icon"></div></div>
+                    <h1 class="achv-info card-info">150+</h1>
+                    <h1 class="achv-info-txt card-info-txt">Cities Worldwide</h1>
+                </div>
+
+                <div class="achv-card">
+                    <div class="achv-icon-bg"><div class="achv-icon star-icon card-icon"></div></div>
+                    <h1 class="achv-info card-info">98%</h1>
+                    <h1 class="achv-info-txt card-info-txt">Satisfaction Rate</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section: Our Values-->
+    <div class="section-values">
+        <div class="section-title">
+            <h1 class="section-txt value-txt">Core Values</h1>
+            <h1 class="section-info value-info">The principles that guide everything we do</h1>
+        </div>
+
+        <div class="value-cards">
+            <div class="value-card card">
+
+                <div class="value-icon-bg card-icon-bg">
+                    <div class="value-icon heart-icon card-icon"></div>
+                </div>      
+
+                <h1 class="value-card-info card-info">Excellence </h1>
+                <h1 class="value-card-info-txt card-info-txt">We strive for perfection in every detail, ensuring each event exceeds expectations.</h1>
+            </div>
+
+            <div class="value-card card">
+
+                <div class="value-icon-bg card-icon-bg">
+                    <div class="value-icon innovation-icon card-icon"></div>
+                </div>      
+
+                <h1 class="value-card-info card-info">Innovation </h1>
+                <h1 class="value-card-info-txt card-info-txt">We embrace cutting-edge technology and creative solutions to push boundaries.</h1>
+            </div>
+
+            <div class="value-card card">
+
+                <div class="value-icon-bg card-icon-bg">
+                    <div class="value-icon community-icon card-icon"></div>
+                </div>      
+
+                <h1 class="value-card-info card-info">Community </h1>
+                <h1 class="value-card-info-txt card-info-txt">We build meaningful connections and foster inclusive spaces for all.</h1>
+            </div>
+
+            <div class="value-card card">
+
+                <div class="value-icon-bg card-icon-bg">
+                    <div class="value-icon sustainability-icon card-icon"></div>
+                </div>      
+
+                <h1 class="value-card-info card-info">Sustainability </h1>
+                <h1 class="value-card-info-txt card-info-txt">We're committed to responsible practices that protect our planet for future generations.</h1>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section: Major milestones-->
+    <div class="section-milestones">
+        <div class="section-title">
+            <h1 class="section-txt milestones-txt">Major Milestones</h1>
+            <h1 class="section-info milestones-info">Key moments in our journey</h1>
+        </div>        
+
+        <div class="milestone-cards">
+            <div class="milestone-card">
+
+                <div class="milestone-year-cont">
+                    <h1 class="milestone-year">2025</h1>
+                </div>
+
+                <div class="milestone-info">
+                    <h1 class="milestone-txt">The Beginning</h1>
+                    <h1 class="milestone-info-txt">Founded with a vision to transform the event industry and create memorable experiences that bring people together.</h1>
+                </div>
+            </div>
+
+            <div class="milestone-card">
+
+                <div class="milestone-year-cont">
+                    <h1 class="milestone-year">2026</h1>
+                </div>
+
+                <div class="milestone-info">
+                    <h1 class="milestone-txt">Global Expansion</h1>
+                    <h1 class="milestone-info-txt">Expanded operations to 50+ cities worldwide, bringing world-class events to communities across the globe.</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section: CTA-->
+    <div class="CTA">
+        <div class="CTA-icon"></div>
+        <h1 class="CTA-txt">Ready to Create Something Amazing?</h1>
+        <h1 class="CTA-assurance">Join thousands of satisfied clients who trust us to make their events unforgettable</h1>
+        <div class="CTA-prompts">
+            <button class="browse-events-btn">Browse Events</button>
+            <button class="contact-us-btn">Contact Us</button>
+        </div>
+    </div>
+    {% endblock %}
+</body>
+</html>       

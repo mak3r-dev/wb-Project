@@ -1,233 +1,268 @@
-/**
- * Configuration & Selectors
- */
-let auto_scroll = true
-const scrollContainer = document.querySelector(".event-showcase-group");
-const cards = document.querySelectorAll(".ft-card");
-const dots = document.querySelectorAll(".dot");
-const indicatorText = document.querySelector(".mobile-indicator-text");
+(() => {
+    'use strict';
 
-const btnNext = document.querySelector(".indicator-btn-right");
-const btnPrev = document.querySelector(".indicator-btn-left");
+    // =======================================
+    // 1. CONFIGURATION & CONSTANTS
+    // =======================================  
+    const DOM = {
+        templates: {
+            card: document.getElementById('card-template'),
+            dot: document.getElementById('dot-template'),
+        },
+        conts: {
+            eventCont: document.querySelector('.event-carousel'),
+        }
+    };
 
-let activeIndex = 0; // Current index for manual navigation
-let autoIndexIn = 0; // Current index for auto-move entry
-let autoIndexOut = 0; // Current index for auto-move exit
-let autoMoveInterval = null;
+    const state = {
+        /* Multi properties */
+        ftCards: [],
+        ftEvents: {},
+        
+        /* Single properties */
+        currentFtActive: 0,
+        currentAnim: null,
+        currentAnimInterval: null,
+        animIntervalMs: 5000,
+    };
 
-const BREAKPOINT = 992;
-const interval = 5000 /* In millis*/
+    const FMT = {
+        date: new Intl.DateTimeFormat('en-GB', { 
+            weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' 
+        }),
+        currency: new Intl.NumberFormat('en-GB', { 
+            style: 'currency', currency: 'GBP' 
+        }),
+        singleDate: new Intl.DateTimeFormat('en-GB', { 
+            day: 'numeric', month: 'numeric', year: 'numeric' 
+        }),
+    };  
 
+    // =======================================
+    // 2. UTILITIES & HELPERS
+    // =======================================  
+    const debounce = (func, wait) => {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    };
 
-/* Services element */
-const serviceBtns = document.querySelectorAll('.service-btn')
-const serviceCard = document.querySelectorAll('.service-card')
-const ratingTemplate = document.querySelector('.ratingTemplate')
-const starTemplate = document.querySelector('.ratingIconTemplate')
-const serviceRatingContainer = document.querySelector('.service-rating')
+    // =======================================
+    // 3. STATE MUTATIONS 
+    // =======================================  
+    const updateIndicatorState = (cardInfo) => {
+        cardInfo.dots.forEach(dot => {
+            const isMatch = dot.dataset.key === cardInfo.cardKey;
+            dot.classList.toggle('dot-opened', isMatch);
+            dot.classList.toggle('dot-closed', !isMatch);
+        });
+    };
 
-/**
- * Helper Functions
- */
+    const changeDesktopState = (cardIdx, op = 'open') => {
+        const cardInfo = state.ftCards[cardIdx];
+        const isOpen = op === 'open';
 
-// Updates the "1/8" counter text
-const updateIndicatorText = () => {
-    if (indicatorText) {
-        indicatorText.textContent = `${activeIndex + 1}/${cards.length}`;
-    }
-};
+        cardInfo.element.classList.toggle('card-opened', isOpen);
+        cardInfo.element.classList.toggle('card-closed', !isOpen);
+        
+        updateIndicatorState(cardInfo);
 
-// Handles smooth scrolling to a specific card
-const scrollToCard = (index,update) => {
-    const targetCard = cards[index];
-    if (targetCard) {
-        scrollContainer.scrollTo({
-            left: targetCard.offsetLeft,
-            behavior: 'smooth'
+        cardInfo.isOpen = isOpen;
+        if (isOpen) state.currentFtActive = cardIdx;
+    };
+
+    const changeMobileState = (cardIdx) => {
+        const targetKey = state.ftCards[cardIdx].cardKey;
+
+        state.ftCards.forEach((card, idx) => {
+            const isTarget = card.cardKey === targetKey;
+            
+            card.element.style.display = isTarget ? 'block' : 'none';
+            card.isOpen = isTarget;
+            
+            if (isTarget) {
+                card.element.classList.replace('card-closed', 'card-opened');
+                updateIndicatorState(card);
+                state.currentFtActive = idx;
+            }
+        });
+    };
+
+    const resetMobileStates = () => {
+        state.ftCards.forEach(card => {
+            card.element.style.display = 'block';
+            card.element.classList.replace('card-opened', 'card-closed');
+            card.isOpen = false;
+        });
+    };
+
+    // =======================================
+    // 4. CORE LOGIC: FEATURED RENDER
+    // =======================================  
+    const renderFtCards = () => {
+        const { card: cardTpl, dot: dotTpl } = DOM.templates;
+        const cardFrag = document.createDocumentFragment();
+        const numEvents = Object.keys(state.ftEvents).length;
+
+        const dotsFrag = document.createDocumentFragment();
+        Object.keys(state.ftEvents).forEach(key => {
+            const dotClone = dotTpl.content.cloneNode(true);
+
+            dotClone.firstElementChild.dataset.key = key; 
+            dotsFrag.append(dotClone);
         });
 
-        if (update){
-            updateIndicatorText();
+        const setText = (parent, sel, val) => {
+            parent.querySelector(`.${sel}`).textContent = val;
+        };
+
+        // 2. Build cards
+        for (const [key, ev] of Object.entries(state.ftEvents)) {
+            const clone = cardTpl.content.cloneNode(true);
+            const cardEl = clone.firstElementChild;
+            cardEl.id = `${key}FT`;
+
+            const alias = ev.eventName.split(" ").map(w => w[0]).join('');
+            
+            setText(clone, 'evnt-alias', alias);
+            setText(clone, 'evnt-date', FMT.singleDate.format(ev.eventStart));
+            setText(clone, 'evnt-category', ev.suitabilityName);
+            setText(clone, 'evnt-title', ev.eventName);
+            setText(clone, 'evnt-desc', ev.eventDesc);
+            setText(clone, 'date', FMT.date.format(ev.eventStart));
+            setText(clone, 'capacity', ev.eventAvailability);
+            setText(clone, 'price', ev.eventPrice);
+            setText(clone, 'evnt-loc', `${ev.venueName}, ${ev.venueAddress}`);
+
+            const themeClass = ev.eventName === 'Bristol Ballon Fiesta' 
+                ? 'BristolBallonFiesta' 
+                : ev.suitabilityName;
+            cardEl.classList.add(themeClass);
+
+            // 3. Append pre-built dots to this card
+            const mCont = cardEl.querySelector('.dot-cont-mobile');
+            const dCont = cardEl.querySelector('.dot-cont-desktop');
+            
+            mCont.appendChild(dotsFrag.cloneNode(true));
+            dCont.appendChild(dotsFrag.cloneNode(true));
+
+            // 4. Cache DOM references inside state
+            const dotElements = Array.from(cardEl.querySelectorAll('.dot'));
+            state.ftCards.push({
+                cardKey: key,
+                isOpen: false,
+                element: cardEl,    
+                dots: dotElements 
+            });
+
+            cardFrag.append(clone);
         }
-    }
-};
 
-/**
- * Mouse Wheel Navigation (Horizontal Scroll)
- * Only active on mobile/tablet view
- */
-scrollContainer.addEventListener("wheel", (event) => {
-    if (window.innerWidth < BREAKPOINT) {
-        event.preventDefault();
+        DOM.conts.eventCont.append(cardFrag);
+    };
 
-        // Scroll 1 card left or right based on wheel delta
-        activeIndex += (activeIndex == 0)? 1 : 0;
-        activeIndex -= (activeIndex == cards.length + 1)? 1 : 0; 
-        activeIndex += (event.deltaY > 0)? 1 : -1;
-        scrollToCard(activeIndex,true);
-    }
-}, { passive: false });
-
-/**
- * Button Navigation
- */
-btnNext.addEventListener("click", () => {
-    if (window.innerWidth < BREAKPOINT) {
-        if (activeIndex < cards.length - 1) {
-            activeIndex++;
-            scrollToCard(activeIndex,true);
+    // =======================================
+    // 5. CORE LOGIC: ANIMATION & EVENTS
+    // =======================================  
+    const changeCardView = (op) => {
+        const len = state.ftCards.length;
+        if (op === 'next') {
+            changeMobileState((state.currentFtActive + 1) % len);
+        } else {
+            changeMobileState((state.currentFtActive - 1 + len) % len);
         }
-    }
-});
+    };
 
-btnPrev.addEventListener("click", () => {
-    if (window.innerWidth < BREAKPOINT) {
-        if (activeIndex > 0) {
-            activeIndex--;
-            scrollToCard(activeIndex,true);
+    const clickHandler = (cardId) => {
+        if (state.currentAnim === 'mobile') return;
+        clearInterval(state.currentAnimInterval);
+
+        state.ftCards.forEach((card, i) => {
+            if (card.element.id === cardId) {
+                changeDesktopState(i);
+                state.currentAnimInterval = setInterval(
+                    desktopAnimation, state.animIntervalMs
+                );
+            } else {
+                changeDesktopState(i, 'close');
+            }
+        });
+    };
+
+    const desktopAnimation = () => {
+        const currentIdx = state.currentFtActive;
+        const nextIdx = (currentIdx + 1) % state.ftCards.length;
+
+        if (state.ftCards[currentIdx].isOpen) {
+            changeDesktopState(nextIdx);
+            changeDesktopState(currentIdx, 'close');
+        } else {
+            changeDesktopState(currentIdx);
         }
-    }
-});
+    };
 
-/**
- * Auto-Move Animation (Desktop Only)
- * Manages the classes for the expanding/shrinking card effects
- */
-const playAutoMoveAnimation = () => {
-    // Reset index if it exceeds card count
-    if (autoIndexIn >= cards.length) autoIndexIn = 0;
+    const setAnim = () => {
+        const isDesktop = window.innerWidth > 700;
 
-    // "In" Animation: Expand card and dot
-    const cardIn = cards[autoIndexIn];
-    const dotIn = dots[autoIndexIn];
+        if (isDesktop) {
+            if (state.currentAnim === 'desktop') return;
+            if (state.currentAnim === 'mobile') resetMobileStates();
+            
+            desktopAnimation();
+            state.currentAnimInterval = setInterval(
+                desktopAnimation, state.animIntervalMs
+            );
+            state.currentAnim = 'desktop';
+        } else {
+            if (state.currentAnim === 'mobile') return;
+            
+            clearInterval(state.currentAnimInterval);
+            changeMobileState(state.currentFtActive);
+            state.currentAnim = 'mobile';
+        }
+    };
 
-    cardIn.classList.add("card-increase");
-    cardIn.classList.remove("card-decrease");
-    dotIn.classList.add("indicator-increase");
-    dotIn.classList.remove("indicator-decrease");
+    // =======================================
+    // 6. INITIALIZATION
+    // =======================================  
+    const setupListeners = () => {
+        // Debounce resize
+        window.addEventListener('resize', debounce(setAnim, 70));
 
-    autoIndexIn++;
+        // Event delegation logic
+        DOM.conts.eventCont.addEventListener('click', (e) => {
+            const target = e.target;
+            if (target.classList.contains('prev-icon')) changeCardView('prev');
+            else if (target.classList.contains('next-icon')) changeCardView('next');
+            else if (target.classList.contains('closed-cont')) {
+                clickHandler(target.closest('.ft-card').id); 
+            }
+        });
+    };
 
-    // "Out" Animation: Shrink card and dot after a delay
-    setTimeout(() => {
-        if (autoIndexOut >= cards.length) autoIndexOut = 0;
+    // Async IIFE Bootstrapper
+    (async () => {
+        try {
+            const ftEvents = await base.request({ URL: window.location.href });
 
-        const cardOut = cards[autoIndexOut];
-        const dotOut = dots[autoIndexOut];
+            for (const [k, event] of Object.entries(ftEvents)) {
+                event.eventStart = new Date(event.eventStart);
+                event.eventPrice = FMT.currency.format(event.eventPrice);
+                state.ftEvents[k] = event;
+            }
+            
+            renderFtCards();
+            setAnim();
+            setupListeners();
+        } catch (error) {
+            console.error("Initialization Failed:", error);
+        }
+    })();
 
-        cardOut.classList.add("card-decrease");
-        cardOut.classList.remove("card-increase");
-        dotOut.classList.add("indicator-decrease");
-        dotOut.classList.remove("indicator-increase");
-
-        autoIndexOut++;
-    }, interval);
-};
-
-const manageAutoMove = () => {
-    clearInterval(autoMoveInterval);
-
-    if (window.innerWidth >= BREAKPOINT && auto_scroll == true) { 
-        playAutoMoveAnimation();
-        autoMoveInterval = setInterval(playAutoMoveAnimation, interval);
-        auto_scroll = false
-    } else if (window.innerWidth < BREAKPOINT){
-        // Ensure indicator is correct when switching back to mobile
-        activeIndex = 0;
-        auto_scroll = true
-        updateIndicatorText();
-    }
-};
-
-updateIndicatorText();
-manageAutoMove();
-
-
-/**
- * Toggle Services 
- */
-const ratinginfo1 = {
-    ratingNumber : 4.3,
-    ratingTitle : 'First-Time Buyer',
-    ratingText : "I'm always a bit hesitant to put my card details into a new site, but I noticed the secure checkout and decided to go for it. The transaction was seamless, I got an instant confirmation, and I felt completely safe throughout the process. — James T."
-}
-
-const ratinginfo2 = {
-    ratingNumber : 4.7,
-    ratingTitle : 'Stress-Free',
-    ratingText : "I was dreading the logistics of booking our company event, but the system here was so intuitive. It took less than five minutes to secure our date and customize the package. It turned what is usually a stressful task into the easiest part of my week! — Marcus G."
-}
-
-const ratinginfo3 = {
-    ratingNumber : 4.5,
-    ratingTitle : 'Global Presence',
-    ratingText : "Being based in a completely different time zone usually makes support difficult, but Assured Booking's 24/7 team is actually available 24/7. No matter when I reach out, I get a fast, helpful response. It makes me feel like a priority. — Sasha L."
-}
-
-const ratinginfo4 = {
-    ratingNumber : 5,
-    ratingTitle : 'Spontaneous Purchase',
-    ratingText : "I needed a last-minute booking for a big event and didn't have the full amount ready. The flexible payment plan saved the day! I could secure my spot immediately and pay the rest over time. The approval process took literally seconds. — Rico M."
-}
-
-const ratinginfo5 = {
-    ratingNumber : 4.4,
-    ratingTitle : 'First-Time Buyer',
-    ratingText : "I'm always a bit hesitant to put my card details into a new site, but I noticed the secure checkout and decided to go for it. The transaction was seamless, I got an instant confirmation, and I felt completely safe throughout the process. — James T."
-}
-
-const ratinginfo6 = {
-    ratingNumber : 4.6,
-    ratingTitle : 'Risk Free',
-    ratingText : "I was nervous about trying a new brand, but their 'no-questions-asked' refund policy gave me peace of mind. It didn't end up being the right fit for me, but the return process was so seamless and professional that I'll definitely be back to try their other products. — Sarah J."
-}
-
-const addstars = (value) => {
-    if (value == 5){
-        return 5
-    }else if (value >= 4){
-        return 4
-    }else if (value >= 3){
-        return 3
-    }else if (value >= 2){
-        return 2
-    }
-    return 1
-}
-
-const ratingInformations = [ratinginfo1,ratinginfo2,ratinginfo3,ratinginfo4,ratinginfo5,ratinginfo6]
-const addRating = (data) => {
-    serviceRatingContainer.innerHTML = "";
-    const newElement = ratingTemplate.content.cloneNode(true)   
-
-    const {ratingNumber,ratingTitle,ratingText} = data
-    newElement.querySelector('.rating-number').textContent = ratingNumber
-
-    const ratingContainer = newElement.querySelector('.rating-stars')
-    for (let i = 0; i < addstars(ratingNumber); i++){
-        const star = starTemplate.content.cloneNode(true)
-
-        ratingContainer.append(star)
-    }
-    
-    newElement.querySelector('.rating-date').textContent = ratingTitle
-    newElement.querySelector('.rating-text').textContent = ratingText
-
-    serviceRatingContainer.append(newElement)
-}
-
-const toggleService = (element) => { 
-  serviceBtns.forEach((el,index) => { 
-    if (el == element){
-        serviceCard[index].style.display = 'flex'
-        addRating(ratingInformations[index])
-    }else{
-        serviceCard[index].style.display = 'none'
-    }    
-  })   
-}
-
-serviceBtns.forEach(el => {
-    el.addEventListener('click',(e) => {toggleService(el)})
-})
-toggleService(serviceBtns[0])
+})();

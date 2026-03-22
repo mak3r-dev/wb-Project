@@ -66,10 +66,11 @@
     // 3. States
     const state = {
         events: [],           // Immutable master list
+        suitablities : new Set(),
         activeLayout: 'grid', // 'grid' | 'list'
         filtersVisible: true,
         now: new Date(),
-
+        
         // Calendar State
         datePicker: {
             refDate: new Date(), // Current viewing month
@@ -185,6 +186,31 @@
         }
         DOM.list.container.appendChild(frag);
     };
+
+    const renderCategories = () => {
+        const {suitablities} = state
+
+        const template = document.getElementById('cat-template')
+        const tempFrag = document.createDocumentFragment()
+
+        const categories = Array.from(suitablities)
+        for (const cat of categories){
+            const clone = template.content.cloneNode(true)
+            
+            const evCateg = clone.querySelector('.event-categ')
+            evCateg.value = cat
+            evCateg.textContent = cat
+            evCateg.dataset.state = 'off'
+
+            tempFrag.append(clone)
+        }
+
+        const cont = document.querySelector('.event-filter-categ-options')
+        cont.append(tempFrag)
+
+        DOM.filter.categories = document.querySelectorAll(".event-categ")
+        initCategories()
+    }
 
     // 3. CORE -> Creates a single event card from template.
     const createCardNode = (eventData) => {
@@ -433,28 +459,6 @@
             applyFilters();
         }, 25)); // Shorter delay for slider visual feedback
 
-        // 4. Category Tags
-        DOM.filter.categories.forEach(el => {
-            el.addEventListener('click', () => {
-                const isActive = el.dataset.state == 'on';
-                
-                // Reset all visual states
-                DOM.filter.categories.forEach(c => {
-                    c.style.background = "rgb(46, 80, 109, 0.7)";
-                    c.dataset.state = 'off';
-                });
-
-                if (isActive) {
-                    state.filterCriteria.category = null;
-                } else {
-                    el.dataset.state = 'on';
-                    el.style.background = 'rgb(192, 108, 132, 0.5)';
-                    state.filterCriteria.category = el.value.toLowerCase();
-                }
-                applyFilters();
-            });
-        });
-
         // 5. Featured Toggle
         DOM.filter.featuredCheck.addEventListener('click', (e) => {
             state.filterCriteria.featured = e.target.checked;
@@ -513,6 +517,29 @@
         });
     };    
 
+    const initCategories = () => {
+        DOM.filter.categories.forEach(el => {
+            el.addEventListener('click', () => {
+                const isActive = el.dataset.state == 'on';
+                
+                // Reset all visual states
+                DOM.filter.categories.forEach(c => {
+                    c.style.background = "rgb(46, 80, 109, 0.7)";
+                    c.dataset.state = 'off';
+                });
+
+                if (isActive) {
+                    state.filterCriteria.category = null;
+                } else {
+                    el.dataset.state = 'on';
+                    el.style.background = 'rgb(192, 108, 132, 0.5)';
+                    state.filterCriteria.category = el.value.toLowerCase();
+                }
+                applyFilters();
+            });
+        });
+    }
+
     /**
      * Main Entry Point
      */
@@ -533,11 +560,13 @@
 
                     ev.eventStart = new Date(ev.eventStart)
                     ev.eventEnd = new Date(ev.eventEnd)
-                    state.events.push(ev)               
+                    state.events.push(ev)          
+                    state.suitablities.add(ev.suitabilityName)     
                 }
 
                 // Initial Render
                 renderEventList(state.events);
+                renderCategories();
             } else {
                 console.warn("API base object missing - Mocking data or waiting...");
             }

@@ -39,16 +39,26 @@
   --font-hero-sub: italic 1.344rem var(--font-secondary);
   --font-obj: lighter 1.5rem var(--font-secondary);
   --font-section-title : bolder 1.3rem var(--font-secondary); 
+  
+  /* --- Event Config --- */
+  --event-carousel-display: grid;
+  --event-carousel-width: 95%;
+  --event-carousel-gap: 0rem;
+  
+  --event-price-display: none;
+  --event-dot-cont-m-display: flex;
+  --event-dot-cont-d-display: none;
 
-  /* Event Config*/
-  --event-card-width: 103%; 
-  --indicator-grid-column: 1fr 2fr 1fr;
+  --event-booking-m-display: block;
+  --event-dot-cont-d-display: none;
 
-  --indicator-btn-display: block;
-  --mobile-indicator-text-display: block;
-  --desktop-indicator-dots: none;
+  --event-movement-dot-cont-display: grid;
+  --event-ft-card-width: 100%;
 
-  --scroll-indicator-width: 9rem;
+  --event-details-col: repeat(2,1fr);
+  --event-details-cap-display: none;
+
+  --event-ft-card-white-sapce: none;
 
   /* Service Config */
   --service-container-columns: 1fr;
@@ -72,40 +82,59 @@
    3. Animations
    ========================================= */
 
-/* Expands the width of a card */
-@keyframes expand-card {
-  0% { flex-grow: 0; }
-  100% { flex-grow: 1; }
-}
-
-/* Shrinks the width of a card */
-@keyframes shrink-card {
-  0% { flex-grow: 1; }
-  100% { flex-grow: 0; }
-}
-
-/* Expands the navigation dot */
-@keyframes expand-dot {
-  0% { width: 0.5rem; background-color: rgb(255,255,255,0.5); }
-  100% { width: 1.5rem; background-color: rgb(0,0,0,0.3); }
-}
-
-/* Shrinks the navigation dot */
-@keyframes shrink-dot {
-    0% { width: 1.5rem; }
-    100% { width: 0.5rem; }
-}
-
 /* Bouncing prompt animation */
 @keyframes prompt-bounce {
   50% { transform: translateY(0.5rem); }
   50% { transform: translateY(-0.5rem); }
 }
-/* Utility classes based on Animations */
-.card-increase { animation: expand-card 1s 1 forwards; }
-.card-decrease { animation: shrink-card 1s 1 forwards; }
-.indicator-increase { animation: expand-dot 1s 1 forwards; }
-.indicator-decrease { animation: shrink-dot 1s 1 forwards; }
+
+/* Open Card Anim*/
+@keyframes open-ft-card {
+  0% {
+    flex-grow: 0;
+    opacity: 0.3;
+  }
+  100% {
+    flex-grow: 1;
+    opacity: 1;
+  }
+}
+
+/* Close Card Anim*/
+@keyframes close-ft-card {
+  0%{
+    flex-grow: 1;
+    opacity: 1;
+  }
+  100% {
+    flex-grow: 0;
+    opacity: 0.3; 
+  }
+}
+
+/* Expand Dot Anim*/
+@keyframes expand-dot {
+  0% {
+    width: 0.5rem;
+    opacity: 0.3;
+  }
+  100% {
+    width: 3rem;
+    opacity: 1;
+  }
+}
+
+/* Shrink Dot Anim*/
+@keyframes shrink-dot {
+  0%{
+    width: 0.5rem;
+    opacity: 1;
+  }
+  100% {
+    width: 0.5rem;
+    opacity: 0.3; 
+  }
+}
 
 /* =========================================
    4. Utility Classes
@@ -128,7 +157,6 @@
   flex-flow: column nowrap;
   height: max-content;
   width: 100%;
-  background-color: aqua;
   overflow: visible;
 }
 
@@ -175,18 +203,8 @@
 }
 
 /* =========================================
-   7. Section: Events (Carousel)
+   6. Section: Events (Carousel)
    ========================================= */
-.event-showcase-group::-webkit-scrollbar{
-  display: none;
-}
-
-.event-housing{
-  width: 100%;
-  align-items: center;
-  margin-bottom: 1.5rem;
-}
-
 .nav-section-title{
   font : bolder 1.3rem var(--font-secondary);
   letter-spacing: 0.3rem;
@@ -194,311 +212,266 @@
   padding-bottom: 1.15rem;
 }
 
-.event-showcase-group{
-  border-radius: 1rem;
-  display: flex;
+.event-housing{width: 100dvw;}
+.event-carousel{
+  display: var(--event-carousel-display);
   flex-flow: row nowrap;
-  height: 17rem;
-  width: 99%;
-  overflow: auto;
-  scroll-behavior: smooth;
+
+  width: var(--event-carousel-width);  
+  gap: var(--event-carousel-gap);
   justify-self: center;
-  border: var(--event-showcase-border) solid white;
-}
-
-.ft-card{
-  margin: var(--event-card-margin-main);
-  flex-shrink: 0;
-  align-self: center;
-  height: 100%;
-  width: var(--event-card-width);  
-  object-fit: cover;
-  border-radius: 0.3rem;
-}
-
-.card-start{
-  border-radius: 1rem 0.3rem 0.3rem 1rem;
-}
-
-.card-end{
-  border-radius: 0.3rem 1rem 1rem 0.3rem;
-}
-
-/* Scroll Indicators*/
-.indicator{
-  display: grid;
-  grid-template-columns: var(--indicator-grid-column);
-  height: 2rem;
-  border-radius: 1rem;
-  justify-self: center;
-  background-color: rgb(207, 207, 207);
-  position: relative;
-  bottom: 3rem;
-  width: var(--scroll-indicator-width);
-  overflow: hidden;
-}
-
-.indicator-btn-left{
-  display: var(--indicator-btn-display);
-  background: url(../assets/left-arrow.svg) center/1.3rem no-repeat;   
-}
-
-.indicator-btn-right{
-  display: var(--indicator-btn-display);
-  background: url(../assets/right-arrow.svg) center/1.3rem no-repeat; 
-}
-
-.mobile-indicator-text{
-  display: var(--mobile-indicator-text-display);
-  height: 100%;
-  align-content: center;
-  text-align: center;
-  font: lighter 0.8rem var(--font-secondary);
-  letter-spacing: 0.16rem;
-}
-
-.desktop-indicator-dots{
-  display: var(--desktop-indicator-dots);
-  flex-flow: row nowrap;
-  gap: 0.7rem;
-  padding: 0rem 1rem 0rem 1rem;
-  height: 100%;
-  align-items: center;
-}
-
-.dot{
-  width: 0.5rem;
-  height: 0.5rem;   
-  background-color: white;
-  border-radius: 0.19rem;
-}
-
-/* =========================================
-   8. Section: Services (Trust)
-   ========================================= */
-
-.services-housing{
-  width: 100%;
-  justify-items: center;
   margin-bottom: 1rem;
 }
 
-.nav-section-title{
-  font : bolder 1.3rem var(--font-secondary);
-  letter-spacing: 0.3rem;
-  text-align: center;
-  padding-bottom: 1.15rem;
-}
-
-.services-container{
-  display: grid; 
-  grid-template-columns: var(--service-container-columns);
-  padding-bottom: 1.15rem;
-  width: 99%;
-  gap: 1rem;
-}
-
-.service-chooser{
-  display: var(--service-chooser-display);
-  flex-flow: column nowrap;
-  gap: 1rem;
+/* Event Cards*/
+.ft-card{
+  white-space: var(--event-ft-card-white-sapce);
+  text-overflow: ellipsis;
+  contain: layout;
+  width: var(--event-ft-card-width);
   border-radius: 1rem;
-  width: 99%;
-  height: max-content;
-  overflow: visible;
-
-  &::-webkit-scrollbar{
-    display: none;
-  }
-
+  background: url(../assets/BallonFestival.svg) center/cover no-repeat;
 }
 
-.service-btn{
-  display: grid;
-  grid-template-columns: 2.5rem 1fr;
-  height: 3rem;
-  box-shadow: 0 0 0.3rem #2e506d;
-  background: rgb(46, 80, 109, 0.8);
-  border-radius: 2rem;
+/* Global classes*/
+.evnt-icon{
+  width: 2rem;
+  height: 2rem;
+  margin-bottom: 0.1rem;
+  background-color: rgb(114, 114, 114);
+
+  mask-size: 1rem;
+  mask-position: left;
+  mask-repeat: no-repeat;
+}
+
+.date-icon{mask-image: url(../assets/calendar.png);}
+.cap-icon{mask-image: url(../assets/People.png);}
+.ticket-icon{mask-image: url(../assets/ticket.png);}
+.loc-icon{mask-image: url(../assets/location.svg);}
+
+.dot-cont-desktop,.dot-cont-mobile{
+  flex-flow: row nowrap;
+  gap: 0.5rem;
+
+  width: max-content;
+  align-items: center;
+  justify-items: center;
+  justify-self: center;
+  padding: 0.5rem;
+}
+
+.dot-cont-desktop{display: var(--event-dot-cont-d-display);}
+
+.dot-cont-mobile{
+  display: var(--event-dot-cont-m-display);
+  justify-self: flex-start;
+}
+
+.dot-opened{
+  height: 0.5rem;
+  border-radius: 0.3rem;    
+  animation: expand-dot 1s 1 forwards;    
+}
+
+.dot-closed{
+  height: 0.5rem;
+  border-radius: 0.3rem; 
+  animation: shrink-dot 1s 1 forwards;
+}
+
+.dot{background-color: rgb(124, 124, 124);}   
+
+.booking-btn{
+  display: none;
+  font: lighter 0.8rem var(--font-secondary);
+  letter-spacing: 0.03rem;
+  background: rgb(46, 80, 109, 0.9);
   transition: transform 0.3s ease;
-  padding-right: 1rem;
 
   &:hover{
-    transform: scale(1.035);
+    filter: brightness(1.3);
   }
 }
 
-.btn-icon{
-  align-self: center;
-  font: lighter 0.8rem var(--font-secondary);
-  height: calc(3rem - 0.75rem * 2);
-  width: calc(3rem - 0.75rem * 2);
-  padding: 0.3rem;
-  border-radius: 50%;
-  background: var(--grad-main);
-  background-size: 10dvw;
+.evnt-details{
+  display: grid;
+  grid-template-columns: var(--event-details-col);
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.cap-detail{display: var(--event-details-cap-display);}
+
+/* Desktop Classes*/
+.opened-cont{
+  padding: 1rem;
+  
+  .evnt-category{
+    width: max-content;
+    padding: 0.2rem 0.5rem 0.2rem 0.5rem;
+    font : lighter 0.75rem var(--font-secondary);
+
+    background-color: rgb(255,255,255,0.5);
+    border-radius: 1rem;
+  }
+
+  .evnt-title{ font : bolder 1.8rem var(--font-secondary);}
+
+  .evnt-desc{
+    margin-bottom: 1rem;
+    font : lighter 0.85rem var(--font-secondary);
+  }
+
+  .evnt-detail-card{
+    border-radius: 0.7rem;
+    border: 0.01rem solid white;
+    padding: 0.5rem;
+
+    background-color: rgb(255,255,255,0.4);
+
+    .detail-txt{
+      font : lighter 0.7rem var(--font-secondary); 
+      color: rgba(97, 97, 97, 0.5);
+    }
+
+    .detail-info{
+      font : lighter 0.8rem var(--font-secondary);
+      letter-spacing: 0.05rem;
+    }
+  }
+
 }
 
-.pay-icon{ mask-image: url(../assets/credit-card-1.0.png);}
-.booking{ mask-image: url(../assets/appointment.png);}
-.customer-service{ mask-image: url(../assets/customer-support.png);}
-.transaction{ mask-image: url(../assets/transaction.png);}
-.privacy{ mask-image: url(../assets/privacy.png);}
-.refund{ mask-image: url(../assets/money-back.png);}
+.price-loc-cont{
+  display: var(--event-price-display);
+  grid-template-columns: 1rem 1fr max-content;
 
-.btn-icon1{
-  width: 100%;
-  height: 100%;
-  background: rgb(0, 0, 0);
+  .evnt-loc-icon{
+    align-self: center;
+  }
 
-  mask-position: center;
-  mask-size: 1.3rem;
-  mask-repeat: no-repeat; 
-}
+  .evnt-loc{
+    font: lighter 0.8rem var(--font-secondary);
+    align-content: center;
+  }
+} 
 
-.btn-text{
-  text-align: left;
-  align-content: center;
-  font: lighter 0.9rem var(--font-secondary);
-  letter-spacing: 0.08rem;
-}
-
-.services{
+.closed-cont{
   border-radius: 1rem;
-  background-color: rgb(172,172,172,0.35);
-  width: 100%;
-  position: relative;
-  justify-self: center;
-}
 
-.service-card{
-  display: none;
-  flex-flow: column nowrap;
-  height: 100%;
-  padding: 1.5rem;
-  border-radius: 1rem;
-}
-
-.visible-service-card{
   display: flex;
-}
-
-.service-title{
-  font: lighter 1.5rem var(--font-secondary);
-  letter-spacing: 0.2rem;
-  text-align: center;
-  color: rgb(46, 80, 109, 0.9);
-}
-
-.service-info{
-  padding: 1rem 1.5rem 0rem 1.5rem;
-  text-align: center;
-  font: lighter 0.9rem var(--font-secondary);
-  letter-spacing: 0.05rem;
-  overflow: auto;
-}
-
-.refund-icon{background: url(../assets/refund.svg) center/cover no-repeat;}
-.privacy-image{background: url(../assets/privacy-image.svg) center/cover no-repeat;}
-.flexible-payment-icon{background: url(../assets/flexible-payment.svg) center/cover no-repeat;}
-.service-customer-icon{background: url(../assets/customer-support.svg) center/cover no-repeat;}
-.easy-booking-icon{background: url(../assets/easy-booking.svg) center/cover no-repeat;}
-.secure-payment-icon{background: url(../assets/Secure_Payment.jpg) center/cover no-repeat;}
-.service-icon{
-  display: var(--service-icon-display);
-  margin-top: 1rem;
-  flex-grow: 0.82;
-  border-radius: 1rem;
-}
-
-.service-mobile-carousel{
-  display: var(--service-carousel-display);
-  width: 95%;
-  justify-self: center;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.mobile-carousel-background-left,.mobile-carousel-background-right{
-  height: 2.3rem;
-  width: 2.3rem;
-  background-color: rgb(172,172,172,0.35);
-  border-radius: 50%;
-}
-
-.mobile-carousel-background-left{margin-right: auto;}
-.mobile-carousel-background-right{margin-left: auto;}
-
-.mobile-carousel-left,.mobile-carousel-right{
-  height: 100%;
-  width: 100%;
-  background: rgb(172,172,172,0.8);
-  mask-position: center;
-  mask-size: 1.5rem;
-  mask-repeat: no-repeat;  
-}
-
-.mobile-carousel-left{mask-image: url(../assets/left-arrow.svg);}
-.mobile-carousel-right{mask-image: url(../assets/right-arrow.svg);}
-
-.service-rating{
-  display: var(--service-rating-display);
   flex-flow: column nowrap;
-  background-color: rgb(172,172,172,0.35);
-  border-radius: 1rem;
-  padding: 1.5rem;
-  align-items: center;
+  padding: 0.5rem;
+  gap: 1rem;
+
+  .evnt-alias-cont{display: grid; place-items: center;}
+  .evnt-alias{
+    margin-top: 1rem;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background-color: rgb(255,255,255,0.5);
+    backdrop-filter: blur(3rem);
+    border: 0.01rem solid white;
+    color: rgb(46, 80, 109, 0.8);
+    
+    font : lighter 0.95rem var(--font-secondary);
+    text-align: center;
+    align-content: center;
+  }
+
+  .sep-bar{
+    flex-grow: 1;
+    display: block;
+    width: 0.05rem;
+    background-color: rgb(255,255,255,0.5);
+    justify-self: center;
+  }
+
+  .evnt-date{
+    margin-top: 1rem;
+    font : lighter 0.8rem var(--font-secondary);
+    text-align: center;
+    border-radius: 1rem;
+    background-color: rgb(255,255,255,0.5);
+    backdrop-filter: blur(0.1rem);
+    padding: 0.3rem;
+  }
 }
 
-.rating-stars{
+.start-booking-desktop{
+  display: var(--event-booking-d-display);
+  padding: 0.7rem 1rem 0.7rem 1rem;
+  border-radius: 0.7rem;
+}  
+
+.card-closed{
+  width: max-content;
+  animation: close-ft-card 1s 1 forwards;
+
+  .closed-cont{display: grid;}
+  .opened-cont{display: none;}
+}
+
+.card-opened{
+  animation: open-ft-card 1s 1 forwards;
+
+  .closed-cont{display: none;}
+  .opened-cont{display: grid;}
+}
+
+/* Mobile Classes*/
+.movement-dot-cont{
+  display: var(--event-movement-dot-cont-display);
+  grid-template-columns: repeat(2,1fr);
+  margin-bottom: 1rem;
+}
+
+.movement-btns{
   display: flex;
   flex-flow: row nowrap;
-  gap: 1rem;
-  justify-self: center;
-  padding-top: 1rem;  
+  gap: 0.5rem;
+  margin-left: auto;
 }
 
-.rating-icon{
-  height: 2.5rem;
-  width: 2.5rem;
-  background: rgb(46, 80, 109, 0.8);
+.mv-btn-icon{
+  background: white;
 
-  mask-image: url(../assets/star.png);
+  mask-size: 2rem;
   mask-position: center;
-  mask-size: 2.5rem;
-  mask-repeat: no-repeat;   
+  mask-repeat: no-repeat;
 }
 
-.rating-number{
-  padding-top: 2rem;
-  text-align: left;
-  font: lighter 2rem var(--font-secondary); 
+.prev,.next{
+  width: 2rem;
+  height: 2rem;
+
+  border: 0.03rem solid white;
+  border-radius: 50%;
+  background-color: rgb(255,255,255,0.4);
 }
 
-.rating-date{
-  padding-top: 1.5rem;
-  text-align: center;
-  font: lighter 1rem var(--font-secondary); 
+.prev-icon{
+  width: 2rem;
+  height: 2rem;
+  mask-image: url(../assets/left-arrow.svg);
 }
 
-.rating-text{
-  margin-top: 1.5rem;
-  flex-grow: 1;
+.next-icon{
+  width: 2rem;
+  height: 2rem;
+  mask-image: url(../assets/right-arrow.svg);
+}
+
+.start-booking-mobile{
+  display: var(--event-booking-m-display);
   width: 100%;
-  text-align: center;
-  font: lighter 0.9rem var(--font-secondary); 
-  overflow: auto;
-  height: 5rem;
-
-  &::-webkit-scrollbar{
-    display: none;
-  }
+  border-radius: 1.5rem;
+  padding: 1rem;
 }
-
 
 /* =========================================
-   9. Section: FAQ (Questions)
+   7. Section: FAQ (Questions)
    ========================================= */
 
   .separator{
@@ -575,7 +548,7 @@
   }
 
 /* =========================================
-   10. Section: CTA (Call To Action)
+   8. Section: CTA (Call To Action)
    ========================================= */
 
 .CTA-housing{
@@ -660,14 +633,39 @@
     
     --header-font: lighter 0.8rem var(--font-secondary);
 
-    
-
+  
     --question-card-column: 1fr 0.13fr;
     --question-separator-width: 33rem;
 
     --CTA-main-font: lighter 2.3rem var(--font-secondary);
 
     --footer-social-column: 1fr 0.5fr 0.5fr;
+  }
+}
+
+/* Carousel Specific*/
+@media only screen and (min-width: 700px) {
+  :root {
+    /* Event Carousel */
+    --event-carousel-display: flex;
+    --event-carousel-width: 99%;
+    --event-carousel-gap: 1rem;
+
+    --event-price-display: grid;
+    
+    --event-dot-cont-m-display: none;
+    --event-dot-cont-d-display: flex;
+
+    --event-booking-m-display: none;
+    --event-dot-cont-d-display: flex;
+    
+    --event-movement-dot-cont-display: none;
+    --event-ft-card-width: 0%;
+
+    --event-details-col: repeat(3,1fr);
+    --event-details-cap-display: block; 
+
+    --event-ft-card-white-sapce: nowrap;
   }
 }
 

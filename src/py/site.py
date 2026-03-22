@@ -16,9 +16,19 @@ app = Flask(__name__, template_folder = config.templates_folder, static_folder =
 def index(): return redirect(url_for("Home"))
 
 # Home URL
-@app.route("/Home") 
+@app.route("/Home",methods=['GET','POST']) 
 def Home():
-    return render_template("home-temp.html")
+    # GET Requests
+    if request.method == 'GET':     
+        return render_template("home-temp.html")
+    
+    # POST Requests -> to ONLY return all Featured Events
+    ftEvents = {}
+    for k, event in config.events_db.items():
+        if not event['eventFt']: continue
+        ftEvents[k] = event
+
+    return jsonify(ftEvents)
 
 # Events URL
 @app.route("/Event",methods=['GET','POST'])  
@@ -29,6 +39,11 @@ def Event():
 
     # POST Requests -> to ONLY return all events
     return jsonify(event_manager.get_all_events())
+
+# About Us URL
+@app.route("/About") 
+def About():
+    return render_template("about-us-temp.html")
 
 # Settings URL
 @app.route("/Settings") 

@@ -521,22 +521,6 @@ input[type = "text"]{
   align-self: center;
 }
 
-.BristolBallonFiesta{background: url(../assets/BallonFestival.svg) center/cover no-repeat;}
-.Musical{background: url(../assets/Musical.svg) center/cover no-repeat;}
-.Sports{background: url(../assets/Sports.svg) center/cover no-repeat;}
-.Exhibitions{background: url(../assets/Exhibitions.jpg) center/cover no-repeat;}
-.Theatre{background: url(../assets/Theatre.svg) center/cover no-repeat;}
-.LibraryExhibitions{background: url(../assets/Library.svg) center/cover no-repeat;}
-.Workshops{background: url(../assets/Workshop.jpg) center/cover no-repeat;}
-.Courses{background: url(../assets/Courses.svg) center/cover no-repeat;}
-.Wedding{background: url(../assets/Wedding.jpg) center/cover no-repeat;}
-.Conference{background: url(../assets/Conference.svg) center/cover no-repeat;}
-.Birthdays{background: url(../assets/Birthday.svg) center/cover no-repeat;}
-.ReligiousEvents{background: url(../assets/ReligiousEvents.svg) center/cover no-repeat;}
-.Funfair{background: url(../assets/FunFair.svg) center/cover no-repeat;}
-.Entertainments{background: url(../assets/Entertainment.jpg) center/cover no-repeat;}
-.Community{background: url(../assets/Community.jpg) center/cover no-repeat;}
-
 /*  Switch Between List or Grid - Start and Choose ft cards*/
 .ft{
   .event-card-ft-text{display: grid;}
