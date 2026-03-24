@@ -3,6 +3,7 @@
    ========================================= */
 :root {
    /* Section -> Mission*/
+   --mission-padding: 5rem;
    --mission-layout: 1fr;
 
    --about-us-border: 1rem 1rem 0rem 0rem;
@@ -23,7 +24,7 @@
    2. Global Classes
    ========================================= */
 .section-txt{
-   font: lighter 3.6rem var(--font-secondary);;
+   font: lighter 3rem var(--font-secondary);;
    color: rgb(0, 0, 0); 
    z-index:-1; 
    letter-spacing: 0.1rem;
@@ -43,34 +44,6 @@
    margin-bottom: 2rem;
 }
 
-.card{
-   z-index: 1;
-   display: grid;
-   gap: 0.3rem;
-   border-radius: 1rem;
-   background-color: rgb(211, 211, 211);
-   padding: 1rem;
-}
-
-.card-icon-bg{
-   width: max-content;
-   background-color: rgb(46, 80, 109, 0.8);
-   border-radius: 1rem;
-} 
-
-.card-icon{
-   height: 3rem;
-   width: 3rem;        
-   background-color: white;
-
-   mask-size: 1.3rem;
-   mask-position: center;
-   mask-repeat: no-repeat;
-}      
-
-.card-info{font: lighter 1.5rem var(--font-secondary);}
-.card-info-txt{font: lighter 1rem var(--font-secondary);}
-
 /* =========================================
    3. Layout: Section: Mission (Our Mission)
    ========================================= */  
@@ -86,7 +59,7 @@
       border-radius: var(--about-us-border);
       background: linear-gradient(to bottom, #2e506d, #243B55);
    
-      padding: 5rem;
+      padding: var(--mission-padding);
    }
 
    .about-us-txt{
@@ -99,12 +72,27 @@
    .our-mission-txt,.our-vision-txt{
       font: lighter 1.3rem var(--font-secondary);
       margin-bottom: 0.5rem;
+      color: rgb(204, 204, 204);
    }
 
    .our-mission-info,.our-vision-info{
       font: lighter 0.9rem var(--font-secondary);
       text-align: left;
       margin-bottom: 1rem;
+      color: rgb(204, 204, 204);
+   }
+
+   .learn-more{
+      padding: 0.8rem 1.3rem 0.8rem 1.3rem;
+      border-radius: 3rem;
+      background-color: white;
+      font: lighter 0.9rem var(--font-secondary);
+      letter-spacing: 0.05rem;
+
+      transition: transform 0.1s ease;
+      &:hover{
+         transform: scale(1.02);
+      }
    }
 
    /* Acievements*/
@@ -142,13 +130,21 @@
          margin-bottom: 1rem;
          width: max-content;
       }
+      .achv-icon{
+         height: 3rem;
+         width: 3rem;        
+         background-color: white;
+
+         mask-size: 1rem;
+         mask-position: center;
+         mask-repeat: no-repeat;        
+      }
       .achv-info{
          font: lighter 1.1rem var(--font-secondary);
          margin-bottom: 0.5rem;
       }
-      .achv-info-txt{
-         font: lighter 1rem var(--font-secondary);
-      }
+      .achv-info-txt{ font: lighter 1rem var(--font-secondary);}
+
       .calender-icon{mask-image: url(../assets/calendar.png);}
       .attendees-icon{mask-image: url(../assets/People.png);}
       .world-icon{mask-image: url(../assets/world.png);}
@@ -175,16 +171,31 @@
    }
 
    .value-card{
-      align-items: center;
-      justify-items: center;
-      background: none;
+      display: grid;
+      gap: 0.5rem;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      background-color: rgb(46, 80, 109, 0.8);
    }
 
-   .value-icon-bg{background-color: #243B55;}
-   .value-card-info-txt{
-      text-align: center;
-      font: lighter 0.9rem var(--font-secondary);
-   }
+   .value-icon-bg{
+      width: max-content;
+      background-color: #243B55;
+      border-radius: 1rem;
+   } 
+
+   .value-icon{
+      height: 3.3rem;
+      width: 3.3rem;        
+      background-color: white;
+
+      mask-size: 1.7rem;
+      mask-position: center;
+      mask-repeat: no-repeat;
+   }      
+
+   .value-card-info{font: lighter 1.1rem var(--font-secondary); color: white;}
+   .value-card-info-txt{font: lighter 0.9rem var(--font-secondary);}
 
    .heart-icon{mask-image: url(../assets/heart.png);}
    .innovation-icon{mask-image: url(../assets/innovation.png);}
@@ -223,8 +234,13 @@
 
       .milestone-year{
          text-align: left;
-         font: lighter 1.5rem var(--font-secondary);
+         font: lighter 1rem var(--font-secondary);
          color: rgb(0, 0, 0);
+         background-color: rgb(255, 255, 255, 0.3);
+         border-radius: 2rem;
+         padding: 0.3rem 0.8rem 0.3rem 0.8rem;
+         width: max-content;
+         backdrop-filter: blur(1rem);
       }
 
       .milestone-info{
@@ -238,7 +254,6 @@
          font: lighter 0.8rem var(--font-secondary); 
          color: rgb(216, 216, 216);
          text-overflow: ellipsis;
-         
       }
    }
 }
@@ -288,6 +303,7 @@
    .browse-events-btn{
       font: lighter 1rem var(--font-secondary);
       text-align: center;
+      text-decoration: none;
 
       background-color: rgb(192, 108, 132);
       box-shadow: 0rem 0rem 1rem rgb(192, 108, 132);
@@ -306,7 +322,8 @@
       letter-spacing: 0.05rem;
       border: 0.1rem solid rgb(192, 108, 132);
       transition: transform 0.05s ease;
-
+      text-decoration: none;
+      
       &:hover{
          transform: scale(1.02);
       }
@@ -320,6 +337,8 @@
 /* Tablet & Up */
 @media only screen and (min-width: 600px) {
    :root {
+      --mission-padding: 5rem 10rem 5rem 5rem;
+
       --val-layout-col: repeat(2,1fr);
       --val-layout-row: repeat(2,1fr);    
       

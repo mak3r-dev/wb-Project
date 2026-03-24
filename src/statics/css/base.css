@@ -250,7 +250,10 @@ a {text-decoration: none; color: black;}
 }
 
 .footer-section-separator{
+  height: 0.05rem;
   width: 100%;
+  background-color: rgb(167, 167, 167, 0.5);
+  border-radius: 1rem;
 };
 
 .footer{

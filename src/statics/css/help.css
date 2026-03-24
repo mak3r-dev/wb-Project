@@ -1,0 +1,386 @@
+/* =========================================
+   1. Global Variables & Theming
+   ========================================= */
+:root {
+   /* Final Help prompt*/
+   --prompt-flex-grow: 1;
+}
+
+/* =========================================
+   2. Global Classes
+   ========================================= */
+input[type = "text"]{
+  outline: none;
+  border: none;
+}
+
+input[type = "text"]::placeholder{
+  color: rgba(0, 0, 0, 0.6);
+}
+
+
+@keyframes q-a-entry-anim {
+  0% {transform: translateY(0); }
+  20% {transform: translateY(0.7rem); } 
+  60% { transform: translateY(-0.2rem); } 
+  100% {transform: translateY(0rem); } 
+}
+
+/* =========================================
+   3. Layout: Section: Intro
+   ========================================= */  
+
+.help-page-intro{
+   position: relative;
+   min-height: 25rem;
+   align-content: center;
+   width: 99%;
+   align-self: center;
+   background: linear-gradient(to bottom, #2e506d, #243B55);
+   border-radius: 1rem;
+
+   .intro-txt{
+      text-align: center;
+      font: bolder 2.5rem var(--font-secondary);
+      letter-spacing: 0.07rem;
+      color: rgb(224, 224, 224);
+   }
+
+   .intro-sub-txt{
+      text-align: center;
+      font: lighter 1rem var(--font-secondary);
+      letter-spacing: 0.05rem;
+      margin-bottom: 1.5rem;
+      color: rgb(138, 138, 138);
+   }     
+
+   .find-articles{
+      min-width: 25rem;
+      max-width: 35rem;
+      width: 85%;
+
+      border-radius: 50rem;
+      padding: 0.7rem;
+      background-color: rgb(46, 80, 109, 0.8);
+
+      display: grid;
+      grid-template-columns: 2rem 1fr;
+      justify-self: center;
+   }
+
+   .search-icon{
+      width: 2rem;
+      height: 2rem;
+
+      background-color: white;
+      mask-image: url(../assets/search1.png);
+      mask-position: center;
+      mask-size: 1.45rem;
+      mask-repeat: no-repeat;
+   }
+
+   .article-search-bar{
+      background: none;
+      font: lighter 0.9rem var(--font-secondary);
+
+      caret-color: rgba(0, 0, 0, 0.6);
+   }
+}
+
+/* =========================================
+   4. Layout: Section: Category Bar
+   ========================================= */ 
+.category-bar{
+   position: absolute;
+   top: 93%;
+
+   min-width: 25rem;
+   max-width: max-content;
+   width: 85%; 
+
+   overflow-x: auto;
+   border-radius: 1rem;
+   justify-self: center;
+   background-color: rgba(206, 206, 206, 0.9);
+   padding: 0.5rem;
+   
+   display: flex;
+   flex-flow: row nowrap;
+   
+   &::-webkit-scrollbar{display: none;}
+
+   /* Category States*/
+   .cat-selected{background-color: rgb(46, 80, 109, 0.8);}
+
+   /* Global styles*/
+   .cat-option-no-icon,.cat-option-icon{
+      padding: 0.35rem 1rem 0.35rem 1rem;
+   }
+
+   /* Cateory Option with no icon*/
+   .cat-option-no-icon{
+      border-radius: 0.7rem;
+   }
+
+   /* Cateory Option with icon*/
+   .cat-option-icon{
+      display: grid;
+      grid-template-columns: 1.7rem 1fr;
+      border-radius: 0.7rem;
+      gap: 0.35rem;
+      
+      .cat-icon{
+         pointer-events: none;
+         height: 1.7rem;
+         background-color: rgb(0, 0, 0, 0.6);
+
+         mask-size: 1rem;
+         mask-repeat: no-repeat;
+         mask-position: center;
+      }
+
+      .General{mask-image: url(../assets/book.png);}
+      .Tickets{mask-image: url(../assets/ticket.png);}
+      .Events{mask-image: url(../assets/People.png);}
+      .Account{mask-image: url(../assets/user.png);}
+      .Payment{mask-image: url(../assets/credit-card-1.0.png);}
+      .Technical{mask-image: url(../assets/setting.png);}
+   }
+
+   .cat-txt-icon, .cat-txt{
+      text-align: left;
+      align-content: center;
+      font: lighter 0.9rem var(--font-secondary);
+      white-space: nowrap;
+   } 
+
+   .cat-txt-icon{pointer-events: none;}
+}
+
+/* =========================================
+   5. Layout: Section: FAQ
+   ========================================= */ 
+.FAQ{
+   align-self: center;
+   width: 99%;   
+   margin-bottom: 3rem;
+
+   .FAQ-cont{
+      margin-top: 5rem;
+      justify-self: center;
+      max-width: 70rem;
+      width: 87.5%;
+   }
+
+   /* FAQ Intro*/
+   .FAQ-txt{
+      font: bolder 1.3rem var(--font-secondary);
+      letter-spacing: 0.07rem;
+      margin-bottom: 0.3rem;
+   }
+
+   .search-result{
+      font: lighter 0.9rem var(--font-secondary);
+      margin-bottom: 1.3rem;
+   }
+
+   .FAQ-list{
+      display: grid;
+      gap: 1rem;
+      padding: 1.5rem 0rem 1.5rem 0rem;
+
+      max-height: 46rem;
+      margin-bottom: 1.5rem;
+
+      overflow: scroll;
+      &::-webkit-scrollbar{display: none;}
+   }
+
+   /* Question card*/
+   .q-and-a-card{
+      display: none;
+      flex-flow: column nowrap;
+      border-radius: 1rem;
+      overflow: hidden;
+      background-color: rgba(206, 206, 206, 0.9);
+   }
+
+   /* Entry anim*/
+   .q-a-card-anim{
+      display: flex;
+      animation: q-a-entry-anim 0.35s forwards;
+   }
+
+   .question-card{
+      display: grid;
+      grid-template-columns: 1fr 1.7rem;
+
+      padding: 0.8rem 0.8rem 0rem 0.8rem;
+      
+      &:hover{filter: brightness(0.9)}
+      .question-cat{
+         border-radius: 1rem;
+         width: max-content;
+         margin-bottom: 0.5rem;
+
+         padding: 0.23rem 1rem 0.23rem 1rem;
+         font: lighter 0.8rem var(--font-secondary);
+         background-color: #2e506d63;
+      }
+
+      .question-txt{
+         font: lighter 1rem var(--font-secondary);
+         letter-spacing: 0.03rem;
+         overflow-wrap: anywhere; 
+      }
+
+      /* Arrow Icon*/
+      .question-icon{
+         height: 100%;
+         background-color: rgb(0, 0, 0, 0.6);
+
+         mask-image: url(../assets/left-arrow.svg);
+         mask-size: 1.7rem;
+         mask-repeat: no-repeat;
+         mask-position: center;     
+         rotate: 90deg;    
+
+         pointer-events: none;
+         transition: transform 0.3s ease;
+      }
+
+      &.opened{.question-icon{transform: rotate(-180deg);}}
+   }
+
+   /* Answer Card*/
+   .answer-wrapper{
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.28s ease, opacity 0.28s ease;
+      opacity: 0;
+      padding: 0.8rem;
+      
+      &.opened{
+         grid-template-rows: 1fr;
+         opacity: 1;
+
+         .answer-card{overflow: auto;}   
+      }
+
+      &.closed{
+         grid-template-rows: 0fr;
+         opacity: 0; 
+         
+         .answer-card{overflow: hidden;}
+      }
+
+      .answer-card{
+         font: lighter 0.85rem var(--font-secondary);
+         overflow: hidden;
+
+         &::-webkit-scrollbar{display: none;}
+      }
+   }
+}
+
+/* =========================================
+   6. Layout: Section: Final Prompt
+   ========================================= */ 
+.help-prompt{
+   align-content: center;
+   margin-bottom: 1rem;
+
+   .prompt-intro{
+      text-align: center;
+      font: bolder 2.5rem var(--font-secondary);
+      letter-spacing: 0.1rem;
+      margin-bottom: 0.5rem;
+   }
+
+   .prompt-sub-intro{
+      text-align: center;
+      font: lighter 1rem var(--font-secondary);
+      letter-spacing: 0.05rem;
+      color: rgb(0, 0, 0, 0.6);
+      margin-bottom: 1.7rem;
+   }
+
+   /* Help Prompt Cards*/
+   .help-prompt-cards{
+      justify-self: center;
+
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: center;
+      gap: 1rem;
+
+      width: 99%;
+      max-width: 60rem;
+   }
+
+   .prompt-card{
+      flex-grow: var(--prompt-flex-grow);
+      padding: 1.3rem;
+      border-radius: 1rem;
+      background-color: rgb(46, 80, 109, 0.8);
+
+      display: flex;
+      flex-direction: column;
+      .prompt-icon-bg{
+         background-color: #243B55;
+         backdrop-filter: blur(1rem);
+
+         border-radius: 0.7rem;
+         margin-bottom: 1rem;
+         width: max-content;
+      }
+
+      .prompt-icon{
+         height: 3rem;
+         width: 3rem;
+         background-color: rgba(255, 255, 255, 0.6);
+
+         mask-size: 1.7rem;
+         mask-repeat: no-repeat;
+         mask-position: center;     
+      }
+
+      .chat-icon{mask-image: url(../assets/chat.png);}
+      .email-icon{mask-image: url(../assets/email.png);}
+
+      .prompt-card-info{font: lighter 1.15rem var(--font-secondary);}
+      .prompt-card-sub-info{
+         font: lighter 0.9rem var(--font-secondary);
+         color: rgb(0, 0, 0, 0.6);
+         margin-bottom: 1rem;
+         width: 15rem;
+         flex-grow: 1;
+      }
+
+      .prompt-link{
+         width: 100%;
+         border-radius: 0.5rem;
+         background-color: rgba(192, 108, 132, 0.8);
+         box-shadow: 0rem 0rem 1rem rgba(192, 108, 132, 0.8);
+         padding: 0.7rem 1rem 0.7rem 1rem;
+         font: lighter 0.95rem var(--font-secondary);
+         letter-spacing: 0.05rem;
+      }
+   }
+}
+
+
+/* =========================================
+   7. Media Queries
+   ========================================= */
+
+  /* Tablet & Up */
+  @media only screen and (min-width: 600px) {
+    :root {--prompt-flex-grow: 0}
+  }
+
+  @media only screen and (min-width: 891px) {    
+    :root {
+
+    }
+  } 

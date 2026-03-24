@@ -67,13 +67,6 @@
   --service-chooser-display: none;
   --service-carousel-display: flex;
 
-  /*Question Config*/
-  --question-title-font: bolder 1.3rem var(--font-secondary);
-  --question-sub-font: lighter 1rem var(--font-secondary);
-  --question-sub1-font: lighter 0.75rem var(--font-secondary);
-  --question-card-column: 1fr 0.17fr;
-  --question-separator-width: 25rem;
-
   /* CTA Config */
   --CTA-main-font: lighter 2rem var(--font-secondary);
 }
@@ -358,45 +351,44 @@
 
 .closed-cont{
   border-radius: 1rem;
+  height: 10rem;
 
   display: flex;
-  flex-flow: column nowrap;
-  padding: 0.5rem;
+  flex-direction: column;
   gap: 1rem;
+  padding: 0.5rem;
 
-  .evnt-alias-cont{display: grid; place-items: center;}
   .evnt-alias{
     margin-top: 1rem;
     width: 3rem;
     height: 3rem;
     border-radius: 50%;
+
     background-color: rgb(255,255,255,0.5);
     backdrop-filter: blur(3rem);
     border: 0.01rem solid white;
-    color: rgb(46, 80, 109, 0.8);
-    
+
     font : lighter 0.95rem var(--font-secondary);
     text-align: center;
-    align-content: center;
-  }
+    align-content: center; 
+    justify-self: center;
+    background-color: aqua;
+  } 
 
   .sep-bar{
     flex-grow: 1;
-    display: block;
-    width: 0.05rem;
     background-color: rgb(255,255,255,0.5);
-    justify-self: center;
+    justify-self: center;  
   }
 
   .evnt-date{
-    margin-top: 1rem;
     font : lighter 0.8rem var(--font-secondary);
     text-align: center;
     border-radius: 1rem;
     background-color: rgb(255,255,255,0.5);
     backdrop-filter: blur(0.1rem);
     padding: 0.3rem;
-  }
+  } 
 }
 
 .start-booking-desktop{
@@ -474,78 +466,108 @@
    7. Section: FAQ (Questions)
    ========================================= */
 
-  .separator{
-    height: 0.05rem;
-    width: var(--question-separator-width);
-    background-color: rgb(167, 167, 167, 0.5);
-    border-radius: 1rem;
+.question-separator{
+  height: 0.05rem;
+  width: 100%;
+  background-color: rgb(167, 167, 167, 0.5);
+  border-radius: 1rem;
+}
+
+.question-title{
+  height: 3.5rem;
+  font: bolder 1.3rem var(--font-secondary);
+  letter-spacing: 0.3rem;
+  text-align: center; 
+}
+
+.question-housing{
+  max-width: 60rem;
+  width: 100%;
+  justify-self: center;
+}
+
+/* Question card*/
+.q-and-a-card{
+  display: flex;
+  flex-flow: column nowrap;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.question-card{
+  display: grid;
+  grid-template-columns: 1fr 1.7rem;
+
+  padding: 0.8rem 0.8rem 0rem 0.8rem;
+  .question-txt{
+    font: lighter 1rem var(--font-secondary);
+    letter-spacing: 0.03rem;
+    overflow-wrap: anywhere; 
   }
 
-  .question-title{
-    height: 3.5rem;
-    font: var(--question-title-font);
-    letter-spacing: 0.3rem;
-    text-align: center; 
+  /* Arrow Icon*/
+  .question-icon{
+    height: 100%;
+    background-color: rgb(0, 0, 0, 0.6);
+
+    mask-image: url(../assets/left-arrow.svg);
+    mask-size: 1.5rem;
+    mask-repeat: no-repeat;
+    mask-position: center;     
+
+    pointer-events: none;
+    transition: transform 0.3s ease;
   }
 
-  .question-housing{
-    display: grid; 
-    place-items: center;
-    width: 100%;
-    place-items: center;
+  &.opened{.question-icon{transform: rotate(-90deg);}}
+}
 
-    .question-card{
-      display: grid;
-      grid-template-columns: var(--question-card-column);
-      margin-top: 0.3rem;
-      margin-bottom: 0.3rem;
-      height: 3.2rem;
-      width: var(--question-separator-width);
-    }
+/* Answer Card*/
+.answer-wrapper{
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.28s ease, opacity 0.28s ease;
+  opacity: 0;
+  padding: 0.5rem 0.8rem 0.5rem 0.8rem;
+  
+  &.opened{
+    grid-template-rows: 1fr;
+    opacity: 1;
 
-    .question-heading{
-      align-self: center;
-      font: var(--question-sub-font)
-    }
+    .answer-card{overflow: auto;}   
+  }
 
-    .question-prompt{ 
-      background: url(../assets/left-arrow.svg) center/1.3rem no-repeat;
-      border-radius: 0.3rem;
-    }  
+  &.closed{
+    grid-template-rows: 0fr;
+    opacity: 0; 
     
-    .question-answer.is-visible{
-      display: block;
-      animation: open 0.7s 1 forwards;
-    }
-
-    .question-answer{
-      display: None;
-      margin-bottom: 1rem;
-      width: var(--question-separator-width);
-      font: lighter 0.8rem var(--font-secondary);
-      overflow: hidden;
-    }
-
-    .question-important{
-      color: rgb(255,255,255,0.4);
-      text-shadow: 0rem 0rem 1rem rgb(255,255,255,0.3);      
-    }
-
-    .question-help{
-      text-align: center;
-      align-content: center;
-      font: var(--question-sub1-font);
-      letter-spacing: 0.07rem;
-      width: var(--question-separator-width);
-      height: 3rem;
-
-      .question-help-page{
-        text-decoration: none;
-        color: var(--color-accent-pink);
-        text-shadow: 0rem 0rem 1rem rgba(192, 108, 132);
-      }
-    }
+    .answer-card{overflow: hidden;}
   }
+
+  .answer-card{
+    font: lighter 0.85rem var(--font-secondary);
+    overflow: hidden;
+
+    &::-webkit-scrollbar{display: none;}
+  }
+}
+
+.question-help{
+  margin-top: -1rem;
+  text-align: center;
+  align-content: center;
+  font: lighter 0.75rem var(--font-secondary);
+  letter-spacing: 0.07rem;
+  width: 100%;
+  height: 3rem;
+
+  .question-help-page{
+    text-decoration: none;
+    color: var(--color-accent-pink);
+    text-shadow: 0rem 0rem 1rem rgba(192, 108, 132);
+  }
+}
+
 
 /* =========================================
    8. Section: CTA (Call To Action)
@@ -692,9 +714,6 @@
     --service-carousel-display: none;
     --service-icon-display: block;
     
-    /* Change width for Desktops*/
-    --question-card-column: 1fr 0.07fr;
-    --question-separator-width: 60rem;
   }
 }
 

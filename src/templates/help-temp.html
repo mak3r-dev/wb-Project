@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" id="html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope&family=Akaya Kanadaka&display=swap">
+    <link rel="stylesheet" href="../statics/css/help.css">
+    
+
+    <title> Re-Design v2 </title>
+</head>
+
+<body id="body">
+  {% extends "base-temp.html" %}
+  
+  {% block scripts %}
+    <script defer src="../statics/js/help.js"></script>
+  {% endblock %}   
+  
+  {% block content %}
+  <div class="help-page-intro">
+    <h1 class="intro-txt">How can we help?</h1>
+    <h1 class="intro-sub-txt">Find answers to common questions and get support</h1>
+    <div class="find-articles">
+      <div class="search-icon"></div>
+      <input type="text" class="article-search-bar" placeholder="Search for help articles...">
+    </div>
+
+
+    <div class="category-bar">
+      <button class="cat-option-no-icon cat-txt cat-selected cat-option-btn" data-category="All">All Topics</button>
+
+      <template id="category-template">
+        <button class="cat-option-icon cat-option-btn">
+          <div class="cat-icon"></div>
+          <h1 class="cat-txt-icon">General</h1>
+        </button>
+      </template>
+
+    </div>
+  </div>
+
+  <div class="FAQ">
+    <div class="FAQ-cont">
+      <h1 class="FAQ-txt">Frequently Asked Questions</h1>
+      <h1 class="search-result"></h1>
+      <div class="FAQ-list">
+        
+        <template id="question-template">
+          <div class="q-and-a-card">
+
+            <div class="question-card opened closed">
+              <div class="question-ctn">
+                <h1 class="question-cat">General</h1>
+                <h1 class="question-txt">What is your privacy policy?</h1>
+              </div>
+              
+              <button class="question-icon-btn">
+                <div class="question-icon"></div>
+              </button>            
+            </div>
+
+            <div class="answer-wrapper opened closed">
+              <div class="answer-card">
+                We take your privacy seriously. We only collect necessary information to process your orders and improve your experience. We never sell your personal data to third parties. View our full privacy policy in the footer of our website.
+              </div>    
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+
+  <div class="help-prompt">
+    <h1 class="prompt-intro">Still need help?</h1>
+    <h1 class="prompt-sub-intro">Our support team is here to assist you</h1>
+    <div class="help-prompt-cards">
+
+      <div class="prompt-card">
+        <div class="prompt-icon-bg">
+          <div class="prompt-icon chat-icon"></div>
+        </div>
+        
+        <h1 class="prompt-card-info">Live Chat</h1>
+        <h1 class="prompt-card-sub-info">Get instant help from our support bot.</h1>
+        <button class="prompt-link">Start Chat</button>
+      </div>
+
+      <div class="prompt-card">
+        <div class="prompt-icon-bg">
+          <div class="prompt-icon email-icon"></div>
+        </div>
+        
+        <h1 class="prompt-card-info">Email Support</h1>
+        <h1 class="prompt-card-sub-info">We'll respond within 24 hours.</h1>
+        <button class="prompt-link">Send Email</button>
+      </div>
+
+    </div>
+  </div>
+  {% endblock %}
+</body>
+</html>             

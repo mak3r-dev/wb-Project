@@ -215,5 +215,7 @@ const handleLoginState = () => {
 
 navlogin.addEventListener('click',handleLoginState);
 checklogin();
+
+const redirectHelpPage = () => {window.location.replace("/Help")}
 // If page is from bfcache reload
 window.onpageshow = (event) => (event.persisted) ? window.location.reload() : null

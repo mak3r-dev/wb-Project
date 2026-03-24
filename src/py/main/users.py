@@ -36,6 +36,29 @@ class Response(NamedTuple):
     redirect_for: str = None
     message: str = None
 
+class FAQ(Base):
+    __table__: str = 'questions'
+    questionID: Column = Column(UUID(), unique=True, default=uuid6.uuid7)
+    Question: Column = Column(string(255), nullable=False, unique=True)
+    ModelAnswer: Column = Column(string(1000), nullable=False)
+    Category: Column = Column(string(100), nullable=False)
+
+    def convert_all(result: list[dict]):
+        for res in result:
+            res['questionID'] = str(uuid.UUID(bytes=res['questionID']))
+
+        return result
+    
+    def get_FAQ():
+        config.FAQ_db = {}
+        questions = FAQ.convert_all(db.query(FAQ).all(as_dict=True))
+        for question in questions:
+            config.FAQ_db[question['questionID']] = question        
+
+    def insert_all_static():
+        [db.add(FAQ(ques)).on_duplicate() for ques in config.FAQ_db.values()]
+        db.commit()
+
 class Users(Base):
     
     __table__ : str = 'Users'
@@ -326,6 +349,8 @@ class UsersManager():
 
         return jsonify({'user' : userInfo, 'events' : eventInfo, 'bookings' : bookings})
 
+    def get_FAQ(self): return config.FAQ_db
+
     def action(self, Perm:str, OP: str, ID: int, DATA: dict):
         if not isinstance(ID, int): return
         if Perm != 'Admin' : return
@@ -344,7 +369,13 @@ class UsersManager():
 
     def internal_actions(self,OP: str):
         match OP:
-            case 'CACHE_ALL': Users.get_all_users()
+            case 'CACHE_ALL': 
+                Users.get_all_users()
+                FAQ.get_FAQ()
+                
+            case 'INSERT_DEFAULTS':
+                FAQ.insert_all_static()
+                
 # Init
 user_manager = UsersManager()
 user_class = Users

@@ -8,17 +8,24 @@
         templates: {
             card: document.getElementById('card-template'),
             dot: document.getElementById('dot-template'),
+            question: document.getElementById('question-template'),
         },
+
         conts: {
             eventCont: document.querySelector('.event-carousel'),
-        }
+            questionsCont: document.querySelector('.question-housing'),
+        },
+        
     };
 
     const state = {
         /* Multi properties */
         ftCards: [],
         ftEvents: {},
-        
+
+        questions: [],
+        qCards: {},
+
         /* Single properties */
         currentFtActive: 0,
         currentAnim: null,
@@ -52,6 +59,37 @@
             timeout = setTimeout(later, wait);
         };
     };
+
+    const setText = (parent, sel, val) => {
+        parent.querySelector(`.${sel}`).textContent = val;
+    };
+
+    const changeCardState = (clickedkey) => {
+        
+        for (const [key,info] of Object.entries(state.qCards)){
+
+            if (key == clickedkey){
+                
+                if (!info.isOpen){
+                    info.qCard.classList.replace("closed","opened")
+                    info.aCard.classList.replace("closed","opened")        
+                    
+                    info.isOpen = true
+                }else{
+                    info.qCard.classList.replace("opened","closed")
+                    info.aCard.classList.replace("opened","closed")         
+                    
+                    info.isOpen = false
+                }
+            }else{
+                info.qCard.classList.replace("opened","closed")
+                info.aCard.classList.replace("opened","closed")         
+                
+                info.isOpen = false               
+            }
+        }
+
+    }
 
     // =======================================
     // 3. STATE MUTATIONS 
@@ -118,10 +156,6 @@
             dotsFrag.append(dotClone);
         });
 
-        const setText = (parent, sel, val) => {
-            parent.querySelector(`.${sel}`).textContent = val;
-        };
-
         // 2. Build cards
         for (const [key, ev] of Object.entries(state.ftEvents)) {
             const clone = cardTpl.content.cloneNode(true);
@@ -145,6 +179,8 @@
                 : ev.suitabilityName;
             cardEl.classList.add(themeClass);
 
+            clone.querySelector('.booking-btn').dataset.key = key
+
             // 3. Append pre-built dots to this card
             const mCont = cardEl.querySelector('.dot-cont-mobile');
             const dCont = cardEl.querySelector('.dot-cont-desktop');
@@ -166,6 +202,33 @@
 
         DOM.conts.eventCont.append(cardFrag);
     };
+
+    const renderQuestions = () => {
+        const {question: qTemp} = DOM.templates
+
+        const qFrag = document.createDocumentFragment()
+        for (const [key, question] of Object.entries(state.questions)){
+            const clone = qTemp.content.cloneNode(true)
+
+            setText(clone, 'question-txt', question.Question)
+            setText(clone, 'answer-card', question.ModelAnswer)
+
+            state.qCards[question.questionID] = {
+                isOpen : false,
+                key: key,
+                qCard : clone.querySelector(".question-card"),
+                aCard : clone.querySelector(".answer-wrapper"),
+            }
+
+            clone.querySelector(".question-icon-btn").dataset.key = question.questionID
+            qFrag.append(clone)
+        }
+
+        DOM.conts.questionsCont.append(qFrag)
+        DOM.conts.questionsCont.append(
+            document.getElementById('help-template').content.cloneNode(true)
+        )        
+    }
 
     // =======================================
     // 5. CORE LOGIC: ANIMATION & EVENTS
@@ -242,22 +305,38 @@
             else if (target.classList.contains('next-icon')) changeCardView('next');
             else if (target.classList.contains('closed-cont')) {
                 clickHandler(target.closest('.ft-card').id); 
+            }else if (target.classList.contains('booking-btn')){
+                const eventLink = btoa(state.ftEvents[target.dataset.key].eventName)
+                window.location.replace(`/Booking?q=${eventLink}`)
             }
         });
+
+        // QuestionCard 
+        DOM.conts.questionsCont.addEventListener('click',(e) => {
+           const target = e.target;
+           
+           if (target.classList.contains("question-icon-btn")){
+                changeCardState(target.dataset.key)
+           }
+        })
     };
 
     // Async IIFE Bootstrapper
     (async () => {
         try {
-            const ftEvents = await base.request({ URL: window.location.href });
+            const returned = await base.request({ URL: window.location.href });
 
+            const ftEvents = returned.events;
             for (const [k, event] of Object.entries(ftEvents)) {
                 event.eventStart = new Date(event.eventStart);
                 event.eventPrice = FMT.currency.format(event.eventPrice);
                 state.ftEvents[k] = event;
             }
             
+            state.questions = returned.FAQ
             renderFtCards();
+            renderQuestions();
+
             setAnim();
             setupListeners();
         } catch (error) {

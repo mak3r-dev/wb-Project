@@ -36,11 +36,9 @@
         <template id="card-template">
           <div class="ft-card card-closed">
             <div class="closed-cont">
-                <div class="evnt-alias-cont">
-                    <h1 class="evnt-alias"> BBF</h1>
-                </div>
+                  <h1 class="evnt-alias"> BBF</h1>
                 <div class="sep-bar"></div>
-                <div class="evnt-date">1 / 1 / 2025</div>
+                <h1 class="evnt-date">1 / 1 / 2025</h1>
             </div>
 
             <div class="opened-cont">
@@ -100,78 +98,31 @@
       <h1 class="question-title"> FAQ </h1>
       <div class="question-housing">
 
-        <div class="separator"></div>
-        <div class="question-card">
-          <h1 class="question-heading"> What is Assured Bookings </h1>  
-          <button class="question-prompt"></button>       
-        </div>
-        <div class="question-answer">
-          <span class="question-important">Assured Bookings is a community event booking website that 
-          consolidates a diverse range of events in one convenient location, 
-          streamlining the booking process.</span> Users can reserve different types 
-          of events, such as exhibitions, musical performances, and private gatherings. 
-          Additionally, Assured Bookings offers a variety of services that benefit all 
-          customers when booking an event.
-        </div>
+        <template id="question-template">
+          <div class="question-separator"></div>
+          <div class="q-and-a-card">
 
-        <div class="separator"></div>
-        <div class="question-card">
-          <h1 class="question-heading"> Can I cancel or get a refund? </h1>
-          <button class="question-prompt"></button>
-        </div>
-        <div class="question-answer">
-          <span class="question-important">You may cancel an event at any time before it occurs.</span> 
-          If you cancel the event more than 40 days before the booking date, 
-          there will be no cancellation fee. If you cancel between 25 and 39 days
-           before the booking date, a 
-           <span class="question-important">40% cancellation fee</span> 
-           will be charged. 
-           For cancellations made within 25 days of the booking date, a 
-           <span class="question-important">100% cancellation fee</span>  will apply. 
-        </div>
+            <div class="question-card closed">
+              <div class="question-txt">What is your privacy policy?</div>
+              <button class="question-icon-btn">
+                <div class="question-icon"></div>
+              </button>   
+            </div>
+            
+            <div class="answer-wrapper closed">
+              <div class="answer-card">
+                We take your privacy seriously. We only collect necessary information to process your orders and improve your experience. We never sell your personal data to third parties. View our full privacy policy in the footer of our website.
+              </div>    
+            </div>
+          </div>
+        </template>
 
-        <div class="separator"></div>
-        <div class="question-card">
-          <h1 class="question-heading"> What if the event is cancelled? </h1>     
-          <button class="question-prompt"></button>         
-        </div> 
-        <div class="question-answer">
-          In an unlikely situation of an event been cancelled, 
-          <span class="question-important">a full refund will be given to participants of the event</span>.
-        </div>
-
-        <div class="separator"></div>
-        <div class="question-card">
-          <h1 class="question-heading"> How do events work? </h1>     
-          <button class="question-prompt"></button>         
-        </div> 
-        <div class="question-answer">
-          <span class="question-important">Events on Assured Bookings are in two categories: Standard and Multi-days.</span>
-          <br><br>
-          • Multi-days events run on multiple days and each day 
-          will incur part of the total event price. Users
-          will be allowed to book more days of such an event.
-          <br>
-          • Standard events run only on a single day and a total 
-          price is paid before the event.
-        </div>
-
-        <div class="separator"></div>
-        <div class="question-card">
-          <h1 class="question-heading"> What if an event Availability is full? </h1>     
-          <button class="question-prompt"></button>         
-        </div> 
-        <div class="question-answer">
-          In a situation where an event is full, 
-          <span class="question-important">Users will be allowed to join a Waiting List</span> and if a space becomes available, the user will be 
-          offered a space for the said event.
-        </div>
-
-        <div class="separator"></div>
-        <div class="question-help">
-          Have More Questions? Visit our 
-          <a href="" class="question-help-page"> Help Page. </a>
-        </div>
+        <template id="help-template">
+          <div class="question-help">
+            Have More Questions? Visit our 
+            <a href="/Help" class="question-help-page"> Help Page. </a>
+          </div>
+        </template>
       </div>
     </div>
 
@@ -185,3 +136,8 @@
   {% endblock %}
 </body>
 </html>             
+
+<!-- <div class="question-help">
+  Have More Questions? Visit our 
+  <a href="/Help" class="question-help-page"> Help Page. </a>
+</div> -->

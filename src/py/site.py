@@ -1,19 +1,39 @@
-# # Global Imports
-from imports.glo import stripe,db,config,Flask,render_template,url_for,redirect,request,jsonify,abort,send_file
+# =======================================
+# 1. IMPORTS
+# =======================================
+from imports.glo import stripe,db,config,Flask,render_template,url_for,redirect,request,jsonify,abort,send_file,islice
 
-# Custom Imports
 from main.users import user_manager,user_class
 from main.events import event_manager,event_class,venue_class
 from main.bookings  import booking_manager,bookings,entries
 
-stripe.api_key = config.stripe_api_key
 
-db.create_pool()
-db.create_all()
-
+# =======================================
+# 2. CONFIGURATION AND CONSTANTS
+# =======================================
 app = Flask(__name__, template_folder = config.templates_folder, static_folder = config.statics_folder)
+
 @app.route("/") 
 def index(): return redirect(url_for("Home"))
+
+stripe.api_key = config.stripe_api_key
+
+db.create_pool(); 
+db.create_all()
+ 
+# Set all required statics
+booking_manager.internal_actions(OP='INSERT_DEFAULTS')    
+booking_manager.internal_actions(OP='CACHE_DISCOUNTS')
+
+event_manager.internal_actions(OP='INSERT_DEFAULTS')
+event_manager.internal_actions(OP='CACHE_ALL')
+
+user_manager.internal_actions(OP='INSERT_DEFAULTS')   
+user_manager.internal_actions(OP='CACHE_ALL')
+
+# =======================================
+# 3. VISIBLE ENDPOINTS
+# =======================================
 
 # Home URL
 @app.route("/Home",methods=['GET','POST']) 
@@ -28,7 +48,8 @@ def Home():
         if not event['eventFt']: continue
         ftEvents[k] = event
 
-    return jsonify(ftEvents)
+    five_questions = dict(islice(config.FAQ_db.items(), 5))
+    return jsonify({'events' : ftEvents, 'FAQ' : five_questions})
 
 # Events URL
 @app.route("/Event",methods=['GET','POST'])  
@@ -44,11 +65,6 @@ def Event():
 @app.route("/About") 
 def About():
     return render_template("about-us-temp.html")
-
-# Settings URL
-@app.route("/Settings") 
-def Settings():
-    return render_template("settings-temp.html")
 
 # Account URL
 @app.route("/Account",methods=['GET','POST']) 
@@ -95,24 +111,12 @@ def Account():
            'bookingEntries' : bookings.convert_all(all_booking_entries),  
         })
 
-# Operation Actions
-@app.route("/actions",methods=['POST'])     
+# Settings URL
+@app.route("/Settings") 
 @user_manager.login_required
-def actions():
-    perm = config.users_db[user_manager.get_id()]['Permission']   
-    ACTION = request.json['ACTION']
-    ID, OP, DATA = request.json['ID'], request.json['OP'], request.json['DATA']  
+def Settings():
+    return render_template("settings-temp.html")
 
-    if ACTION == 'EVENT_ACTION':
-        return jsonify(event_manager.action(perm,OP,ID,DATA))
-
-    if ACTION == 'USER_ACTION':
-        return jsonify(user_manager.action(perm,OP,ID,DATA))
-    
-    if ACTION == 'BOOKING_ACTION':
-        print(f"booking-act -> {OP}, data -> {DATA} id -> {ID}")
-        return jsonify(booking_manager.action(OP,ID,DATA))  
-      
 # Login URL
 @app.route("/Users",methods=['GET','POST']) 
 def User():
@@ -128,7 +132,20 @@ def User():
 
     return jsonify(user_manager.signIn(request))
 
-# Booking URL
+# =======================================
+# 4. HIDDEN ENDPOINTS
+# =======================================
+# Help Page URL
+@app.route("/Help",methods=['GET','POST']) 
+def Help():
+    # GET Requests
+    if request.method == 'GET':  
+        return render_template("help-temp.html") 
+
+    # POST Requests -> to ONLY return FAQ
+    return jsonify(user_manager.get_FAQ()) 
+    
+# Booking Page URL
 @app.route("/Booking",methods=['GET','POST']) 
 @user_manager.login_required
 def Booking():
@@ -149,7 +166,7 @@ def Booking():
         'booked' : evaluation.get('booked'),
     })
 
-
+# Booking Checkout URL
 @app.route("/Booking/Checkout",methods=['GET','POST']) 
 @user_manager.login_required
 def checkout():
@@ -196,7 +213,7 @@ def checkout():
         booking_manager.action(OP='UPDATE_PAYMENT_STATUS',ID=REF,DATA={})
         return jsonify(response._asdict())
 
-
+# Booking Payment URL Webhook
 @app.route("/payment-webhook", methods=['POST'])
 def webhook():
     sig = request.headers.get('stripe-signature')
@@ -223,12 +240,26 @@ def download_ticket():
     buffer = booking_manager.get_booking_ticket()
     return send_file(buffer,'application/pdf',False)
 
-# Set all required statics
-booking_manager.internal_actions(OP='INSERT_DEFAULTS')    
-booking_manager.internal_actions(OP='CACHE_DISCOUNTS')
-event_manager.internal_actions(OP='INSERT_DEFAULTS')
-event_manager.internal_actions(OP='CACHE_ALL')
-user_manager.internal_actions(OP='CACHE_ALL')
- 
-if __name__ == "__main__":
-    app.run(debug=True)
+# =======================================
+# 4. UTILITY ENDPOINT
+# =======================================
+
+# Admin and User Account Actions
+@app.route("/actions",methods=['POST'])     
+@user_manager.login_required
+def actions():
+    perm = config.users_db[user_manager.get_id()]['Permission']   
+    ACTION = request.json['ACTION']
+    ID, OP, DATA = request.json['ID'], request.json['OP'], request.json['DATA']  
+
+    if ACTION == 'EVENT_ACTION':
+        return jsonify(event_manager.action(perm,OP,ID,DATA))
+
+    if ACTION == 'USER_ACTION':
+        return jsonify(user_manager.action(perm,OP,ID,DATA))
+    
+    if ACTION == 'BOOKING_ACTION':
+        print(f"booking-act -> {OP}, data -> {DATA} id -> {ID}")
+        return jsonify(booking_manager.action(OP,ID,DATA))  
+
+if __name__ == "__main__": app.run(debug=True)
