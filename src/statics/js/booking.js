@@ -950,7 +950,7 @@
         DOM.confirmation.proceedBtn.addEventListener('click', handleConfirmProceed);
         DOM.confirmation.buttons.return.addEventListener('click', () => window.location.replace('../Event'));
         DOM.confirmation.buttons.download.addEventListener('click',() => {window.open('/download-ticket', '_blank')})
-   
+        
     };  
     
     // Init

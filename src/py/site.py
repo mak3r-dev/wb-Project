@@ -1,7 +1,7 @@
 # =======================================
 # 1. IMPORTS
 # =======================================
-from imports.glo import stripe,db,config,Flask,render_template,url_for,redirect,request,jsonify,abort,send_file,islice
+from imports.glo import stripe,db,config,Flask,render_template,url_for,redirect,request,jsonify,abort,send_file,islice,generate_ticket
 
 from main.users import user_manager,user_class
 from main.events import event_manager,event_class,venue_class
@@ -235,11 +235,6 @@ def webhook():
 
     return jsonify(success=True), 200  
 
-@app.route('/download-ticket')
-def download_ticket():
-    buffer = booking_manager.get_booking_ticket()
-    return send_file(buffer,'application/pdf',False)
-
 # =======================================
 # 4. UTILITY ENDPOINT
 # =======================================
@@ -261,5 +256,15 @@ def actions():
     if ACTION == 'BOOKING_ACTION':
         print(f"booking-act -> {OP}, data -> {DATA} id -> {ID}")
         return jsonify(booking_manager.action(OP,ID,DATA))  
+
+# Downloading Tickets -> After Booking
+@app.route('/download-ticket')
+def download_ticket():
+    pdf_buffer = generate_ticket()
+    return send_file(pdf_buffer,
+        as_attachment=False,
+        download_name='booking_ticket.pdf',
+        mimetype='application/pdf'
+    )
 
 if __name__ == "__main__": app.run(debug=True)
